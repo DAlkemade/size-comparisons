@@ -5,16 +5,24 @@ import nltk
 from nltk.corpus import wordnet as wn
 
 nltk.download('wordnet')
-
-apple = wn.synset('apple.n.01')
-print(apple.definition())
-print(apple.hypernyms())
-print(wn.synsets('edible fruit'.replace(' ', '_')))
-
 TEST = True
 
 wiki_wiki = wikipediaapi.Wikipedia('en')
 
+apple = wn.synset('apple.n.01')
+print(apple.definition())
+print(apple.hypernyms())
+print(apple.lexname())
+apple_lookup = wiki_wiki.page('apple')
+print(apple_lookup.langlinks)
+
+# get all images and info(but no description). see here for available properties: https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bimageinfo
+# https://en.wikipedia.org/w/api.php?action=query&generator=images&titles=apple&prop=imageinfo&iiprop=url&format=json&formatversion=2
+
+# Alternative in two steps:
+# 1. get images list: https://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&format=json&prop=images
+# 2. Get image info for one image:
+# https://en.wikipedia.org/w/api.php?action=query&titles=File:Malus_domestica_-_Köhler–s_Medizinal-Pflanzen-108.jpg&prop=imageinfo&iilimit=50&iiprop=timestamp|user|url
 
 def parse_entry(line):
     return line.decode("utf-8").strip('\n')
@@ -33,7 +41,7 @@ with open('data/9k.labels', 'rb') as input_file:
         labels.append(parse_entry(line))
 # Reduce data if text
 if TEST:
-    test_n = 50
+    test_n = 2
     names = names[:test_n]
     labels = labels[:test_n]
 
