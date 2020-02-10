@@ -48,7 +48,7 @@ class FrequencyRetriever:
             if len(line) > 0:
                 word, freq = line.split('\t')
                 if word in self.targets:  # should be O(1) with hashset
-                    print(f'Found word {word} with freq {freq}')
+                    # print(f'Found word {word} with freq {freq}')
                     self.ngrams[word] = freq
 
     def _scan_bigrams(self):
