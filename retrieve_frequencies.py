@@ -4,6 +4,7 @@ import tqdm
 
 import parse_objects
 
+# TODO: think about capitalization
 
 class FrequencyRetriever:
     """
@@ -61,4 +62,10 @@ class FrequencyRetriever:
 if __name__ == '__main__':
     names = parse_objects.retrieve_names()
     retriever = FrequencyRetriever(set(names))
-    print(retriever.run())
+    freqs = retriever.run()
+    count = 0
+    for name in names:
+        if name in freqs.keys():
+            count += 1
+    frac_found = count / len(names)
+    print(f'Found the frequency for fraction {frac_found}')
