@@ -3,6 +3,7 @@ import wikipediaapi
 import tqdm
 import nltk
 from nltk.corpus import wordnet as wn
+import parse_objects
 
 nltk.download('wordnet')
 TEST = True
@@ -24,21 +25,12 @@ print(apple_lookup.langlinks)
 # 2. Get image info for one image:
 # https://en.wikipedia.org/w/api.php?action=query&titles=File:Malus_domestica_-_Köhler–s_Medizinal-Pflanzen-108.jpg&prop=imageinfo&iilimit=50&iiprop=timestamp|user|url
 
-def parse_entry(line):
-    return line.decode("utf-8").strip('\n')
+
 
 
 # IMPORT DATA
-names = []
-labels = []
-with open('data/9k.names', 'rb') as input_file:
-    for line in input_file:
-        names.append(parse_entry(line))
-
-# These are imagenet labels
-with open('data/9k.labels', 'rb') as input_file:
-    for line in input_file:
-        labels.append(parse_entry(line))
+names = parse_objects.retrieve_names()
+labels = parse_objects.retrieve_labels()
 # Reduce data if text
 if TEST:
     test_n = 2

@@ -2,6 +2,8 @@ import io
 import os
 import tqdm
 
+import parse_objects
+
 
 class FrequencyRetriever:
     """
@@ -57,5 +59,6 @@ class FrequencyRetriever:
 
 
 if __name__ == '__main__':
-    retriever = FrequencyRetriever({'apple'})
+    names = parse_objects.retrieve_names()
+    retriever = FrequencyRetriever(set(names))
     print(retriever.run())
