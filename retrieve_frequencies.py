@@ -4,6 +4,9 @@ import tqdm
 
 
 class FrequencyRetriever:
+    """
+    Loop over unigram and bigram frequency files and return frequencies for a set of ngrams.
+    """
 
     def __init__(self, targets: set, work_dir='data/frequencies/'):
         # TODO: maybe change dicts to lists and use np.searchsorted
@@ -12,6 +15,10 @@ class FrequencyRetriever:
         self.targets = targets
 
     def run(self):
+        """
+        Do a single scan over all files
+        :return: dict with key=ngram and value=frequency
+        """
         self._scan_file_for_ngrams('1gms/vocab')
         self._scan_bigrams()
         return self.ngrams
