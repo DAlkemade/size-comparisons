@@ -127,3 +127,5 @@ dmypy.json
 #Idea
 .idea/
 /.idea
+data/frequencies
+.idea/workspace.xml
