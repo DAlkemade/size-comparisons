@@ -11,21 +11,23 @@ TEST = True
 
 wiki_wiki = wikipediaapi.Wikipedia('en')
 
-apple = wn.synset('apple.n.01')
-print(apple.definition())
-print(apple.hypernyms())
-print(apple.lexname())
-apple_lookup = wiki_wiki.page('apple')
-print(apple_lookup.langlinks)
 
-# get all images and info(but no description). see here for available properties: https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bimageinfo
-# https://en.wikipedia.org/w/api.php?action=query&generator=images&titles=apple&prop=imageinfo&iiprop=url&format=json&formatversion=2
+def print_some_info_on_synset(synset_string):
+    apple = wn.synset(synset_string)
+    print(apple.definition())
+    print(apple.hypernyms())
+    print(apple.lexname())
+    apple_lookup = wiki_wiki.page('apple')
+    print(apple_lookup.langlinks)
 
-# Alternative in two steps:
-# 1. get images list: https://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&format=json&prop=images
-# 2. Get image info for one image:
-# https://en.wikipedia.org/w/api.php?action=query&titles=File:Malus_domestica_-_Köhler–s_Medizinal-Pflanzen-108.jpg&prop=imageinfo&iilimit=50&iiprop=timestamp|user|url
 
+def retrieve_synset(label):
+    pos = label[0]
+    offset = int(label[1:])
+    return wn.synset_from_pos_and_offset(pos, offset)
+
+
+print_some_info_on_synset('apple.n.01')
 
 # IMPORT DATA
 names = parse_objects.retrieve_names()
@@ -42,24 +44,32 @@ if TEST:
 # CHECK IF WIKIPEDIA PAGE EXISTS AND RETRIEVE TEXT
 wikipedia_exists_list = []
 disambiguation_pages_list = []
-synsets_not_empty = []
 counts = []
+synsets_correct = []
+synsets_all_for_string = []
 for i in tqdm.trange(len(names)):
+    # Get name and label
     name = names[i]
-    synsets = wn.synsets(name.replace(' ', '_'))
-    synsets_not_empty.append(len(synsets) > 0)
+    label = labels[i]
+
+    # Retrieve synset
+    synsets_correct.append(retrieve_synset(label))
+    synsets_all_for_string.append(wn.synsets(name.replace(' ', '_')))
+
+    # Wikipedia entry
     lookup = wiki_wiki.page(name)
     exists = lookup.exists()
     wikipedia_exists_list.append(exists)
     disambiguation_pages_list.append('Category:All article disambiguation pages' in lookup.categories.keys())
+
+    # Add ngram count
     count = None
     if name in ngram_count_lookup.keys():
         count = ngram_count_lookup[name]
     counts.append(count)
 
 data = pd.DataFrame(
-    list(zip(names, labels, wikipedia_exists_list, disambiguation_pages_list, synsets_not_empty, counts)),
-    columns=['name', 'label', 'wikipedia_entry', 'disambiguation', 'wordnet_entry', 'count'])
+    list(zip(names, labels, wikipedia_exists_list, disambiguation_pages_list, counts, synsets_correct)),
+    columns=['name', 'label', 'wikipedia_entry', 'disambiguation', 'count', 'synset'])
 print(f'Fraction of objects with wiki page: {data["wikipedia_entry"].mean()}')
 print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-print(f'Fraction of objects with wordnet page: {data["wordnet_entry"].mean()}')
