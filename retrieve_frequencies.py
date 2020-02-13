@@ -3,8 +3,8 @@ import os
 import tqdm
 
 import parse_objects
+import json
 
-# TODO: think about capitalization
 
 class FrequencyRetriever:
     """
@@ -69,3 +69,7 @@ if __name__ == '__main__':
             count += 1
     frac_found = count / len(names)
     print(f'Found the frequency for fraction {frac_found}')
+
+    # Save json
+    with open('frequencies.json', 'w') as wf:
+        json.dump(freqs, wf)
