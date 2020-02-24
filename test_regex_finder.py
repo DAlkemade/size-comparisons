@@ -27,3 +27,14 @@ def test_meters_pattern():
     assert matches[0] == 4.
     assert matches[1] == 3.5
     assert matches[2] == 5.5
+
+def test_centimeters_pattern():
+    """
+    Test whether we find the meters pattern.
+    """
+    finder = LengthsFinderRegex('the tiger is 400 centimeters long, wait no, 300.5 centimeter, no actually 5.50cm.')
+    matches = finder.find_all_matches()
+    assert len(matches) == 3
+    assert matches[0] == 4.
+    assert matches[1] == 300.5 / 100
+    assert matches[2] == 5.5 / 100
