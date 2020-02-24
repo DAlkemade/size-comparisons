@@ -1,5 +1,13 @@
 import re
 
+# The index is the power of 10 it is compared to meters
+UNITS = {
+    -2: ['centimeters', 'centimeter', 'cm'],
+    0: ['meters', 'meter', 'm'],
+    3: ['kilometers', 'km', 'kilometer']
+
+}
+
 
 # TODO: think about float vs int. e.g. we should also be able to find 1.5 meters
 # TODO: if the meters is at the end of the string, with no punctuation mark, it will miss it, e.g. 'he is 6 meter'
@@ -16,8 +24,8 @@ class LengthsFinderRegex:
         self.matches = list()
 
     def find_all_matches(self):
-        self._find_meters()
-        self._find_centimeters()
+        for power, synonym_list in UNITS.items():
+            self._find_pattern(synonym_list, power)
         return self.matches
 
     @staticmethod
@@ -31,16 +39,8 @@ class LengthsFinderRegex:
             local_matches += re.findall(rf'([ ]{self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
         return local_matches
 
-    def _find_meters(self):
-        meter_synonyms = ['meters', 'meter', 'm']
-        meter_matches = self._match_synonyms(meter_synonyms)
-        self.matches += self._convert_list_elements_to_float(meter_matches)
-
-    def _find_centimeters(self):
-        centimeter_synonyms = ['centimeters', 'centimeter', 'cm']
-        centimeter_matches = self._match_synonyms(centimeter_synonyms)
+    def _find_pattern(self, synonyms, power):
+        centimeter_matches = self._match_synonyms(synonyms)
         centimeter_matches_floats = self._convert_list_elements_to_float(centimeter_matches)
-        centimeter_matches_floats = [el / 100 for el in centimeter_matches_floats]
+        centimeter_matches_floats = [el * 10 ** power for el in centimeter_matches_floats]
         self.matches += centimeter_matches_floats
-
-
