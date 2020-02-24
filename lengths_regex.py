@@ -19,10 +19,11 @@ class LengthsFinderRegex:
     The 'matches' list is in METERS!!
     """
 
-    def __init__(self, text):
-        self.number_pattern = r'[0-9]*\.?[0-9]*'
+    def __init__(self, text, debug=False):
+        self.number_pattern = r'[0-9]+\.?[0-9]*'
         self.text = text
         self.matches = list()
+        self.debug = debug
 
     def find_all_matches(self):
         for power, synonym_list in UNITS.items():
@@ -44,4 +45,7 @@ class LengthsFinderRegex:
         matches = self._match_synonyms(synonyms)
         matches_floats = self._convert_list_elements_to_float(matches)
         matches_floats = [el * 10 ** power for el in matches_floats]
+        if self.debug:
+            print(f"Power {power}: {matches_floats} {matches}")
+
         self.matches += matches_floats

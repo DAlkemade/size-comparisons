@@ -1,7 +1,7 @@
 import pytest
 import wikipediaapi
-import main
 from lengths_regex import LengthsFinderRegex
+from matplotlib import pyplot as plt
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def test_meters_pattern():
 
 def test_centimeters_pattern():
     """
-    Test whether we find the meters pattern.
+    Test whether we find the cm pattern.
     """
     finder = LengthsFinderRegex('the tiger is 400 centimeters long, wait no, 300.5 centimeter, no actually 5.50cm.')
     matches = finder.find_all_matches()
@@ -41,9 +41,31 @@ def test_centimeters_pattern():
 
 def test_kilometers_pattern():
     """
-    Test whether we find the meters pattern.
+    Test whether we find the km pattern.
     """
     finder = LengthsFinderRegex('It is 400km.')
     matches = finder.find_all_matches()
     assert len(matches) == 1
     assert matches[0] == 400000.
+
+
+def test_no_pattern():
+    """
+    Test whether if it skips a wrong pattern.
+    """
+    finder = LengthsFinderRegex('That is a lot of meters.')
+    matches = finder.find_all_matches()
+    assert len(matches) == 0
+
+
+def test_tiger_wiki(wikipedia):
+    """
+    Test whether the output of the tiger wiki page is sensible. Not a very strong test.
+    """
+    tiger_text = wikipedia.page('Tiger').text
+    finder = LengthsFinderRegex(tiger_text, debug=False)
+    matches = finder.find_all_matches()
+    print(matches)
+    plt.hist(matches)
+    plt.show()
+    assert len(matches) > 0

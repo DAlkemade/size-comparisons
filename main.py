@@ -9,6 +9,8 @@ from matplotlib import pyplot as plt
 import numpy as np
 import re
 
+from lengths_regex import LengthsFinderRegex
+
 nltk.download('wordnet')
 TEST = True
 # TODO: think about 3-grams (body of water)
@@ -86,11 +88,14 @@ if __name__ == "__main__":
         lookup = wiki_wiki.page(name)
         exists = lookup.exists()
         wikipedia_exists_list.append(exists)
-        disambiguation_pages_list.append('Category:All article disambiguation pages' in lookup.categories.keys())
+        disambiguation = 'Category:All article disambiguation pages' in lookup.categories.keys()
+        disambiguation_pages_list.append(disambiguation)
 
         # Find all lengths
-        if exists:
-            lenghts = find_all_lengths_with_regex(lookup.text)
+        if exists and not disambiguation:
+            regex_matcher = LengthsFinderRegex(lookup.text)
+            all_lengths_in_article = regex_matcher.find_all_matches()
+            print(all_lengths_in_article)
 
         # Add ngram count
         count = None
