@@ -38,3 +38,12 @@ def test_centimeters_pattern():
     assert matches[0] == 4.
     assert matches[1] == 300.5 / 100
     assert matches[2] == 5.5 / 100
+
+def test_kilometers_pattern():
+    """
+    Test whether we find the meters pattern.
+    """
+    finder = LengthsFinderRegex('It is 400km.')
+    matches = finder.find_all_matches()
+    assert len(matches) == 1
+    assert matches[0] == 400000.

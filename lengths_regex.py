@@ -19,7 +19,7 @@ class LengthsFinderRegex:
     """
 
     def __init__(self, text):
-        self.number_pattern = '[0-9]*.[0-9]*'
+        self.number_pattern = r'[0-9]*\.?[0-9]*'
         self.text = text
         self.matches = list()
 
@@ -36,11 +36,11 @@ class LengthsFinderRegex:
         local_matches = list()
         # [ ,.;:$]
         for syn in synonyms:
-            local_matches += re.findall(rf'([ ]{self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
+            local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
         return local_matches
 
     def _find_pattern(self, synonyms, power):
-        centimeter_matches = self._match_synonyms(synonyms)
-        centimeter_matches_floats = self._convert_list_elements_to_float(centimeter_matches)
-        centimeter_matches_floats = [el * 10 ** power for el in centimeter_matches_floats]
-        self.matches += centimeter_matches_floats
+        matches = self._match_synonyms(synonyms)
+        matches_floats = self._convert_list_elements_to_float(matches)
+        matches_floats = [el * 10 ** power for el in matches_floats]
+        self.matches += matches_floats
