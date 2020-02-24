@@ -51,6 +51,10 @@ def retrieve_synset(label: str):
     return wn.synset_from_pos_and_offset(pos, offset)
 
 
+def is_disambiguation(wiki_lookup):
+    return 'Category:All article disambiguation pages' in wiki_lookup.categories.keys()
+
+
 if __name__ == "__main__":
     wiki_wiki = wikipediaapi.Wikipedia('en')
 
@@ -88,7 +92,7 @@ if __name__ == "__main__":
         lookup = wiki_wiki.page(name)
         exists = lookup.exists()
         wikipedia_exists_list.append(exists)
-        disambiguation = 'Category:All article disambiguation pages' in lookup.categories.keys()
+        disambiguation = is_disambiguation(lookup)
         disambiguation_pages_list.append(disambiguation)
 
         # Find all lengths
