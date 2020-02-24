@@ -21,7 +21,9 @@ def test_meters_pattern():
     """
     Test whether we find the meters pattern.
     """
-    finder = LengthsFinderRegex('the tiger is 4 meters long, wait no, 3.5 meters')
+    finder = LengthsFinderRegex('the tiger is 4 meters long, wait no, 3.5 meters, no actually 5.5m.')
     matches = finder.find_all_matches()
+    assert len(matches) == 3
     assert matches[0] == 4.
     assert matches[1] == 3.5
+    assert matches[2] == 5.5
