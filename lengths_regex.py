@@ -1,6 +1,6 @@
 import re
 
-# The index is the power of 10 it is compared to meters
+# The key is the power of 10 it is compared to meters
 UNITS = {
     -3: ['millimeters', 'millimeter', 'mm'],
     -2: ['centimeters', 'centimeter', 'cm'],
@@ -19,13 +19,17 @@ class LengthsFinderRegex:
     The 'matches' list is in METERS!!
     """
 
-    def __init__(self, text, debug=False):
+    def __init__(self, text:str, debug=False):
         self.number_pattern = r'[0-9]+\.?[0-9]*'
         self.text = text
         self.matches = list()
         self.debug = debug
 
     def find_all_matches(self):
+        """
+        Find all matches using all patterns in UNITS and return them.
+        :return:
+        """
         for power, synonym_list in UNITS.items():
             self._find_pattern(synonym_list, power)
         return self.matches
@@ -34,7 +38,12 @@ class LengthsFinderRegex:
     def _convert_list_elements_to_float(matches):
         return [float(el) for el in matches]
 
-    def _match_synonyms(self, synonyms):
+    def _match_synonyms(self, synonyms: list):
+        """
+        Find all matches in the predefined format for different unit synonyms.
+        :param synonyms: list of synonyms
+        :return:
+        """
         local_matches = list()
         # [ ,.;:$]
         for syn in synonyms:
@@ -42,6 +51,11 @@ class LengthsFinderRegex:
         return local_matches
 
     def _find_pattern(self, synonyms, power):
+        """
+        Find all matches for a certain order in the length scale and then convert to meters.
+        :param synonyms:
+        :param power:
+        """
         matches = self._match_synonyms(synonyms)
         matches_floats = self._convert_list_elements_to_float(matches)
         matches_floats = [el * 10 ** power for el in matches_floats]
