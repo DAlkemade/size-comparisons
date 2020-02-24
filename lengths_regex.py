@@ -2,6 +2,7 @@ import re
 
 # The index is the power of 10 it is compared to meters
 UNITS = {
+    -3: ['millimeters', 'millimeter', 'mm'],
     -2: ['centimeters', 'centimeter', 'cm'],
     0: ['meters', 'meter', 'm'],
     3: ['kilometers', 'km', 'kilometer']
