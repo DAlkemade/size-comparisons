@@ -7,6 +7,7 @@ import parse_objects
 
 DOWNLOAD_ATTRIBUTES = ['extracts', 'info', 'categories']
 
+
 def force_lazy_object_to_fetch_data(lookup: wikipediaapi.WikipediaPage):
     """As the WikipediaPage object loads its attributes lazily and we want to store them for future use,
     we force the object to retrieve them.
@@ -41,7 +42,6 @@ def main():
     labels = parse_objects.retrieve_labels()
     wiki_lookups = retrieve_wikipedia_pages(names, labels)
     pickle.dump(wiki_lookups, open(os.path.join('data', 'wikipedia_lookups.p'), 'wb'))
-
 
 
 if __name__ == "__main__":
