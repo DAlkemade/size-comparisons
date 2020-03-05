@@ -14,10 +14,15 @@ def test_google_retrieval():
 
 
 def test_loading_updating_saving():
-    names = ['tiger size', 'helicopter size']
-    labels = ['tiger', 'helicopter']
     fname = 'test_google_urls.p'
     file_path = os.path.join('../tmp', fname)
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        pass
+    names = ['tiger size', 'helicopter size']
+    labels = ['tiger', 'helicopter']
+
     create_or_update_results(file_path, names, labels)
     results: dict = pickle.load(open(file_path, 'rb'))
     assert type(results) is dict

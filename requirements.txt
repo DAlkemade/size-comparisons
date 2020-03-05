@@ -2,3 +2,4 @@ tqdm
 beautifulsoup4
 wikipediaapi
 google
+requests
