@@ -1,3 +1,7 @@
+import os
+import pickle
+
+
 def parse_entry(line):
     return line.decode("utf-8").strip('\n')
 
@@ -13,3 +17,6 @@ def retrieve_names():
 
 def retrieve_labels():
     return parse_yolo_file('data/9k.labels')
+
+def retrieve_wikipedia_lookups() -> dict:
+    return pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))

@@ -15,24 +15,26 @@ def force_lazy_object_to_fetch_data(lookup: wikipediaapi.WikipediaPage):
         lookup._fetch(key)
 
 
-def retrieve_wikipedia_pages(search_terms: list):
+def retrieve_wikipedia_pages(search_terms: list, ids: list):
     """Retrieve the WikipediaPage objects for all YOLO objects and store them in a list, which follows the
     order of the YOLO object files (9k.names and 9k.labels)."""
-    wiki_lookups = []
+    wiki_lookups = {}
     wiki = wikipediaapi.Wikipedia('en')
 
     for i in tqdm.trange(len(search_terms)):
         name = search_terms[i]
+        id = ids[i]
         lookup = wiki.page(name)
         force_lazy_object_to_fetch_data(lookup)
-        wiki_lookups.append(lookup)
+        wiki_lookups[id] = lookup
 
     return wiki_lookups
 
 
 def main():
     names = parse_objects.retrieve_names()
-    wiki_lookups = retrieve_wikipedia_pages(names)
+    labels = parse_objects.retrieve_labels()
+    wiki_lookups = retrieve_wikipedia_pages(names, labels)
     pickle.dump(wiki_lookups, open(os.path.join('data', 'wikipedia_lookups.p'), 'wb'))
 
 

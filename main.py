@@ -65,7 +65,7 @@ def main():
     with open('data/frequencies.json', 'r') as in_file:
         ngram_count_lookup = json.load(in_file)
 
-    wiki_lookups = pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))
+    wiki_lookups = parse_objects.retrieve_wikipedia_lookups()
     # Reduce data if text
     if TEST:
         test_n = 10
@@ -89,7 +89,7 @@ def main():
 
         # Wikipedia entry
         try:
-            lookup: wikipediaapi.WikipediaPage = wiki_lookups[i]
+            lookup: wikipediaapi.WikipediaPage = wiki_lookups[label]
         except IndexError:
             raise IndexError("Your wikipedia lookups file is incomplete, please run retrieve_wikipedia_data.py")
         exists = lookup.exists()
