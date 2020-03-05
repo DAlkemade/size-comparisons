@@ -6,6 +6,7 @@ from googlesearch import search
 
 
 def retrieve_query(query: str) -> list:
+    """Retrieve URLs from google with certain parameters."""
     results_generator = search(query, tld="com", num=10, stop=10, pause=2)
     return list(results_generator)
 
@@ -30,7 +31,7 @@ def create_or_update_results(file_path: str, queries: list, keys: list):
 
     try:
         retrieve_google_results(results, queries, keys)
-    except Exception as e: #TODO specify error (403 http)
+    except Exception as e:  # TODO specify error (403 http)
         print(e)
         print("Something went wrong, saving intermediate result")
 
