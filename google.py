@@ -11,14 +11,15 @@ def retrieve_query(query: str) -> list:
 
 
 def retrieve_google_results(results: dict, queries: list, keys: list):
+    """Retrieve URLs from google for a list of queries and update these results INPLACE in results dict."""
     for i in tqdm.trange(len(queries)):
         name = queries[i]
         label = keys[i]
         results[label] = retrieve_query(name)
-    return results
 
 
 def create_or_update_results(file_path: str, queries: list, keys: list):
+    """Update (or create) file with google search query results."""
 
     try:
         file = open(file_path, 'rb')
