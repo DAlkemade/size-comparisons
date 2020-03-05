@@ -1,7 +1,4 @@
-from wikipediaapi import WikipediaPage
-from typing import List
-
-from retrieve_wikipedia_data import DOWNLOAD_ATTRIBUTES, retrieve_wikipedia_pages
+from wikipedia import DOWNLOAD_ATTRIBUTES, retrieve_wikipedia_pages
 
 
 def test_wikipedia_scraper():

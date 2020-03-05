@@ -1,7 +1,7 @@
 import wikipediaapi
 
 from lengths_regex import LengthsFinderRegex
-from main import is_disambiguation
+from wikipedia import is_disambiguation
 import pprint
 
 pp = pprint.PrettyPrinter()

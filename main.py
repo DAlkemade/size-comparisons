@@ -6,12 +6,12 @@ import nltk
 import numpy as np
 import pandas as pd
 import tqdm
-import wikipediaapi
 from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 
 import parse_objects
 from lengths_regex import LengthsFinderRegex
+from wikipedia import is_disambiguation, WikiLookupWrapper
 
 nltk.download('wordnet')
 
@@ -54,11 +54,6 @@ def retrieve_synset(label: str):
     return wn.synset_from_pos_and_offset(pos, offset)
 
 
-def is_disambiguation(wiki_lookup: wikipediaapi.WikipediaPage) -> bool:
-    """Checks whether the wikipedia page is a disambiguation page."""
-    return 'Category:All article disambiguation pages' in wiki_lookup.categories.keys()
-
-
 def main(test: bool):
     # IMPORT DATA
     names = parse_objects.retrieve_names()
@@ -67,6 +62,7 @@ def main(test: bool):
         ngram_count_lookup = json.load(in_file)
 
     wiki_lookups = parse_objects.retrieve_wikipedia_lookups()
+    wiki_lookup_wrapper = WikiLookupWrapper(wiki_lookups)
     # Reduce data if text
     if test:
         test_n = 10
@@ -85,10 +81,7 @@ def main(test: bool):
         # synsets_all_for_string.append(wn.synsets(name.replace(' ', '_')))
 
         # Wikipedia entry
-        try:
-            lookup: wikipediaapi.WikipediaPage = wiki_lookups[label]
-        except IndexError:
-            raise IndexError("Your wikipedia lookups file is incomplete, please run retrieve_wikipedia_data.py")
+        lookup = wiki_lookup_wrapper.lookup(label)
         exists = lookup.exists()
 
         disambiguation = is_disambiguation(lookup)
@@ -97,7 +90,6 @@ def main(test: bool):
         if exists and not disambiguation:
             regex_matcher = LengthsFinderRegex(lookup.text)
             all_lengths_in_article = regex_matcher.find_all_matches()
-            print(all_lengths_in_article)
 
         # Add ngram count
         count = None
