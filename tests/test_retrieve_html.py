@@ -15,6 +15,8 @@ def test_retrieve_htmls():
         assert label in results.keys()
         assert type(results[label]) is list
         assert len(results[label]) > 0
+        for res in results[label]:
+            assert type(res) is str
 
 
 def test_loading_updating_saving():
@@ -40,7 +42,6 @@ def test_loading_updating_saving():
         assert type(results[label]) is list
         assert len(results[label]) == len(urls[label])
         for res in results[label]:
-            assert res.status_code == 200
-            assert type(res.text) is str
+            assert type(res) is str
         # assert results[label]
     os.remove(file_path)

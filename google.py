@@ -54,8 +54,10 @@ def retrieve_htmls(results, labels, urls: dict):
             for url in urls_for_name:
                 try:
                     r = requests.get(url)
-                    print(r)
-                    htmls.append(r)
+                    if r.status_code == 200:
+                        htmls.append(r.text)
+                    else:
+                        print(f"No statuscode 200 for url {url}")
                 except Exception as e:
                     print(f'Couldnt find url {url}, {e}')
 
