@@ -15,6 +15,7 @@ pp = pprint.PrettyPrinter()
 
 
 def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
+    """Retrieve sizes from a wiki page."""
     lookup = lookups_wrapper.lookup(label)
     matches = None  # TODO maybe make empty list
     if lookup.exists() and not is_disambiguation(lookup):
@@ -25,6 +26,7 @@ def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
 
 
 def regex_google_results(label: str, htmls_lookup:dict):
+    """Retrieve sizes from a list of html pages."""
     htmls = htmls_lookup[label]
     sizes = []
     for html in htmls:
