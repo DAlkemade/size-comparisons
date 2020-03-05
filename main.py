@@ -1,6 +1,5 @@
+import argparse
 import json
-import os
-import pickle
 
 import nltk
 import numpy as np
@@ -14,7 +13,6 @@ import parse_objects
 from lengths_regex import LengthsFinderRegex
 
 nltk.download('wordnet')
-TEST = True
 
 
 # TODO: think about 3-grams (body of water)
@@ -58,7 +56,7 @@ def is_disambiguation(wiki_lookup: wikipediaapi.WikipediaPage) -> bool:
     return 'Category:All article disambiguation pages' in wiki_lookup.categories.keys()
 
 
-def main():
+def main(test: bool):
     # IMPORT DATA
     names = parse_objects.retrieve_names()
     labels = parse_objects.retrieve_labels()
@@ -67,7 +65,7 @@ def main():
 
     wiki_lookups = parse_objects.retrieve_wikipedia_lookups()
     # Reduce data if text
-    if TEST:
+    if test:
         test_n = 10
         names = names[:test_n]
         labels = labels[:test_n]
@@ -121,4 +119,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test', type=bool, default=False)
+    args = parser.parse_args()
+    main(args.test)
