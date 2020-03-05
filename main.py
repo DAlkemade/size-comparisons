@@ -1,4 +1,6 @@
 import json
+import os
+import pickle
 
 import nltk
 import numpy as np
@@ -57,13 +59,13 @@ def is_disambiguation(wiki_lookup: wikipediaapi.WikipediaPage) -> bool:
 
 
 def main():
-    wiki_wiki = wikipediaapi.Wikipedia('en')
-    print_some_info_on_synset(wiki_wiki, 'apple.n.01')
     # IMPORT DATA
     names = parse_objects.retrieve_names()
     labels = parse_objects.retrieve_labels()
     with open('data/frequencies.json', 'r') as in_file:
         ngram_count_lookup = json.load(in_file)
+
+    wiki_lookups = pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))
     # Reduce data if text
     if TEST:
         test_n = 10
@@ -86,7 +88,10 @@ def main():
         synsets_all_for_string.append(wn.synsets(name.replace(' ', '_')))
 
         # Wikipedia entry
-        lookup = wiki_wiki.page(name)
+        try:
+            lookup: wikipediaapi.WikipediaPage = wiki_lookups[i]
+        except IndexError:
+            raise IndexError("Your wikipedia lookups file is incomplete, please run retrieve_wikipedia_data.py")
         exists = lookup.exists()
         wikipedia_exists_list.append(exists)
         disambiguation = is_disambiguation(lookup)
