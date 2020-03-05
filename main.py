@@ -1,24 +1,24 @@
-import pandas as pd
-import wikipediaapi
-import tqdm
-import nltk
-from nltk.corpus import wordnet as wn
-import parse_objects
 import json
-from matplotlib import pyplot as plt
-import numpy as np
-import re
 
+import nltk
+import numpy as np
+import pandas as pd
+import tqdm
+import wikipediaapi
+from matplotlib import pyplot as plt
+from nltk.corpus import wordnet as wn
+
+import parse_objects
 from lengths_regex import LengthsFinderRegex
 
 nltk.download('wordnet')
 TEST = True
+
+
 # TODO: think about 3-grams (body of water)
 
 
-
-
-def check_n(token):
+def check_n(token: str) -> int:
     """
     Check n (as in n-gram) of a token
     :param token: token to be checked
@@ -27,7 +27,7 @@ def check_n(token):
     return len(token.split(' '))
 
 
-def print_some_info_on_synset(synset_string: str) -> None:
+def print_some_info_on_synset(wiki, synset_string: str) -> None:
     """
     Display some possiblities of the wordnet library.
     :param synset_string: Exact synset string
@@ -36,7 +36,7 @@ def print_some_info_on_synset(synset_string: str) -> None:
     print(apple.definition())
     print(apple.hypernyms())
     print(apple.lexname())
-    apple_lookup = wiki_wiki.page('apple')
+    apple_lookup = wiki.page('apple')
     print(apple_lookup.langlinks)
 
 
@@ -51,14 +51,14 @@ def retrieve_synset(label: str):
     return wn.synset_from_pos_and_offset(pos, offset)
 
 
-def is_disambiguation(wiki_lookup):
+def is_disambiguation(wiki_lookup: wikipediaapi.WikipediaPage) -> bool:
+    """Checks whether the wikipedia page is a disambiguation page."""
     return 'Category:All article disambiguation pages' in wiki_lookup.categories.keys()
 
 
 def main():
-    global wiki_wiki
     wiki_wiki = wikipediaapi.Wikipedia('en')
-    print_some_info_on_synset('apple.n.01')
+    print_some_info_on_synset(wiki_wiki, 'apple.n.01')
     # IMPORT DATA
     names = parse_objects.retrieve_names()
     labels = parse_objects.retrieve_labels()
