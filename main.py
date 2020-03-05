@@ -93,7 +93,6 @@ def main(test: bool):
 
         disambiguation = is_disambiguation(lookup)
 
-
         # Find all lengths
         if exists and not disambiguation:
             regex_matcher = LengthsFinderRegex(lookup.text)
@@ -108,7 +107,6 @@ def main(test: bool):
         n = check_n(name)
         entry = Entry(exists, disambiguation, count, synset, n)
         results.append(entry)
-
 
     data = pd.DataFrame(results)
     data.sort_values('count', inplace=True)
