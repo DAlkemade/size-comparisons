@@ -1,10 +1,8 @@
-import os
 import pickle
 
+import requests
 import tqdm
 from googlesearch import search
-import requests
-from urllib3.exceptions import NewConnectionError
 
 
 def retrieve_query(query: str) -> list:
