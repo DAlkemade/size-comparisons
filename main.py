@@ -55,23 +55,20 @@ def is_disambiguation(wiki_lookup):
     return 'Category:All article disambiguation pages' in wiki_lookup.categories.keys()
 
 
-if __name__ == "__main__":
+def main():
+    global wiki_wiki
     wiki_wiki = wikipediaapi.Wikipedia('en')
-
     print_some_info_on_synset('apple.n.01')
-
     # IMPORT DATA
     names = parse_objects.retrieve_names()
     labels = parse_objects.retrieve_labels()
     with open('data/frequencies.json', 'r') as in_file:
         ngram_count_lookup = json.load(in_file)
-
     # Reduce data if text
     if TEST:
         test_n = 10
         names = names[:test_n]
         labels = labels[:test_n]
-
     # CHECK IF WIKIPEDIA PAGE EXISTS AND RETRIEVE TEXT
     wikipedia_exists_list = []
     disambiguation_pages_list = []
@@ -108,14 +105,15 @@ if __name__ == "__main__":
         counts.append(count)
 
         ns.append(check_n(name))
-
     data = pd.DataFrame(
         list(zip(names, labels, wikipedia_exists_list, disambiguation_pages_list, counts, synsets_correct, ns)),
         columns=['name', 'label', 'wikipedia_entry', 'disambiguation', 'count', 'synset', 'n'])
-
     data.sort_values('count', inplace=True)
     print(f'Fraction of objects with wiki page: {data["wikipedia_entry"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-
     plt.hist(ns, bins=range(0, np.amax(ns)))
     plt.show()
+
+
+if __name__ == "__main__":
+    main()
