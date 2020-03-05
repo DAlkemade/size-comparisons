@@ -15,9 +15,14 @@ def force_lazy_object_to_fetch_data(lookup: wikipediaapi.WikipediaPage):
         lookup._fetch(key)
 
 
-def retrieve_wikipedia_pages(search_terms: list, ids: list):
+def retrieve_wikipedia_pages(search_terms: list, ids: list) -> dict:
     """Retrieve the WikipediaPage objects for all YOLO objects and store them in a list, which follows the
-    order of the YOLO object files (9k.names and 9k.labels)."""
+    order of the YOLO object files (9k.names and 9k.labels).
+
+    :param search_terms: wikipedia search terms
+    :param ids: unique id for search terms
+    :return: dict with ids as keys and wikipedia pages as objects
+    """
     wiki_lookups = {}
     wiki = wikipediaapi.Wikipedia('en')
 
