@@ -16,7 +16,8 @@ def retrieve_google_results(results: dict, queries: list, keys: list):
     for i in tqdm.trange(len(queries)):
         name = queries[i]
         label = keys[i]
-        results[label] = retrieve_query(name)
+        if label not in results.keys():
+            results[label] = retrieve_query(name)
 
 
 def create_or_update_results(file_path: str, queries: list, keys: list):
