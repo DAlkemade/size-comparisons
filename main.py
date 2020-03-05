@@ -1,5 +1,6 @@
 import argparse
 import json
+from collections import namedtuple
 
 import nltk
 import numpy as np
@@ -13,6 +14,8 @@ import parse_objects
 from lengths_regex import LengthsFinderRegex
 
 nltk.download('wordnet')
+
+Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n'])
 
 
 # TODO: think about 3-grams (body of water)
@@ -70,20 +73,16 @@ def main(test: bool):
         names = names[:test_n]
         labels = labels[:test_n]
     # CHECK IF WIKIPEDIA PAGE EXISTS AND RETRIEVE TEXT
-    wikipedia_exists_list = []
-    disambiguation_pages_list = []
-    counts = []
-    synsets_correct = []
-    synsets_all_for_string = []
-    ns = []
+
+    results = []
     for i in tqdm.trange(len(names)):
         # Get name and label
         name = names[i]
         label = labels[i]
 
         # Retrieve synset
-        synsets_correct.append(retrieve_synset(label))
-        synsets_all_for_string.append(wn.synsets(name.replace(' ', '_')))
+        synset = retrieve_synset(label)
+        # synsets_all_for_string.append(wn.synsets(name.replace(' ', '_')))
 
         # Wikipedia entry
         try:
@@ -91,9 +90,9 @@ def main(test: bool):
         except IndexError:
             raise IndexError("Your wikipedia lookups file is incomplete, please run retrieve_wikipedia_data.py")
         exists = lookup.exists()
-        wikipedia_exists_list.append(exists)
+
         disambiguation = is_disambiguation(lookup)
-        disambiguation_pages_list.append(disambiguation)
+
 
         # Find all lengths
         if exists and not disambiguation:
@@ -105,16 +104,17 @@ def main(test: bool):
         count = None
         if name in ngram_count_lookup.keys():
             count = ngram_count_lookup[name]
-        counts.append(count)
 
-        ns.append(check_n(name))
-    data = pd.DataFrame(
-        list(zip(names, labels, wikipedia_exists_list, disambiguation_pages_list, counts, synsets_correct, ns)),
-        columns=['name', 'label', 'wikipedia_entry', 'disambiguation', 'count', 'synset', 'n'])
+        n = check_n(name)
+        entry = Entry(exists, disambiguation, count, synset, n)
+        results.append(entry)
+
+
+    data = pd.DataFrame(results)
     data.sort_values('count', inplace=True)
-    print(f'Fraction of objects with wiki page: {data["wikipedia_entry"].mean()}')
+    print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-    plt.hist(ns, bins=range(0, np.amax(ns)))
+    plt.hist(data['n'], bins=range(0, np.amax(data['n'])))
     plt.show()
 
 
