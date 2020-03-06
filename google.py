@@ -1,4 +1,6 @@
 import pickle
+import pprint
+from _ssl import SSLCertVerificationError
 from collections import namedtuple
 
 import requests
@@ -7,12 +9,16 @@ from googlesearch import search
 import asyncio
 import aiohttp
 
-ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'html'])
+pp = pprint.PrettyPrinter()
+
+NUM_RESULTS = 10
+
+ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label'])
 
 
 def retrieve_query(query: str) -> list:
     """Retrieve URLs from google with certain parameters."""
-    results_generator = search(query, tld="com", num=10, stop=10, pause=2)
+    results_generator = search(query, tld="com", num=NUM_RESULTS, stop=NUM_RESULTS, pause=2)
     return list(results_generator)
 
 
@@ -86,25 +92,39 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict):
 
 async def request(url_obj: ObjectURL):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url_obj.url) as resp:
-           return await resp.content.read()
+        try:
+            async with session.get(url_obj.url) as resp:
+                return await resp.content.read(), url_obj
+        except Exception as e:
+            print(f"\nSomething went wrong retrieving url {url_obj.url}")
+            return None, url_obj
 
 
 async def main(results: dict, labels: list, urls_lookup: dict):
     urls_list = []
     labels = labels[:10]
     for label in labels:
-        urls_for_object = urls_lookup[label]
-        for i, url in enumerate(urls_for_object):
-            url_obj = ObjectURL(url, i, label, None)
-            urls_list.append(url_obj)
+        if label not in results.keys():
+            urls_for_object = urls_lookup[label]
+            for i, url in enumerate(urls_for_object):
+                url_obj = ObjectURL(url, i, label)
+                urls_list.append(url_obj)
 
-    results_list = await asyncio.gather(
-        *[request(url_obj) for url_obj in urls_list]
-    )
+    tasks = [request(url_obj) for url_obj in urls_list]
 
-    print(results_list)
+    results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
+    # results_list = await asyncio.gather(
+    #     *[request(url_obj) for url_obj in urls_list]
+    # )
 
+    for html, url_obj in results_list:
+        if url_obj.label not in results.keys():
+            results[url_obj.label] = [None] * NUM_RESULTS
+        results[url_obj.label][url_obj.index] = html
+
+
+    pp.pprint(results_list)
+    pp.pprint(results)
 
 
 def gather_htmls(results, keys, urls_lookup: dict):
