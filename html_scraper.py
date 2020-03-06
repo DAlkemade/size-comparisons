@@ -28,7 +28,8 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict, asyncio_l
     pickle.dump(results, open(file_path, 'wb'))
 
 
-async def request(url_obj: ObjectURL, sem):
+async def request(url_obj: ObjectURL, sem) -> (str, ObjectURL, int):
+    """Request a url and return response."""
     async with sem, aiohttp.ClientSession() as session:
         try:
             async with session.get(url_obj.url) as resp:
@@ -45,6 +46,7 @@ async def request(url_obj: ObjectURL, sem):
 
 
 async def main(results: dict, labels: list, urls_lookup: dict):
+    """Asynchronously request all urls."""
     urls_list = []
     for label_position, label in enumerate(labels):
         if label not in results.keys():
@@ -73,6 +75,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
 
 
 def gather_htmls(results: dict, keys: list, urls_lookup: dict, asyncio_loop):
+    """Manage asyncio overhead for async url retrieval."""
     try:
         asyncio_loop.run_until_complete(main(results, keys, urls_lookup))
         asyncio_loop.run_until_complete(asyncio_loop.shutdown_asyncgens())
