@@ -1,5 +1,8 @@
+import asyncio
 import os
 import pickle
+
+import pytest
 
 from google import create_or_update_urls_html, gather_htmls
 
@@ -10,7 +13,16 @@ def test_retrieve_htmls():
     urls = {'tiger123': ['https://en.wikipedia.org/wiki/Tiger',
                          'https://seaworld.org/animals/all-about/tiger/characteristics/']}
     labels = ['tiger123']
-    gather_htmls(results, labels, urls)
+
+    loop = asyncio.new_event_loop()
+    try:
+        asyncio.set_event_loop(loop)
+
+        gather_htmls(results, labels, urls, loop)
+
+    finally:
+        loop.close()
+
     print(results)
     assert 'test' in results.keys()
     for label in labels:
@@ -34,7 +46,14 @@ def test_loading_updating_saving():
                         'https://seaworld.org/animals/all-about/tiger/characteristics/'],
             labels[1]: ['https://www.popularmechanics.com/flight/a2150/4224761/']}
 
-    create_or_update_urls_html(file_path, labels, urls)
+    loop = asyncio.new_event_loop()
+    try:
+        asyncio.set_event_loop(loop)
+
+        create_or_update_urls_html(file_path, labels, urls, loop)
+
+    finally:
+        loop.close()
 
     results: dict = pickle.load(open(file_path, 'rb'))
     assert type(results) is dict

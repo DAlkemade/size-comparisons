@@ -3,3 +3,4 @@ beautifulsoup4
 wikipediaapi
 google
 requests
+pytest-asyncio

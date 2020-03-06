@@ -49,7 +49,7 @@ def create_or_update_results(file_path: str, queries: list, keys: list):
     pickle.dump(results, open(file_path, 'wb'))
 
 
-def create_or_update_urls_html(file_path: str, keys: list, urls: dict):
+def create_or_update_urls_html(file_path: str, keys: list, urls: dict, loop):
     """Update (or create) file with html from urls."""
     try:
         file = open(file_path, 'rb')
@@ -59,7 +59,7 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict):
         results = dict()
 
     # try:
-    gather_htmls(results, keys, urls)
+    gather_htmls(results, keys, urls, loop)
     # except Exception as e:  # TODO specify error (403 http)
     #     print(e)
     #     print("Something went wrong, saving intermediate result")
@@ -99,8 +99,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
         # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
 
 
-def gather_htmls(results: dict, keys: list, urls_lookup: dict):
-    loop = asyncio.get_event_loop()
+def gather_htmls(results: dict, keys: list, urls_lookup: dict, loop):
     try:
         loop.run_until_complete(main(results, keys, urls_lookup))
         loop.run_until_complete(loop.shutdown_asyncgens())
