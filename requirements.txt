@@ -4,3 +4,4 @@ wikipedia-api
 google
 requests
 pytest-asyncio
+aiohttp
