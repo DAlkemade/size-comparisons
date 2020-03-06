@@ -1,6 +1,7 @@
 import asyncio
 import pickle
 import pprint
+import time
 from _ssl import SSLCertVerificationError
 from collections import namedtuple
 
@@ -77,12 +78,17 @@ async def request(url_obj: ObjectURL, sem):
         except UnicodeDecodeError as e:
             # is not HTML and thus we do not support it.
             return e, url_obj, -1
-        except (AssertionError, SSLCertVerificationError) as e:
-            print(f"{url_obj.url} Something we expect to happen sometimes went wrong, skipping this one: {e}")
-            return e, url_obj, -1
         except Exception as e:
-            print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
-            return e, url_obj, -1
+            try:
+                before = time.time()
+                await asyncio.sleep(5)
+                print(f'waited {time.time() - before} seconds')
+                async with session.get(url_obj.url) as resp:
+                    # TODO only reads html, not pdfs
+                    return await resp.text(), url_obj, resp.status
+            except:
+                print(f"{url_obj.url} Something unknown went wrong twice, skipping this one, please check exception: {e}")
+                return e, url_obj, -1
         except:
             print(f"Don't know what went wrong")
 
