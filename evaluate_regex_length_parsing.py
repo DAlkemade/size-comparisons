@@ -1,6 +1,7 @@
 import wikipediaapi
 
 from lengths_regex import LengthsFinderRegex
+from main import plot_sizes_with_gaussian
 from wikipedia import is_disambiguation
 import pprint
 
@@ -19,5 +20,8 @@ for obj in interesting_objects:
         matches = matcher.find_all_matches()
         matches.sort()
         res[obj] = matches
+        if len(matches) > 0:
+            plot_sizes_with_gaussian(matches)
+
 
 pp.pprint(res)

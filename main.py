@@ -7,7 +7,9 @@ import numpy as np
 import pandas as pd
 import tqdm
 from matplotlib import pyplot as plt
+import matplotlib.mlab as mlab
 from nltk.corpus import wordnet as wn
+from scipy.stats import norm
 
 import parse_objects
 from lengths_regex import LengthsFinderRegex
@@ -15,10 +17,32 @@ from wikipedia import is_disambiguation, WikiLookupWrapper
 
 nltk.download('wordnet')
 
-Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n'])
+Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes'])
 
 
 # TODO: think about 3-grams (body of water)
+
+def mean_and_std(sizes: list):
+    mu, std = norm.fit(sizes)
+    return mu, std
+
+
+def plot_sizes_with_gaussian(sizes: list):
+    """Plot sizes and show gaussian.
+    From https://stackoverflow.com/a/20012350"""
+    data = sizes
+    mu, std = mean_and_std(sizes)
+    plt.hist(data, bins=25, density=True, alpha=0.6, color='g')
+
+    # Plot the PDF.
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 100)
+    p = norm.pdf(x, mu, std)
+    plt.plot(x, p, 'k', linewidth=2)
+    title = "Fit results: mu = %.2f,  std = %.2f" % (mu, std)
+    plt.title(title)
+
+    plt.show()
 
 
 def check_n(token: str) -> int:
@@ -63,6 +87,8 @@ def main(test: bool):
 
     wiki_lookups = parse_objects.retrieve_wikipedia_lookups()
     wiki_lookup_wrapper = WikiLookupWrapper(wiki_lookups)
+
+    sizes_lookup = parse_objects.retrieve_regex_scraper_sizes()
     # Reduce data if text
     if test:
         test_n = 10
@@ -86,10 +112,7 @@ def main(test: bool):
 
         disambiguation = is_disambiguation(lookup)
 
-        # Find all lengths
-        if exists and not disambiguation:
-            regex_matcher = LengthsFinderRegex(lookup.text)
-            all_lengths_in_article = regex_matcher.find_all_matches()
+        sizes = sizes_lookup[label]
 
         # Add ngram count
         count = None
@@ -97,7 +120,7 @@ def main(test: bool):
             count = ngram_count_lookup[name]
 
         n = check_n(name)
-        entry = Entry(exists, disambiguation, count, synset, n)
+        entry = Entry(exists, disambiguation, count, synset, n, sizes)
         results.append(entry)
 
     data = pd.DataFrame(results)

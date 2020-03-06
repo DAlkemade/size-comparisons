@@ -30,3 +30,7 @@ def retrieve_google_results_html() -> dict:
     return pickle.load(open(os.path.join('data', 'google_results_html.p'), 'rb'))
 
 
+def retrieve_regex_scraper_sizes() -> dict:
+    return pickle.load(open(os.path.join('data', 'regex_sizes.p'), 'rb'))
+
+
