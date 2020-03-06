@@ -11,6 +11,7 @@ from googlesearch import search
 pp = pprint.PrettyPrinter()
 
 NUM_RESULTS = 10
+CONCURRENT_TASKS = 1000
 
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
@@ -95,7 +96,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
                 url_obj = ObjectURL(url, i, label, label_position)
                 urls_list.append(url_obj)
 
-    sem = asyncio.Semaphore(500)
+    sem = asyncio.Semaphore(CONCURRENT_TASKS)
     tasks = [request(url_obj, sem) for url_obj in urls_list]
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
