@@ -5,7 +5,7 @@ import pickle
 import ssl
 
 import parse_objects
-from google import create_or_update_urls_html
+import google_ops
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     file_path = os.path.join('data', fname)
     urls = pickle.load(open(os.path.join('data', 'google_urls.p'), 'rb'))
     loop = asyncio.get_event_loop()
-    create_or_update_urls_html(file_path, labels, urls, loop)
+    google_ops.create_or_update_urls_html(file_path, labels, urls, loop)
 
 
 if __name__ == "__main__":
