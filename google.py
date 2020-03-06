@@ -77,9 +77,11 @@ async def request(url_obj: ObjectURL):
             print(f"{url_obj.url} is not HTML and thus we do not support it.")
             return None, url_obj, -1
         except (AssertionError, SSLCertVerificationError) as e:
-            print(f"{url_obj.url} Something went wrong, skipping this one: {e}")
+            print(f"{url_obj.url} Something we expect to happen sometimes went wrong, skipping this one: {e}")
             return None, url_obj, -1
-
+        except Exception as e:
+            print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
+            return None, url_obj, -1
 
 
 async def main(results: dict, labels: list, urls_lookup: dict):
