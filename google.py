@@ -69,14 +69,12 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict, asyncio_l
 
 async def request(url_obj: ObjectURL, sem):
     async with sem, aiohttp.ClientSession() as session:
-        print(f'Request {url_obj.position_in_order}')
         try:
             async with session.get(url_obj.url) as resp:
                 # TODO only reads html, not pdfs
-                print('Worked')
                 return await resp.text(), url_obj, resp.status
         except UnicodeDecodeError as e:
-            print(f"{url_obj.url} is not HTML and thus we do not support it.")
+            # is not HTML and thus we do not support it.
             return None, url_obj, -1
         except (AssertionError, SSLCertVerificationError) as e:
             print(f"{url_obj.url} Something we expect to happen sometimes went wrong, skipping this one: {e}")
@@ -97,7 +95,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
                 url_obj = ObjectURL(url, i, label, label_position)
                 urls_list.append(url_obj)
 
-    sem = asyncio.Semaphore(1000)
+    sem = asyncio.Semaphore(500)
     tasks = [request(url_obj, sem) for url_obj in urls_list]
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
