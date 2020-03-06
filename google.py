@@ -1,13 +1,9 @@
 import asyncio
 import pickle
 import pprint
-from asyncio import AbstractEventLoop
-from asyncio.selector_events import BaseSelectorEventLoop
 from collections import namedtuple
-from typing import Type
 
 import aiohttp
-import requests
 import tqdm
 from googlesearch import search
 

@@ -1,15 +1,15 @@
 import os
 import pickle
+import pprint
 
 import tqdm
-from wikipediaapi import WikipediaPage
 
 import parse_objects
 from lengths_regex import LengthsFinderRegex
 from wikipedia import is_disambiguation, WikiLookupWrapper
-import pprint
 
 pp = pprint.PrettyPrinter()
+
 
 # TODO: think about whether I should filter double wikipedia entries. Maybe ignore wikipedia altogether
 
@@ -25,7 +25,7 @@ def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
     return matches
 
 
-def regex_google_results(label: str, htmls_lookup:dict):
+def regex_google_results(label: str, htmls_lookup: dict):
     """Retrieve sizes from a list of html pages."""
     htmls = htmls_lookup[label]
     sizes = []

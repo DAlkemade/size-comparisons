@@ -1,9 +1,10 @@
 import io
+import json
 import os
+
 import tqdm
 
 import parse_objects
-import json
 
 
 class FrequencyRetriever:

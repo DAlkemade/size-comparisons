@@ -2,8 +2,6 @@ import asyncio
 import os
 import pickle
 
-import pytest
-
 from google import create_or_update_urls_html, gather_htmls
 
 

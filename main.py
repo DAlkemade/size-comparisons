@@ -7,12 +7,10 @@ import numpy as np
 import pandas as pd
 import tqdm
 from matplotlib import pyplot as plt
-import matplotlib.mlab as mlab
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 
 import parse_objects
-from lengths_regex import LengthsFinderRegex
 from wikipedia import is_disambiguation, WikiLookupWrapper
 
 nltk.download('wordnet')

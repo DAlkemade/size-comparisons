@@ -1,7 +1,8 @@
 import pytest
 import wikipediaapi
-from lengths_regex import LengthsFinderRegex
 from matplotlib import pyplot as plt
+
+from lengths_regex import LengthsFinderRegex
 
 
 @pytest.fixture

@@ -1,5 +1,5 @@
-import pickle
 import os
+import pickle
 
 import parse_objects
 from wikipedia import retrieve_wikipedia_pages
