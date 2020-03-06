@@ -11,7 +11,7 @@ from googlesearch import search
 pp = pprint.PrettyPrinter()
 
 NUM_RESULTS = 10
-CONCURRENT_TASKS = 1000
+CONCURRENT_TASKS = 500
 
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
@@ -76,13 +76,13 @@ async def request(url_obj: ObjectURL, sem):
                 return await resp.text(), url_obj, resp.status
         except UnicodeDecodeError as e:
             # is not HTML and thus we do not support it.
-            return None, url_obj, -1
+            return e, url_obj, -1
         except (AssertionError, SSLCertVerificationError) as e:
             print(f"{url_obj.url} Something we expect to happen sometimes went wrong, skipping this one: {e}")
-            return None, url_obj, -1
+            return e, url_obj, -1
         except Exception as e:
             print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
-            return None, url_obj, -1
+            return e, url_obj, -1
         except:
             print(f"Don't know what went wrong")
 
@@ -101,12 +101,17 @@ async def main(results: dict, labels: list, urls_lookup: dict):
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
     # results_list = await asyncio.gather(*tasks)
-
+    error_count = 0
     for html, url_obj, status in results_list:
         if url_obj.label not in results.keys():
             results[url_obj.label] = []
         if status == 200:
             results[url_obj.label].append(html)
+        else:
+            error_count += 1
+
+    print('errors:', error_count)
+
         # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
 
 
