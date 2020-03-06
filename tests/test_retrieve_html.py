@@ -1,15 +1,17 @@
 import os
 import pickle
 
-from google import retrieve_htmls, create_or_update_urls_html
+from google import create_or_update_urls_html, gather_htmls
 
 
 def test_retrieve_htmls():
     """Check whether the html retrieval method works."""
     results = {'test': ['html']}
-    urls = {'tiger123': ['https://en.wikipedia.org/wiki/Tiger', 'https://seaworld.org/animals/all-about/tiger/characteristics/']}
+    urls = {'tiger123': ['https://en.wikipedia.org/wiki/Tiger',
+                         'https://seaworld.org/animals/all-about/tiger/characteristics/']}
     labels = ['tiger123']
-    retrieve_htmls(results, labels, urls)
+    gather_htmls(results, labels, urls)
+    print(results)
     assert 'test' in results.keys()
     for label in labels:
         assert label in results.keys()
@@ -29,9 +31,8 @@ def test_loading_updating_saving():
         pass
     labels = ['tiger123', 'helicopter123']
     urls = {labels[0]: ['https://en.wikipedia.org/wiki/Tiger',
-                         'https://seaworld.org/animals/all-about/tiger/characteristics/'],
+                        'https://seaworld.org/animals/all-about/tiger/characteristics/'],
             labels[1]: ['https://www.popularmechanics.com/flight/a2150/4224761/']}
-
 
     create_or_update_urls_html(file_path, labels, urls)
 

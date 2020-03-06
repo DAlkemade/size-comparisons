@@ -1,13 +1,12 @@
+import asyncio
 import pickle
 import pprint
-from _ssl import SSLCertVerificationError
 from collections import namedtuple
 
+import aiohttp
 import requests
 import tqdm
 from googlesearch import search
-import asyncio
-import aiohttp
 
 pp = pprint.PrettyPrinter()
 
@@ -50,28 +49,6 @@ def create_or_update_results(file_path: str, queries: list, keys: list):
     pickle.dump(results, open(file_path, 'wb'))
 
 
-async def retrieve_htmls_for_object(label, results, urls):
-    print("Start for new label")
-    if label not in results.keys():
-        htmls = []
-        try:
-            urls_for_name = urls[label]
-        except KeyError:
-            print(f"URLs not available for label {label}")
-            urls_for_name = None
-        for url in urls_for_name:
-            try:
-                r = requests.get(url)
-                if r.status_code == 200:
-                    htmls.append(r.text)
-                else:
-                    print(f"No statuscode 200 for url {url}")
-            except Exception as e:
-                print(f'Couldnt find url {url}, {e}')
-
-        results[label] = htmls
-
-
 def create_or_update_urls_html(file_path: str, keys: list, urls: dict):
     """Update (or create) file with html from urls."""
     try:
@@ -94,15 +71,15 @@ async def request(url_obj: ObjectURL):
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(url_obj.url) as resp:
-                return await resp.content.read(), url_obj
-        except Exception as e:
-            print(f"\nSomething went wrong retrieving url {url_obj.url}")
-            return None, url_obj
+                # TODO only reads html, not pdfs
+                return await resp.text(), url_obj, resp.status
+        except UnicodeDecodeError as e:
+            print(f"{url_obj.url} is not HTML and thus we do not support it.")
+            return None, url_obj, -1
 
 
 async def main(results: dict, labels: list, urls_lookup: dict):
     urls_list = []
-    labels = labels[:10]
     for label in labels:
         if label not in results.keys():
             urls_for_object = urls_lookup[label]
@@ -113,21 +90,16 @@ async def main(results: dict, labels: list, urls_lookup: dict):
     tasks = [request(url_obj) for url_obj in urls_list]
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-    # results_list = await asyncio.gather(
-    #     *[request(url_obj) for url_obj in urls_list]
-    # )
 
-    for html, url_obj in results_list:
+    for html, url_obj, status in results_list:
         if url_obj.label not in results.keys():
-            results[url_obj.label] = [None] * NUM_RESULTS
-        results[url_obj.label][url_obj.index] = html
+            results[url_obj.label] = []
+        if status == 200:
+            results[url_obj.label].append(html)
+        # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
 
 
-    pp.pprint(results_list)
-    pp.pprint(results)
-
-
-def gather_htmls(results, keys, urls_lookup: dict):
+def gather_htmls(results: dict, keys: list, urls_lookup: dict):
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(main(results, keys, urls_lookup))
