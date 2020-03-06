@@ -2,7 +2,7 @@ import asyncio
 import os
 import pickle
 
-from google import create_or_update_urls_html, gather_htmls
+from google_ops import create_or_update_urls_html, gather_htmls
 
 
 def test_retrieve_htmls():

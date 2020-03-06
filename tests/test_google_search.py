@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from google import retrieve_google_results, create_or_update_results
+from google_ops import retrieve_google_results, create_or_update_results
 
 
 def test_google_retrieval():

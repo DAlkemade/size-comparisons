@@ -2,7 +2,7 @@
 import os
 
 import parse_objects
-from google import create_or_update_results
+from google_ops import create_or_update_results
 
 
 def main():

@@ -1,6 +1,6 @@
 tqdm
 beautifulsoup4
-wikipediaapi
+wikipedia-api
 google
 requests
 pytest-asyncio
