@@ -12,7 +12,7 @@ pp = pprint.PrettyPrinter()
 
 NUM_RESULTS = 10
 
-ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label'])
+ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
 
 def retrieve_query(query: str) -> list:
@@ -67,11 +67,13 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict, asyncio_l
     pickle.dump(results, open(file_path, 'wb'))
 
 
-async def request(url_obj: ObjectURL):
-    async with aiohttp.ClientSession() as session:
+async def request(url_obj: ObjectURL, sem):
+    async with sem, aiohttp.ClientSession() as session:
+        print(f'Request {url_obj.position_in_order}')
         try:
             async with session.get(url_obj.url) as resp:
                 # TODO only reads html, not pdfs
+                print('Worked')
                 return await resp.text(), url_obj, resp.status
         except UnicodeDecodeError as e:
             print(f"{url_obj.url} is not HTML and thus we do not support it.")
@@ -82,20 +84,24 @@ async def request(url_obj: ObjectURL):
         except Exception as e:
             print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
             return None, url_obj, -1
+        except:
+            print(f"Don't know what went wrong")
 
 
 async def main(results: dict, labels: list, urls_lookup: dict):
     urls_list = []
-    for label in labels:
+    for label_position, label in enumerate(labels):
         if label not in results.keys():
             urls_for_object = urls_lookup[label]
             for i, url in enumerate(urls_for_object):
-                url_obj = ObjectURL(url, i, label)
+                url_obj = ObjectURL(url, i, label, label_position)
                 urls_list.append(url_obj)
 
-    tasks = [request(url_obj) for url_obj in urls_list]
+    sem = asyncio.Semaphore(1000)
+    tasks = [request(url_obj, sem) for url_obj in urls_list]
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
+    # results_list = await asyncio.gather(*tasks)
 
     for html, url_obj, status in results_list:
         if url_obj.label not in results.keys():
