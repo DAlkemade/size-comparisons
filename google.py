@@ -1,10 +1,13 @@
 import pickle
+from collections import namedtuple
 
 import requests
 import tqdm
 from googlesearch import search
 import asyncio
 import aiohttp
+
+ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'html'])
 
 
 def retrieve_query(query: str) -> list:
@@ -72,33 +75,42 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict):
         print("No previous results, creating new object")
         results = dict()
 
-    try:
-        gather_htmls(results, keys, urls)
-    except Exception as e:  # TODO specify error (403 http)
-        print(e)
-        print("Something went wrong, saving intermediate result")
+    # try:
+    gather_htmls(results, keys, urls)
+    # except Exception as e:  # TODO specify error (403 http)
+    #     print(e)
+    #     print("Something went wrong, saving intermediate result")
 
     pickle.dump(results, open(file_path, 'wb'))
 
 
-async def request(url):
+async def request(url_obj: ObjectURL):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            return await resp.text()
+        async with session.get(url_obj.url) as resp:
+           return await resp.content.read()
 
 
-async def main(results: dict, labels: list, urls: dict):
-    results = await asyncio.gather(
-        *[retrieve_htmls_for_object(label, results, urls) for label in labels]
+async def main(results: dict, labels: list, urls_lookup: dict):
+    urls_list = []
+    labels = labels[:10]
+    for label in labels:
+        urls_for_object = urls_lookup[label]
+        for i, url in enumerate(urls_for_object):
+            url_obj = ObjectURL(url, i, label, None)
+            urls_list.append(url_obj)
+
+    results_list = await asyncio.gather(
+        *[request(url_obj) for url_obj in urls_list]
     )
-    print(len(results))
-    print(results)
+
+    print(results_list)
 
 
-def gather_htmls(results, keys, urls: dict):
+
+def gather_htmls(results, keys, urls_lookup: dict):
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main(results, keys, urls))
+        loop.run_until_complete(main(results, keys, urls_lookup))
         loop.run_until_complete(loop.shutdown_asyncgens())
     finally:
         loop.close()
