@@ -80,9 +80,7 @@ async def request(url_obj: ObjectURL, sem):
             return e, url_obj, -1
         except Exception as e:
             try:
-                before = time.time()
                 await asyncio.sleep(5)
-                print(f'waited {time.time() - before} seconds')
                 async with session.get(url_obj.url) as resp:
                     # TODO only reads html, not pdfs
                     return await resp.text(), url_obj, resp.status
