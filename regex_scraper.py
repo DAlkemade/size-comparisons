@@ -36,13 +36,14 @@ def regex_google_results(label: str, htmls_lookup: dict):
 
 
 def main():
-    print('Google search results are not yet included')
     names = parse_objects.retrieve_names()
     labels = parse_objects.retrieve_labels()
     wiki_lookups = parse_objects.retrieve_wikipedia_lookups()
     lookups_wrapper = WikiLookupWrapper(wiki_lookups)
+    print(lookups_wrapper)
 
     htmls_lookup = parse_objects.retrieve_google_results_html()
+    print(htmls_lookup)
 
     results = {}
 
