@@ -2,7 +2,7 @@ import asyncio
 import os
 import pickle
 
-from html_scraper import create_or_update_urls_html, gather_htmls
+from thesis_scraper.html_scraper import create_or_update_urls_html, gather_htmls
 
 
 def test_retrieve_htmls():
