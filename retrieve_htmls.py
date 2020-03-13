@@ -9,14 +9,14 @@ from thesis_scraper.lengths_regex import parse_documents_for_lengths
 
 
 def main():
-    print(ssl.OPENSSL_VERSION)
     labels = parse_objects.retrieve_labels()
     fname = 'google_results_html.p'
     file_path = os.path.join('data', fname)
     urls = pickle.load(open(os.path.join('data', 'google_urls.p'), 'rb'))
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
-    # pickle.dump(results, open(file_path, 'wb'))
+    with open(file_path, 'wb') as f:
+        pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
     names = parse_objects.retrieve_names()
     labels = parse_objects.retrieve_labels()
     lookups_wrapper = parse_objects.retrieve_wikipedia_lookups()
