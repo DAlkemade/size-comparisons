@@ -2,7 +2,7 @@ import pytest
 import wikipediaapi
 from matplotlib import pyplot as plt
 
-from lengths_regex import LengthsFinderRegex
+from thesis_scraper.lengths_regex import LengthsFinderRegex
 
 
 @pytest.fixture

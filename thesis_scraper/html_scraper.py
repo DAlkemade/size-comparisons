@@ -5,7 +5,7 @@ from collections import namedtuple
 import aiohttp
 import tqdm
 
-from google_ops import CONCURRENT_TASKS
+from thesis_scraper.google_ops import CONCURRENT_TASKS
 
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 

@@ -1,8 +1,8 @@
 import os
 import pickle
 
-import parse_objects
-from wikipedia import retrieve_wikipedia_pages
+from thesis_scraper import parse_objects
+from thesis_scraper.wikipedia import retrieve_wikipedia_pages
 
 
 def main():

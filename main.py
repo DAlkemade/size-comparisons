@@ -10,8 +10,8 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 
-import parse_objects
-from wikipedia import is_disambiguation, WikiLookupWrapper
+from thesis_scraper import parse_objects
+from thesis_scraper.wikipedia import is_disambiguation, WikiLookupWrapper
 
 nltk.download('wordnet')
 

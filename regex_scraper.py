@@ -4,9 +4,9 @@ import pprint
 
 import tqdm
 
-import parse_objects
-from lengths_regex import LengthsFinderRegex
-from wikipedia import is_disambiguation, WikiLookupWrapper
+from thesis_scraper import parse_objects
+from thesis_scraper.lengths_regex import LengthsFinderRegex
+from thesis_scraper.wikipedia import is_disambiguation, WikiLookupWrapper
 
 pp = pprint.PrettyPrinter()
 

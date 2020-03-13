@@ -2,9 +2,9 @@ import pprint
 
 import wikipediaapi
 
-from lengths_regex import LengthsFinderRegex
+from thesis_scraper.lengths_regex import LengthsFinderRegex
 from main import plot_sizes_with_gaussian
-from wikipedia import is_disambiguation
+from thesis_scraper.wikipedia import is_disambiguation
 
 pp = pprint.PrettyPrinter()
 
