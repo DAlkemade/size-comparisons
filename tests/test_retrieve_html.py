@@ -33,12 +33,6 @@ def test_retrieve_htmls():
 
 def test_loading_updating_saving():
     """Test whether the file creation, updating, saving, etc of the html retrieval works."""
-    fname = 'test_htmls.p'
-    file_path = os.path.join('../tmp', fname)
-    try:
-        os.remove(file_path)
-    except FileNotFoundError:
-        pass
     labels = ['tiger123', 'helicopter123']
     urls = {labels[0]: ['https://en.wikipedia.org/wiki/Tiger',
                         'https://seaworld.org/animals/all-about/tiger/characteristics/'],
@@ -48,12 +42,11 @@ def test_loading_updating_saving():
     try:
         asyncio.set_event_loop(loop)
 
-        create_or_update_urls_html(file_path, labels, urls, loop)
+        results = create_or_update_urls_html(labels, urls, loop)
 
     finally:
         loop.close()
 
-    results: dict = pickle.load(open(file_path, 'rb'))
     assert type(results) is dict
     assert len(results.keys()) == 2
     for label in labels:
@@ -62,4 +55,3 @@ def test_loading_updating_saving():
         for res in results[label]:
             assert type(res) is str
         # assert results[label]
-    os.remove(file_path)

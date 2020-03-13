@@ -1,6 +1,13 @@
+import os
+import pickle
+import pprint
 import re
 
 # The key is the power of 10 it is compared to meters
+import tqdm
+
+from thesis_scraper.wikipedia import WikiLookupWrapper, is_disambiguation
+
 UNITS = {
     -3: ['millimeters', 'millimeter', 'mm'],
     -2: ['centimeters', 'centimeter', 'cm'],
@@ -63,3 +70,42 @@ class LengthsFinderRegex:
             print(f"Power {power}: {matches_floats} {matches}")
 
         self.matches += matches_floats
+
+
+pp = pprint.PrettyPrinter()
+
+
+def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
+    """Retrieve sizes from a wiki page."""
+    lookup = lookups_wrapper.lookup(label)
+    matches = None  # TODO maybe make empty list
+    if lookup.exists() and not is_disambiguation(lookup):
+        matcher = LengthsFinderRegex(lookup.text)
+        matches = matcher.find_all_matches()
+
+    return matches
+
+
+def regex_google_results(label: str, htmls_lookup: dict):
+    """Retrieve sizes from a list of html pages."""
+    htmls = htmls_lookup[label]
+    sizes = []
+    for html in htmls:
+        matcher = LengthsFinderRegex(html)
+        sizes += matcher.find_all_matches()
+    return sizes
+
+
+def parse_documents_for_lengths(names, labels, lookups_wrapper, htmls_lookup):
+    results = {}
+
+    for i in tqdm.trange(len(names)):
+        label = labels[i]
+        sizes = []
+        sizes += regex_wiki(label, lookups_wrapper)
+        sizes += regex_google_results(label, htmls_lookup)
+        sizes.sort()
+        results[label] = sizes
+
+    pickle.dump(results, open(os.path.join('data', 'regex_sizes.p'), 'wb'))
+    pp.pprint(results)

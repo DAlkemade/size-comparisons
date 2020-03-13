@@ -10,14 +10,10 @@ from thesis_scraper.google_ops import CONCURRENT_TASKS
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
 
-def create_or_update_urls_html(file_path: str, keys: list, urls: dict, asyncio_loop):
-    """Update (or create) file with html from urls."""
-    try:
-        file = open(file_path, 'rb')
-        results = pickle.load(file)
-    except (EOFError, FileNotFoundError):
-        print("No previous results, creating new object")
-        results = dict()
+def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop):
+    """Create file with html from urls."""
+
+    results = dict()
 
     # try:
     gather_htmls(results, keys, urls, asyncio_loop)
@@ -25,7 +21,7 @@ def create_or_update_urls_html(file_path: str, keys: list, urls: dict, asyncio_l
     #     print(e)
     #     print("Something went wrong, saving intermediate result")
 
-    pickle.dump(results, open(file_path, 'wb'))
+    return results
 
 
 async def request(url_obj: ObjectURL, sem) -> (str, ObjectURL, int):

@@ -1,6 +1,8 @@
 import os
 import pickle
 
+from thesis_scraper.wikipedia import WikiLookupWrapper
+
 
 def parse_entry(line):
     return line.decode("utf-8").strip('\n')
@@ -22,9 +24,9 @@ def retrieve_labels():
     return parse_yolo_file('data/9k.labels')
 
 
-def retrieve_wikipedia_lookups() -> dict:
-    return pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))
-
+def retrieve_wikipedia_lookups() -> WikiLookupWrapper:
+    lookups =  pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))
+    return WikiLookupWrapper(lookups)
 
 def retrieve_google_results_html() -> dict:
     return pickle.load(open(os.path.join('data', 'google_results_html.p'), 'rb'))

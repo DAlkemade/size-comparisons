@@ -83,8 +83,7 @@ def main(test: bool):
     with open('data/frequencies.json', 'r') as in_file:
         ngram_count_lookup = json.load(in_file)
 
-    wiki_lookups = parse_objects.retrieve_wikipedia_lookups()
-    wiki_lookup_wrapper = WikiLookupWrapper(wiki_lookups)
+    wiki_lookup_wrapper = parse_objects.retrieve_wikipedia_lookups()
 
     sizes_lookup = parse_objects.retrieve_regex_scraper_sizes()
     # Reduce data if text
