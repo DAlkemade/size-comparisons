@@ -78,7 +78,7 @@ pp = pprint.PrettyPrinter()
 def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
     """Retrieve sizes from a wiki page."""
     lookup = lookups_wrapper.lookup(label)
-    matches = None  # TODO maybe make empty list
+    matches = []  # TODO maybe make empty list
     if lookup.exists() and not is_disambiguation(lookup):
         matcher = LengthsFinderRegex(lookup.text)
         matches = matcher.find_all_matches()
@@ -96,13 +96,14 @@ def regex_google_results(label: str, htmls_lookup: dict):
     return sizes
 
 
-def parse_documents_for_lengths(names, labels, lookups_wrapper, htmls_lookup):
+def parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup):
     results = {}
 
-    for i in tqdm.trange(len(names)):
+    for i in tqdm.trange(len(labels)):
         label = labels[i]
         sizes = []
-        sizes += regex_wiki(label, lookups_wrapper)
+        wiki_lengths = regex_wiki(label, lookups_wrapper)
+        sizes += wiki_lengths
         sizes += regex_google_results(label, htmls_lookup)
         sizes.sort()
         results[label] = sizes

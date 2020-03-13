@@ -25,7 +25,7 @@ def mean_and_std(sizes: list):
     return mu, std
 
 
-def plot_sizes_with_gaussian(sizes: list):
+def plot_sizes_with_gaussian(sizes: list, title: str):
     """Plot sizes and show gaussian.
     From https://stackoverflow.com/a/20012350"""
     data = sizes
@@ -37,7 +37,7 @@ def plot_sizes_with_gaussian(sizes: list):
     x = np.linspace(xmin, xmax, 100)
     p = norm.pdf(x, mu, std)
     plt.plot(x, p, 'k', linewidth=2)
-    title = "Fit results: mu = %.2f,  std = %.2f" % (mu, std)
+    title = f"{title}: mu = {mu},  std = {std}"
     plt.title(title)
 
     plt.show()
@@ -88,7 +88,7 @@ def main(test: bool):
     sizes_lookup = parse_objects.retrieve_regex_scraper_sizes()
     # Reduce data if text
     if test:
-        test_n = 10
+        test_n = 20
         names = names[:test_n]
         labels = labels[:test_n]
     # CHECK IF WIKIPEDIA PAGE EXISTS AND RETRIEVE TEXT
@@ -110,6 +110,7 @@ def main(test: bool):
         disambiguation = is_disambiguation(lookup)
 
         sizes = sizes_lookup[label]
+        plot_sizes_with_gaussian(sizes, name)
 
         # Add ngram count
         count = None

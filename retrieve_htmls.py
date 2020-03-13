@@ -2,7 +2,6 @@
 import asyncio
 import os
 import pickle
-import ssl
 
 from thesis_scraper import parse_objects, html_scraper
 from thesis_scraper.lengths_regex import parse_documents_for_lengths
