@@ -1,8 +1,15 @@
 object1,object2,larger
 tiger,insect,1
-helicopter, tiger, 1
+helicopter,tiger, 1
 yogurt,tiger,0
 yogurt,ocean,0
 food,tiger,0
 kiwi,insect,1
-tiger, ocean, 0
+tiger,ocean,0
+tiger,grapefruit,1
+insect,grapefruit,0
+tiger,pepper,1
+ocean,grapefruit,1
+insect,ocean,0
+helicopter,insect,1
+helicopter,grapefruit,1
