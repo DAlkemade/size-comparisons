@@ -2,13 +2,17 @@
 import asyncio
 import os
 import pickle
+from argparse import ArgumentParser
 
 from size_comparisons.scraping import html_scraper
 from size_comparisons.parse_objects import InputsParser
 
 
 def main():
-    inputparser = InputsParser()
+    parser = ArgumentParser()
+    parser.add_argument('--datadir', default=None, type=str)
+    args = parser.parse_args()
+    inputparser = InputsParser(data_dir=args.datadir)
     labels = inputparser.retrieve_labels()
     fname = 'google_results_html.p'
     file_path = os.path.join('data', fname)
