@@ -9,8 +9,8 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 
-from thesis_scraper import parse_objects
-from thesis_scraper.wikipedia import is_disambiguation
+from thesis_scraper.scraping import parse_objects
+from thesis_scraper.scraping.wikipedia import is_disambiguation
 
 Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
 
@@ -117,7 +117,8 @@ def analyze_results(labels: list):
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
     create_hist(data['n'], 'n')
 
-    create_hist(data['std'], 'std', max_value=100)
+    stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
+    create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
 
     create_hist(data['n_data_points'], 'n_data_points', max_value=30)
 

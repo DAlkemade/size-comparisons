@@ -1,5 +1,5 @@
-from thesis_scraper import parse_objects
-from thesis_scraper.frequencies import retrieve_frequencies
+from thesis_scraper.scraping import parse_objects
+from thesis_scraper.scraping.frequencies import retrieve_frequencies
 
 
 def main():

@@ -3,7 +3,7 @@ import asyncio
 import os
 import pickle
 
-from thesis_scraper import parse_objects, html_scraper
+from thesis_scraper.scraping import html_scraper, parse_objects
 
 
 def main():

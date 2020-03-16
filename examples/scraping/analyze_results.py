@@ -1,7 +1,7 @@
 import nltk
 
-from thesis_scraper import parse_objects
-from thesis_scraper.analyze import analyze_results
+from thesis_scraper.scraping import parse_objects
+from thesis_scraper.scraping.analyze import analyze_results
 
 nltk.download('wordnet')
 

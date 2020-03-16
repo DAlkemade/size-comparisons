@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from thesis_scraper.wikipedia import WikiLookupWrapper
+from thesis_scraper.scraping.wikipedia import WikiLookupWrapper
 
 
 def parse_entry(line):

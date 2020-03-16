@@ -1,5 +1,5 @@
-from thesis_scraper import parse_objects
-from thesis_scraper.lengths_regex import parse_documents_for_lengths
+from thesis_scraper.scraping import parse_objects
+from thesis_scraper.scraping.lengths_regex import parse_documents_for_lengths
 
 
 # TODO: think about whether I should filter double wikipedia entries. Maybe ignore wikipedia altogether
