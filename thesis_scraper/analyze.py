@@ -115,21 +115,21 @@ def analyze_results(labels: list):
     data.sort_values('count', inplace=True)
     print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-    create_hist(data, 'n')
+    create_hist(data['n'], 'n')
 
-    create_hist(data, 'std', max_value=100)
+    create_hist(data['std'], 'std', max_value=100)
 
-    create_hist(data, 'n_data_points', max_value=30)
+    create_hist(data['n_data_points'], 'n_data_points', max_value=30)
 
 
-def create_hist(data: pd.DataFrame, column_name: str, max_value=None) -> None:
+def create_hist(values: list, title: str, max_value=None) -> None:
     """Plot histogram for a column of a dataframe.
 
     If a max_value is given, all values larger than that value are binned together in the last bin.
     """
     if max_value is None:
-        max_value = ceil(np.amax(data[column_name]))
+        max_value = ceil(np.amax(values))
     bins = range(0, max_value)
-    plt.hist(np.clip(data[column_name], bins[0], bins[-1]), bins=bins)
-    plt.title(column_name)
+    plt.hist(np.clip(values, bins[0], bins[-1]), bins=bins)
+    plt.title(title)
     plt.show()
