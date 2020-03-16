@@ -25,8 +25,9 @@ def retrieve_labels():
 
 
 def retrieve_wikipedia_lookups() -> WikiLookupWrapper:
-    lookups =  pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))
+    lookups = pickle.load(open(os.path.join('data', 'wikipedia_lookups.p'), 'rb'))
     return WikiLookupWrapper(lookups)
+
 
 def retrieve_google_results_html() -> dict:
     return pickle.load(open(os.path.join('data', 'google_results_html.p'), 'rb'))
@@ -34,4 +35,3 @@ def retrieve_google_results_html() -> dict:
 
 def retrieve_regex_scraper_sizes() -> dict:
     return pickle.load(open(os.path.join('data', 'regex_sizes.p'), 'rb'))
-

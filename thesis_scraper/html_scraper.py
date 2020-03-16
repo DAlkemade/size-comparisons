@@ -1,5 +1,4 @@
 import asyncio
-import pickle
 from collections import namedtuple
 
 import aiohttp
@@ -67,7 +66,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
 
     print('errors:', error_count)
 
-        # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
+    # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
 
 
 def gather_htmls(results: dict, keys: list, urls_lookup: dict, asyncio_loop):
