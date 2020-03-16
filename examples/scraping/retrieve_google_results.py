@@ -3,13 +3,15 @@ import os
 
 from size_comparisons.scraping import parse_objects
 from size_comparisons.scraping.google_ops import create_or_update_results
+from size_comparisons.scraping.parse_objects import InputsParser
 
 
 def main():
-    names = parse_objects.retrieve_names()
+    inputparser = InputsParser()
+    names = inputparser.retrieve_names()
     queries = [f'{name} length' for name in names]
 
-    labels = parse_objects.retrieve_labels()
+    labels = inputparser.retrieve_labels()
     fname = 'google_urls.p'
     file_path = os.path.join('data', fname)
     create_or_update_results(file_path, queries, labels)

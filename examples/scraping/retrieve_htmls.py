@@ -4,10 +4,12 @@ import os
 import pickle
 
 from size_comparisons.scraping import html_scraper, parse_objects
+from size_comparisons.scraping.parse_objects import InputsParser
 
 
 def main():
-    labels = parse_objects.retrieve_labels()
+    inputparser = InputsParser()
+    labels = inputparser.retrieve_labels()
     fname = 'google_results_html.p'
     file_path = os.path.join('data', fname)
     urls = pickle.load(open(os.path.join('data', 'google_urls.p'), 'rb'))
