@@ -42,7 +42,8 @@ class BaselineNumericGaussians(object):
         # TODO how to use the fact that we know sizes can't be negative
         sizes1 = self.retrieve_sizes(object1)
         sizes2 = self.retrieve_sizes(object2)
-        tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
+        tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False) # welch ttest (unequal variances)
+        # https://blog.minitab.com/blog/adventures-in-statistics-2/understanding-t-tests-1-sample-2-sample-and-paired-t-tests
         # p value: assuming the null hypothesis (the population means are the same) is true, what is the probability
         # of seeing the data that we are seeing or more extreme
         mean_larger = self.larger_than_simple(object1, object2) > .5
