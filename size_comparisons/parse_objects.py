@@ -37,6 +37,9 @@ class InputsParser(object):
         lookups = pickle.load(open(self.data_dir / 'wikipedia_lookups.p', 'rb'))
         return WikiLookupWrapper(lookups)
 
+    def retrieve_google_urls(self) -> dict:
+        return pickle.load(open(self.data_dir /  'google_urls.p', 'rb'))
+
     def retrieve_google_results_html(self) -> dict:
         return pickle.load(open(self.data_dir /  'google_results_html.p', 'rb'))
 

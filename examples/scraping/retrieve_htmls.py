@@ -12,7 +12,7 @@ def main():
     labels = inputparser.retrieve_labels()
     fname = 'google_results_html.p'
     file_path = os.path.join('data', fname)
-    urls = pickle.load(open(os.path.join('data', 'google_urls.p'), 'rb'))
+    urls = inputparser.retrieve_google_urls()
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
     with open(file_path, 'wb') as f:

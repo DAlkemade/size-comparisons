@@ -4,6 +4,7 @@ from size_comparisons.scraping.analyze import fill_dataframe
 from size_comparisons.parse_objects import InputsParser
 import pandas as pd
 import numpy as np
+from scipy import stats
 
 
 class BaselineNumericGaussians(object):
@@ -17,12 +18,16 @@ class BaselineNumericGaussians(object):
             raise RuntimeWarning(f"Unknown object {name}")
         return row['mean'].values[0], row['std'].values[0]
 
-    def larger_than(self, object1: str, object2: str) -> bool:
+    def larger_than(self, object1: str, object2: str) -> float:
         mu1, std1 = self.retrieve_mu_std(object1)
         mu2, std2 = self.retrieve_mu_std(object2)
         if math.isnan(mu1) or math.isnan(mu2):
             raise RuntimeWarning("Nan value, unreliable results")
-        return mu1 > mu2
+
+        mu_combine = mu1 - mu2
+        std = np.sqrt(std1**2 + std2**2)
+        cdf0 = stats.norm(mu_combine, std).cdf(0.)
+        return 1 - cdf0
 
 
 def main():
@@ -40,11 +45,11 @@ def main():
             print("Couldn't find one of the objects, skipping this pair")
             continue
         try:
-            onebiggerthan2 = baseline.larger_than(name1, name2)
+            p_1_bigger_than_2 = baseline.larger_than(name1, name2)
         except RuntimeWarning:
             print(f"Unreliable result for {name1}, {name2}, not showing")
             continue
-        print(f'{name1} is{"" if onebiggerthan2 else " not"} bigger than {name2}')
+        print(f'{name1} is bigger than {name2} with p={p_1_bigger_than_2}')
 
 
 if __name__ == "__main__":

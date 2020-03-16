@@ -7,7 +7,6 @@ from googlesearch import search
 pp = pprint.PrettyPrinter()
 
 NUM_RESULTS = 10
-CONCURRENT_TASKS = 500
 
 
 def retrieve_query(query: str) -> list:

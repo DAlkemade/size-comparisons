@@ -4,8 +4,7 @@ from collections import namedtuple
 import aiohttp
 import tqdm
 
-from size_comparisons.scraping.google_ops import CONCURRENT_TASKS
-
+CONCURRENT_TASKS = 50
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
 
