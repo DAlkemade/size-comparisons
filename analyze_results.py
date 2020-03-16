@@ -1,6 +1,7 @@
 import argparse
 import json
 from collections import namedtuple
+from math import ceil
 
 import nltk
 import numpy as np
@@ -15,12 +16,12 @@ from thesis_scraper.wikipedia import is_disambiguation, WikiLookupWrapper
 
 nltk.download('wordnet')
 
-Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes'])
+Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
 
 
 # TODO: think about 3-grams (body of water)
 
-def mean_and_std(sizes: list):
+def mean_and_std(sizes: list) -> (float, float):
     mu, std = norm.fit(sizes)
     return mu, std
 
@@ -110,7 +111,9 @@ def main(test: bool):
         disambiguation = is_disambiguation(lookup)
 
         sizes = sizes_lookup[label]
-        plot_sizes_with_gaussian(sizes, name)
+        n_data_points = len(sizes)
+        mean, std = mean_and_std(sizes)
+        # plot_sizes_with_gaussian(sizes, name)
 
         # Add ngram count
         count = None
@@ -118,14 +121,30 @@ def main(test: bool):
             count = ngram_count_lookup[name]
 
         n = check_n(name)
-        entry = Entry(exists, disambiguation, count, synset, n, sizes)
+        entry = Entry(exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
         results.append(entry)
 
     data = pd.DataFrame(results)
     data.sort_values('count', inplace=True)
     print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-    plt.hist(data['n'], bins=range(0, np.amax(data['n'])))
+    create_hist(data, 'n')
+
+    create_hist(data, 'std', max_value=100)
+
+    create_hist(data, 'n_data_points', max_value=30)
+
+
+def create_hist(data: pd.DataFrame, column_name: str, max_value=None) -> None:
+    """Plot histogram for a column of a dataframe.
+
+    If a max_value is given, all values larger than that value are binned together in the last bin.
+    """
+    if max_value is None:
+        max_value = ceil(np.amax(data[column_name]))
+    bins = range(0, max_value)
+    plt.hist(np.clip(data[column_name], bins[0], bins[-1]), bins=bins)
+    plt.title(column_name)
     plt.show()
 
 

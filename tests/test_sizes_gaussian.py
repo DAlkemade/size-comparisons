@@ -1,6 +1,6 @@
 from scipy.stats import norm
 
-from main import plot_sizes_with_gaussian
+from analyze_results import plot_sizes_with_gaussian
 
 
 def test_gaussian_plot():

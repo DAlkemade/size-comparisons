@@ -3,7 +3,7 @@ import pprint
 import wikipediaapi
 
 from thesis_scraper.lengths_regex import LengthsFinderRegex
-from main import plot_sizes_with_gaussian
+from analyze_results import plot_sizes_with_gaussian
 from thesis_scraper.wikipedia import is_disambiguation
 
 pp = pprint.PrettyPrinter()
