@@ -1,9 +1,7 @@
-import argparse
 import json
 from collections import namedtuple
 from math import ceil
 
-import nltk
 import numpy as np
 import pandas as pd
 import tqdm
@@ -12,14 +10,10 @@ from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 
 from thesis_scraper import parse_objects
-from thesis_scraper.wikipedia import is_disambiguation, WikiLookupWrapper
-
-nltk.download('wordnet')
+from thesis_scraper.wikipedia import is_disambiguation
 
 Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
 
-
-# TODO: think about 3-grams (body of water)
 
 def mean_and_std(sizes: list) -> (float, float):
     mu, std = norm.fit(sizes)
@@ -77,25 +71,18 @@ def retrieve_synset(label: str):
     return wn.synset_from_pos_and_offset(pos, offset)
 
 
-def main(test: bool):
+def analyze_results(labels: list):
     # IMPORT DATA
     names = parse_objects.retrieve_names()
-    labels = parse_objects.retrieve_labels()
     with open('data/frequencies.json', 'r') as in_file:
         ngram_count_lookup = json.load(in_file)
 
     wiki_lookup_wrapper = parse_objects.retrieve_wikipedia_lookups()
 
     sizes_lookup = parse_objects.retrieve_regex_scraper_sizes()
-    # Reduce data if text
-    if test:
-        test_n = 20
-        names = names[:test_n]
-        labels = labels[:test_n]
-    # CHECK IF WIKIPEDIA PAGE EXISTS AND RETRIEVE TEXT
 
     results = []
-    for i in tqdm.trange(len(names)):
+    for i in tqdm.trange(len(labels)):
         # Get name and label
         name = names[i]
         label = labels[i]
@@ -146,10 +133,3 @@ def create_hist(data: pd.DataFrame, column_name: str, max_value=None) -> None:
     plt.hist(np.clip(data[column_name], bins[0], bins[-1]), bins=bins)
     plt.title(column_name)
     plt.show()
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--test', type=bool, default=False)
-    args = parser.parse_args()
-    main(args.test)

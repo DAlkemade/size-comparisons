@@ -4,7 +4,6 @@ import os
 import pickle
 
 from thesis_scraper import parse_objects, html_scraper
-from thesis_scraper.lengths_regex import parse_documents_for_lengths
 
 
 def main():
@@ -16,9 +15,6 @@ def main():
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
     with open(file_path, 'wb') as f:
         pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
-    lookups_wrapper = parse_objects.retrieve_wikipedia_lookups()
-
-    parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup)
 
 
 if __name__ == "__main__":

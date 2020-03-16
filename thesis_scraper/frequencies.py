@@ -1,4 +1,5 @@
 import io
+import json
 import os
 
 import tqdm
@@ -55,3 +56,17 @@ class FrequencyRetriever:
         for i in tqdm.trange(len(bigram_files)):
             file = bigram_files[i]
             self._scan_file_for_ngrams(os.path.join('2gms', file))
+
+
+def retrieve_frequencies(names: list):
+    retriever = FrequencyRetriever(set(names))
+    freqs = retriever.run()
+    count = 0
+    for name in names:
+        if name in freqs.keys():
+            count += 1
+    frac_found = count / len(names)
+    print(f'Found the frequency for fraction {frac_found}')
+    # Save json
+    with open('frequencies.json', 'w') as wf:
+        json.dump(freqs, wf)
