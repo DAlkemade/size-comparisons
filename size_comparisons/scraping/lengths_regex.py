@@ -6,7 +6,7 @@ import re
 # The key is the power of 10 it is compared to meters
 import tqdm
 
-from thesis_scraper.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
+from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
 
 UNITS = {
     -3: ['millimeters', 'millimeter', 'mm'],

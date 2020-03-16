@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from thesis_scraper.scraping.google_ops import retrieve_google_results, create_or_update_results
+from size_comparisons.scraping.google_ops import retrieve_google_results, create_or_update_results
 
 
 def test_google_retrieval():

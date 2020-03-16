@@ -1,8 +1,8 @@
 # Save the results the google search api return for 'OBJECT length'
 import os
 
-from thesis_scraper.scraping import parse_objects
-from thesis_scraper.scraping.google_ops import create_or_update_results
+from size_comparisons.scraping import parse_objects
+from size_comparisons.scraping.google_ops import create_or_update_results
 
 
 def main():

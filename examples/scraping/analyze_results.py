@@ -1,7 +1,10 @@
+from argparse import ArgumentParser
+
 import nltk
 
-from thesis_scraper.scraping import parse_objects
-from thesis_scraper.scraping.analyze import analyze_results
+from size_comparisons.scraping import parse_objects
+from size_comparisons.scraping.analyze import analyze_results
+from size_comparisons.scraping.parse_objects import InputsParser
 
 nltk.download('wordnet')
 
@@ -10,7 +13,10 @@ nltk.download('wordnet')
 
 
 def main():
-    labels = parse_objects.retrieve_labels()
+    # parser = ArgumentParser()
+    # parser.add_argument('--datadir', type=str, default=)
+    inputparser = InputsParser()
+    labels = inputparser.retrieve_labels()
     analyze_results(labels)
 
 

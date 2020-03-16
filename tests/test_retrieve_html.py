@@ -1,6 +1,6 @@
 import asyncio
 
-from thesis_scraper.scraping.html_scraper import create_or_update_urls_html, gather_htmls
+from size_comparisons.scraping.html_scraper import create_or_update_urls_html, gather_htmls
 
 
 def test_retrieve_htmls():

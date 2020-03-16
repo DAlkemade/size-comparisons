@@ -1,6 +1,6 @@
 from scipy.stats import norm
 
-from thesis_scraper.scraping.analyze import plot_sizes_with_gaussian
+from size_comparisons.scraping.analyze import plot_sizes_with_gaussian
 
 
 def test_gaussian_plot():

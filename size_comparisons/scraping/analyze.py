@@ -9,8 +9,9 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 
-from thesis_scraper.scraping import parse_objects
-from thesis_scraper.scraping.wikipedia import is_disambiguation
+from size_comparisons.scraping import parse_objects
+from size_comparisons.scraping.parse_objects import InputsParser
+from size_comparisons.scraping.wikipedia import is_disambiguation
 
 Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
 
@@ -73,13 +74,13 @@ def retrieve_synset(label: str):
 
 def analyze_results(labels: list):
     # IMPORT DATA
-    names = parse_objects.retrieve_names()
-    with open('data/frequencies.json', 'r') as in_file:
-        ngram_count_lookup = json.load(in_file)
+    input_parser = InputsParser()
+    names = input_parser.retrieve_names()
+    ngram_count_lookup = input_parser.retrieve_frequencies()
 
-    wiki_lookup_wrapper = parse_objects.retrieve_wikipedia_lookups()
+    wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
 
-    sizes_lookup = parse_objects.retrieve_regex_scraper_sizes()
+    sizes_lookup = input_parser.retrieve_regex_scraper_sizes()
 
     results = []
     for i in tqdm.trange(len(labels)):

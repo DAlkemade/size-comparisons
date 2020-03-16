@@ -1,4 +1,4 @@
-from thesis_scraper.scraping.wikipedia import DOWNLOAD_ATTRIBUTES, retrieve_wikipedia_pages
+from size_comparisons.scraping.wikipedia import DOWNLOAD_ATTRIBUTES, retrieve_wikipedia_pages
 
 
 def test_wikipedia_scraper():
