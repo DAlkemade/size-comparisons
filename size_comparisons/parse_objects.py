@@ -4,6 +4,7 @@ import pickle
 
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper
 from pathlib import Path
+import pandas as pd
 
 def parse_entry(line):
     return line.decode("utf-8").strip('\n').strip('\r')
@@ -46,3 +47,8 @@ class InputsParser(object):
         with open(self.data_dir / 'frequencies.json', 'r') as in_file:
             ngram_count_lookup = json.load(in_file)
         return ngram_count_lookup
+
+    def retrieve_test_pairs(self) -> pd.DataFrame:
+        return pd.read_csv(self.data_dir / 'test_pairs.txt')
+
+

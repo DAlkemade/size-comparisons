@@ -1,10 +1,7 @@
-from argparse import ArgumentParser
-
 import nltk
 
-from size_comparisons.scraping import parse_objects
 from size_comparisons.scraping.analyze import analyze_results
-from size_comparisons.scraping.parse_objects import InputsParser
+from size_comparisons.parse_objects import InputsParser
 
 nltk.download('wordnet')
 

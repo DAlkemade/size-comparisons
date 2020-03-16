@@ -1,0 +1,7 @@
+object1,object2,larger
+tiger,insect,1
+yogurt,tiger,0
+yogurt,ocean,0
+food,tiger,0
+kiwi,insect,1
+tiger, ocean, 0

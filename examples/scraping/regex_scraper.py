@@ -1,9 +1,8 @@
-from size_comparisons.scraping import parse_objects
 from size_comparisons.scraping.lengths_regex import parse_documents_for_lengths
 
 
 # TODO: think about whether I should filter double wikipedia entries. Maybe ignore wikipedia altogether
-from size_comparisons.scraping.parse_objects import InputsParser
+from size_comparisons.parse_objects import InputsParser
 
 
 def main():

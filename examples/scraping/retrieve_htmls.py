@@ -3,8 +3,8 @@ import asyncio
 import os
 import pickle
 
-from size_comparisons.scraping import html_scraper, parse_objects
-from size_comparisons.scraping.parse_objects import InputsParser
+from size_comparisons.scraping import html_scraper
+from size_comparisons.parse_objects import InputsParser
 
 
 def main():

@@ -1,4 +1,4 @@
-import json
+import math
 from collections import namedtuple
 from math import ceil
 
@@ -9,14 +9,15 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 
-from size_comparisons.scraping import parse_objects
-from size_comparisons.scraping.parse_objects import InputsParser
+from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import is_disambiguation
 
-Entry = namedtuple('Entry', ['wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
+Entry = namedtuple('Entry', ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
 
 
 def mean_and_std(sizes: list) -> (float, float):
+    if len(sizes) == 0:
+        return math.nan, math.nan
     mu, std = norm.fit(sizes)
     return mu, std
 
@@ -73,16 +74,27 @@ def retrieve_synset(label: str):
 
 
 def analyze_results(labels: list):
+    data = fill_dataframe(labels)
+    data.sort_values('count', inplace=True)
+    print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
+    print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
+    create_hist(data['n'], 'n')
+
+    stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
+    create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
+
+    create_hist(data['n_data_points'], 'n_data_points', max_value=30)
+
+
+def fill_dataframe(labels):
     # IMPORT DATA
     input_parser = InputsParser()
     names = input_parser.retrieve_names()
     ngram_count_lookup = input_parser.retrieve_frequencies()
-
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
-
     sizes_lookup = input_parser.retrieve_regex_scraper_sizes()
-
     results = []
+
     for i in tqdm.trange(len(labels)):
         # Get name and label
         name = names[i]
@@ -109,19 +121,10 @@ def analyze_results(labels: list):
             count = ngram_count_lookup[name]
 
         n = check_n(name)
-        entry = Entry(exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
+        entry = Entry(label, name, exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
         results.append(entry)
-
     data = pd.DataFrame(results)
-    data.sort_values('count', inplace=True)
-    print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
-    print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-    create_hist(data['n'], 'n')
-
-    stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
-    create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
-
-    create_hist(data['n_data_points'], 'n_data_points', max_value=30)
+    return data
 
 
 def create_hist(values: list, title: str, max_value=None) -> None:

@@ -1,8 +1,7 @@
 import os
 import pickle
 
-from size_comparisons.scraping import parse_objects
-from size_comparisons.scraping.parse_objects import InputsParser
+from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import retrieve_wikipedia_pages
 
 
