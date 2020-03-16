@@ -24,8 +24,7 @@ def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop):
 
 async def request(url_obj: ObjectURL, sem) -> (str, ObjectURL, int):
     """Request a url and return response."""
-    timeout = aiohttp.ClientTimeout(30.)
-    async with sem, aiohttp.ClientSession(timeout=timeout) as session:
+    async with sem, aiohttp.ClientSession() as session:
         try:
             async with session.get(url_obj.url) as resp:
                 # TODO only reads html, not pdfs
