@@ -1,10 +1,13 @@
 import math
 
-from size_comparisons.scraping.analyze import fill_dataframe
-from size_comparisons.parse_objects import InputsParser
-import pandas as pd
 import numpy as np
+import pandas as pd
 from scipy import stats
+
+from size_comparisons.parse_objects import InputsParser
+from size_comparisons.scraping.analyze import fill_dataframe
+
+
 # scipy.stats.f_oneway
 # scipy.stats.ttest_ind
 
@@ -34,7 +37,7 @@ class BaselineNumericGaussians(object):
             raise RuntimeWarning("Nan value, unreliable results")
 
         mu_combine = mu1 - mu2
-        std = np.sqrt(std1**2 + std2**2)
+        std = np.sqrt(std1 ** 2 + std2 ** 2)
         cdf0 = stats.norm(mu_combine, std).cdf(0.)
         return 1 - cdf0
 
@@ -44,7 +47,7 @@ class BaselineNumericGaussians(object):
         # more useful
         sizes1 = self.retrieve_sizes(object1)
         sizes2 = self.retrieve_sizes(object2)
-        tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False) # welch ttest (unequal variances)
+        tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)  # welch ttest (unequal variances)
         # https://blog.minitab.com/blog/adventures-in-statistics-2/understanding-t-tests-1-sample-2-sample-and-paired-t-tests
         # p value: assuming the null hypothesis (the population means are the same) is true, what is the probability
         # of seeing the data that we are seeing or more extreme

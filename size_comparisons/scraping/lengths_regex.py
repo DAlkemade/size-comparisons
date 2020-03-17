@@ -96,7 +96,14 @@ def regex_google_results(label: str, htmls_lookup: dict):
     return sizes
 
 
-def parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup):
+def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, htmls_lookup: dict, save_fname: str):
+    """Find all lengths for objects in labels using the htmls and wikipedia texts.
+
+    :param labels: wordnet labels to find the lengths for
+    :param lookups_wrapper: wikipedia texts lookup
+    :param htmls_lookup: dict with lists of htmls for all objects in labels
+    :param save_fname: path to save the result to
+    """
     results = {}
 
     for i in tqdm.trange(len(labels)):
@@ -108,5 +115,5 @@ def parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup):
         sizes.sort()
         results[label] = sizes
 
-    pickle.dump(results, open(os.path.join('data', 'regex_sizes.p'), 'wb'))
+    pickle.dump(results, open(os.path.join(save_fname), 'wb'))
     pp.pprint(results)

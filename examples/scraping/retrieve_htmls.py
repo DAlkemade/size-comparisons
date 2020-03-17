@@ -1,16 +1,16 @@
 # Save the results the google search api return for 'OBJECT length'
 import asyncio
-import os
 import pickle
+import time
 from argparse import ArgumentParser
 from pathlib import Path
-import time
 
-from size_comparisons.scraping import html_scraper
 from size_comparisons.parse_objects import InputsParser
+from size_comparisons.scraping import html_scraper
 
 
 def main():
+    """Retrieve the html pages for the urls in the google search results."""
     parser = ArgumentParser()
     parser.add_argument('--datadir', default=None, type=str)
     args = parser.parse_args()
@@ -33,8 +33,6 @@ def main():
             time.sleep(300.)
             continue
         break
-
-
 
 
 if __name__ == "__main__":

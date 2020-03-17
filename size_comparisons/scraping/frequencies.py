@@ -58,7 +58,8 @@ class FrequencyRetriever:
             self._scan_file_for_ngrams(os.path.join('2gms', file))
 
 
-def retrieve_frequencies(names: list):
+def retrieve_frequencies(names: list, save_fname: str):
+    """Retrieve the frequencies for all objects in names and find the fraction of found objects."""
     retriever = FrequencyRetriever(set(names))
     freqs = retriever.run()
     count = 0
@@ -68,5 +69,5 @@ def retrieve_frequencies(names: list):
     frac_found = count / len(names)
     print(f'Found the frequency for fraction {frac_found}')
     # Save json
-    with open('frequencies.json', 'w') as wf:
+    with open(save_fname, 'w') as wf:
         json.dump(freqs, wf)

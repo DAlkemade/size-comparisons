@@ -1,7 +1,7 @@
 import nltk
 
-from size_comparisons.scraping.analyze import analyze_results
 from size_comparisons.parse_objects import InputsParser
+from size_comparisons.scraping.analyze import analyze_results
 
 nltk.download('wordnet')
 
@@ -10,8 +10,7 @@ nltk.download('wordnet')
 
 
 def main():
-    # parser = ArgumentParser()
-    # parser.add_argument('--datadir', type=str, default=)
+    """Compile dataframe with scraper data and plot some results."""
     inputparser = InputsParser()
     labels = inputparser.retrieve_labels()
     analyze_results(labels)

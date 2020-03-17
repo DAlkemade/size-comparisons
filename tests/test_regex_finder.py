@@ -34,7 +34,8 @@ def test_centimeters_pattern():
     """
     Test whether we find the cm pattern.
     """
-    finder = LengthsFinderRegex('the tiger is 400 centimeters long, wait no, 300.5 centimeter, no actually 5.50cm. the serial number is s500m.')
+    finder = LengthsFinderRegex(
+        'the tiger is 400 centimeters long, wait no, 300.5 centimeter, no actually 5.50cm. the serial number is s500m.')
     matches = finder.find_all_matches()
     assert len(matches) == 3
     assert matches[0] == 4.

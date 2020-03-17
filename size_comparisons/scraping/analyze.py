@@ -12,10 +12,13 @@ from scipy.stats import norm
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import is_disambiguation
 
-Entry = namedtuple('Entry', ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std', 'n_data_points'])
+Entry = namedtuple('Entry',
+                   ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std',
+                    'n_data_points'])
 
 
 def mean_and_std(sizes: list) -> (float, float):
+    """Finds the mean and standard deviation of a normal distribution fit on a list of observations."""
     if len(sizes) == 0:
         return math.nan, math.nan
     mu, std = norm.fit(sizes)
@@ -23,7 +26,7 @@ def mean_and_std(sizes: list) -> (float, float):
 
 
 def plot_sizes_with_gaussian(sizes: list, title: str):
-    """Plot sizes and show gaussian.
+    """Plots sizes and shows gaussian.
     From https://stackoverflow.com/a/20012350"""
     data = sizes
     mu, std = mean_and_std(sizes)
@@ -41,8 +44,8 @@ def plot_sizes_with_gaussian(sizes: list, title: str):
 
 
 def check_n(token: str) -> int:
-    """
-    Check n (as in n-gram) of a token
+    """Checks n (as in n-gram) of a token.
+
     :param token: token to be checked
     :return: int n
     """
@@ -50,8 +53,8 @@ def check_n(token: str) -> int:
 
 
 def print_some_info_on_synset(wiki, synset_string: str) -> None:
-    """
-    Display some possiblities of the wordnet library.
+    """Displays some possiblities of the wordnet library.
+
     :param synset_string: Exact synset string
     """
     apple = wn.synset(synset_string)
@@ -63,8 +66,8 @@ def print_some_info_on_synset(wiki, synset_string: str) -> None:
 
 
 def retrieve_synset(label: str):
-    """
-    Retrieve synset using a wordnet id.
+    """Retrieves synset using a wordnet id.
+
     :param label: wordnet id
     :return: wordnet synset
     """
@@ -74,6 +77,7 @@ def retrieve_synset(label: str):
 
 
 def analyze_results(labels: list):
+    """Compiles scraped data and print and plot some key result."""
     data = fill_dataframe(labels)
     data.sort_values('count', inplace=True)
     print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
@@ -98,7 +102,8 @@ def print_relevant_columns(df: pd.DataFrame, label: str):
     print(f'{label}: \n{df[["name", "mean", "std", "n_data_points"]]}')
 
 
-def fill_dataframe(labels):
+def fill_dataframe(labels: list):
+    """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
     input_parser = InputsParser()
     names = input_parser.retrieve_names()
