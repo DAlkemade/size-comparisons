@@ -54,7 +54,7 @@ class LengthsFinderRegex:
         local_matches = list()
         # [ ,.;:$]
         for syn in synonyms:
-            local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
+            local_matches += re.findall(rf'\s+({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
         return local_matches
 
     def _find_pattern(self, synonyms, power):
