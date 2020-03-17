@@ -97,6 +97,9 @@ def analyze_results(labels: list):
     nsmallest = data_with_suff_high_n.nsmallest(10, ['mean'])
     print_relevant_columns(nsmallest, 'smallest')
 
+    print(f'Mean std: {data["std"].mean()}')
+    print(f'Median std: {data["std"].median()}')
+
 
 def print_relevant_columns(df: pd.DataFrame, label: str):
     print(f'{label}: \n{df[["name", "mean", "std", "n_data_points"]]}')
