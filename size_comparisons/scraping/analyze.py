@@ -85,6 +85,14 @@ def analyze_results(labels: list):
 
     create_hist(data['n_data_points'], 'n_data_points', max_value=30)
 
+    data_with_suff_high_n = data[data['n_data_points'] > 5]
+
+    nlargest = data_with_suff_high_n.nlargest(10, ['mean'])
+    print(f'largest: {nlargest}')
+
+    nsmallest = data_with_suff_high_n.nsmallest(10, ['mean'])
+    print(f'smallest: {nsmallest}')
+
 
 def fill_dataframe(labels):
     # IMPORT DATA
