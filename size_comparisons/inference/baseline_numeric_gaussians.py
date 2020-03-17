@@ -40,6 +40,8 @@ class BaselineNumericGaussians(object):
 
     def ttest(self, object1: str, object2: str):
         # TODO how to use the fact that we know sizes can't be negative
+        # TODO think about using the ztest (maybe increase number of pages scraped), because having gaussian might be
+        # more useful
         sizes1 = self.retrieve_sizes(object1)
         sizes2 = self.retrieve_sizes(object2)
         tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False) # welch ttest (unequal variances)
