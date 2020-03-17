@@ -4,6 +4,7 @@ import os
 import pickle
 from argparse import ArgumentParser
 from pathlib import Path
+import time
 
 from size_comparisons.scraping import html_scraper
 from size_comparisons.parse_objects import InputsParser
@@ -23,8 +24,16 @@ def main():
     urls = inputparser.retrieve_google_urls()
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
-    with open(file_path, 'wb') as f:
-        pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
+    while True:
+        try:
+            with open(file_path, 'wb') as f:
+                pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
+        except PermissionError:
+            time.sleep(300.)
+            continue
+        break
+
+
 
 
 if __name__ == "__main__":
