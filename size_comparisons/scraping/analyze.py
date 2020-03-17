@@ -88,10 +88,14 @@ def analyze_results(labels: list):
     data_with_suff_high_n = data[data['n_data_points'] > 5]
 
     nlargest = data_with_suff_high_n.nlargest(10, ['mean'])
-    print(f'largest: {nlargest}')
+    print_relevant_columns(nlargest, 'largest')
 
     nsmallest = data_with_suff_high_n.nsmallest(10, ['mean'])
-    print(f'smallest: {nsmallest}')
+    print_relevant_columns(nsmallest, 'smallest')
+
+
+def print_relevant_columns(df: pd.DataFrame, label: str):
+    print(f'{label}: \n{df[["name", "mean", "std", "n_data_points"]]}')
 
 
 def fill_dataframe(labels):
