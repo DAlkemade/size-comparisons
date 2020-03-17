@@ -18,7 +18,7 @@ def main():
     if args.datadir is not None:
         data_path = Path(args.datadir)
     inputparser = InputsParser(data_dir=data_path)
-    labels = inputparser.retrieve_labels()
+    labels = inputparser.retrieve_labels()[:10]
     fname = 'google_results_html.p'
     file_path = inputparser.data_dir / fname
     print(f'Will save result at {file_path}')
