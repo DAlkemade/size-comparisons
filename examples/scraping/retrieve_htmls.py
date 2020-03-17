@@ -21,6 +21,7 @@ def main():
     labels = inputparser.retrieve_labels()
     fname = 'google_results_html.p'
     file_path = inputparser.data_dir / fname
+    print(f'Will save result at {file_path}')
     urls = inputparser.retrieve_google_urls()
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
