@@ -99,6 +99,8 @@ def analyze_results(labels: list):
 
     print(f'Mean std: {data["std"].mean()}')
     print(f'Median std: {data["std"].median()}')
+    print(f'Mean mean: {data["mean"].mean()}')
+    print(f'Median mean: {data["mean"].median()}')
 
 
 def print_relevant_columns(df: pd.DataFrame, label: str):
