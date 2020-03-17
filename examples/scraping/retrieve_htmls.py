@@ -18,9 +18,9 @@ def main():
     if args.datadir is not None:
         data_path = Path(args.datadir)
     inputparser = InputsParser(data_dir=data_path)
-    labels = inputparser.retrieve_labels()
+    labels = inputparser.retrieve_labels()[:10]
     fname = 'google_results_html.p'
-    file_path = os.path.join('data', fname)
+    file_path = inputparser.data_dir / fname
     urls = inputparser.retrieve_google_urls()
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
