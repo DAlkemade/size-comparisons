@@ -18,5 +18,6 @@ setuptools.setup(
         'google',
         'pytest-asyncio',
         'aiohttp',
+        'nltk'
     ]
 )
