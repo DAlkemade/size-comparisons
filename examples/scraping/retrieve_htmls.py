@@ -27,10 +27,13 @@ def main():
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
     while True:
         try:
+            print("Try saving the results")
             with open(file_path, 'wb') as f:
                 pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
         except PermissionError:
-            time.sleep(300.)
+            wait = 300.
+            print(f"Received permissionerror, wait {wait} seconds before retry")
+            time.sleep(wait)
             continue
         break
 
