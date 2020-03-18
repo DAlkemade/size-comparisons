@@ -1,4 +1,7 @@
 # thesis_scraper
+## Installation
+Run `pip install -e .` in the root folder. This installs an editable package, which will automatically update when source files are modified.
+
  
  # Wikipedia retrieval notes
  get all images and info(but no description). see here for available properties: https://en.wikipedia.org/w/api.php?action=help&modules=query%2Bimageinfo
