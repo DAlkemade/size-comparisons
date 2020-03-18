@@ -1,7 +1,5 @@
 tqdm
-beautifulsoup4
 wikipedia-api
 google
-requests
 pytest-asyncio
 aiohttp
