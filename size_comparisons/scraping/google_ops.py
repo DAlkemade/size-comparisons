@@ -2,7 +2,7 @@ import pickle
 import pprint
 
 import tqdm
-from googlesearch import search
+from googlesearch import search # this is the package 'google'
 
 pp = pprint.PrettyPrinter()
 
