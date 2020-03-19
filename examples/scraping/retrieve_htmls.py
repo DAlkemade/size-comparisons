@@ -7,6 +7,7 @@ from pathlib import Path
 
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping import html_scraper
+from size_comparisons.scraping.lengths_regex import parse_documents_for_lengths
 
 
 def main():
@@ -36,6 +37,11 @@ def main():
             time.sleep(wait)
             continue
         break
+
+    # Immediately parse results due to saving error
+    lookups_wrapper = inputparser.retrieve_wikipedia_lookups()
+    fname_sizes = inputparser.data_dir / 'regex_sizes.p'
+    parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup, fname_sizes)
 
 
 if __name__ == "__main__":
