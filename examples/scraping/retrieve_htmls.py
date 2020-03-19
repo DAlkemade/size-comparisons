@@ -26,11 +26,12 @@ def main():
     urls = inputparser.retrieve_google_urls()
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
-    while True:
+    for i in range(2):
         try:
             print("Try saving the results")
             with open(file_path, 'wb') as f:
                 pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
+            print("Saved")
         except PermissionError:
             wait = 300.
             print(f"Received permissionerror, wait {wait} seconds before retry")
