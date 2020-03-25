@@ -75,13 +75,13 @@ class BaselineNumericGaussians(object):
         self.distance_matrix = dijkstra(csgraph=graph, directed=True, return_predecessors=False)
 
     def fill_adjacency_matrix(self):
+        print("Fill matrix")
         self.matrix = np.full((self.data_size, self.data_size), np.nan)
         index = self.data.index
         element_indices = list()
-        for i in tqdm.tqdm(index):
+        for i in index:
             for j in index[i:]:
                 element_indices.append((i,j))
-
         for i,j in tqdm.tqdm(element_indices):
             # TODO handle singlevalue and empty lists
             sizes1 = self.data.iloc[i]['sizes']
