@@ -48,10 +48,14 @@ class InputsParser(object):
     def retrieve_regex_scraper_sizes(self) -> dict:
         return pickle.load(open(self.data_dir / 'regex_sizes.p', 'rb'))
 
-    def retrieve_frequencies(self):
-        with open(self.data_dir / 'frequencies.json', 'r') as in_file:
-            ngram_count_lookup = json.load(in_file)
-        return ngram_count_lookup
+    def retrieve_frequencies(self) -> dict:
+        return self.parse_json('frequencies.json')
 
     def retrieve_test_pairs(self) -> pd.DataFrame:
         return pd.read_csv(self.data_dir / 'test_pairs.txt')
+
+    def parse_json(self, fname: str) -> dict:
+        with open(self.data_dir / fname, 'r') as in_file:
+            res = json.load(in_file)
+        return res
+
