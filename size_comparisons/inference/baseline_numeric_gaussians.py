@@ -77,24 +77,27 @@ class BaselineNumericGaussians(object):
     def fill_adjacency_matrix(self):
         self.matrix = np.full((self.data_size, self.data_size), np.nan)
         index = self.data.index
-
+        element_indices = list()
         for i in tqdm.tqdm(index):
             for j in index[i:]:
-                # TODO handle singlevalue and empty lists
-                sizes1 = self.data.iloc[i]['sizes']
-                sizes2 = self.data.iloc[j]['sizes']
-                tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
-                # Based on https://stackoverflow.com/a/46229127
-                # TODO might be an error in assumptions by dividing p by 2 to get one-sided, since we have unequal variances
-                one_sided_p = p / 2
-                if tvalue > 0:
-                    p1 = one_sided_p
-                    p2 = 1 - one_sided_p
-                else:
-                    p1 = 1- one_sided_p
-                    p2= one_sided_p
-                self.matrix[i, j] = p1
-                self.matrix[j, i] = p2
+                element_indices.append((i,j))
+
+        for i,j in tqdm.tqdm(element_indices):
+            # TODO handle singlevalue and empty lists
+            sizes1 = self.data.iloc[i]['sizes']
+            sizes2 = self.data.iloc[j]['sizes']
+            tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
+            # Based on https://stackoverflow.com/a/46229127
+            # TODO might be an error in assumptions by dividing p by 2 to get one-sided, since we have unequal variances
+            one_sided_p = p / 2
+            if tvalue > 0:
+                p1 = one_sided_p
+                p2 = 1 - one_sided_p
+            else:
+                p1 = 1- one_sided_p
+                p2= one_sided_p
+            self.matrix[i, j] = p1
+            self.matrix[j, i] = p2
 
 
 
