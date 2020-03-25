@@ -132,3 +132,4 @@ data/frequencies
 data/frequencies.json
 *.p
 *.google-cookie
+tmp/

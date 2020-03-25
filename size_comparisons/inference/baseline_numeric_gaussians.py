@@ -1,9 +1,13 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import tqdm
 from scipy import stats
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import dijkstra
+
+from size_comparisons.parse_objects import InputsParser
 
 
 class BaselineNumericGaussiansLazy(object):
@@ -107,6 +111,9 @@ class BaselineNumericGaussians(object):
         index1 = self.retrieve_index_for_name(object1)
         index2 = self.retrieve_index_for_name(object2)
         return self._shortest_path(index1, index2)
+
+    def save_adjacency_matrix(self, dir: Path):
+        np.save(str(dir / 'adjacency_matrix'), self.matrix)
 
 
 def find_confidences_for_pairs_lazy(data: pd.DataFrame, test_pairs_tuples: list):

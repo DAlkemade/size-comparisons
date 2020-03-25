@@ -1,5 +1,6 @@
 import pprint
 from collections import namedtuple
+from pathlib import Path
 
 import pandas as pd
 from scipy.stats import norm
@@ -21,6 +22,8 @@ def test_non_lazy_baseline_integration():
     tiger_to_insect = baseline.shortest_path('tiger', 'insect')
     insect_to_tiger = baseline.shortest_path('insect', 'tiger')
     assert tiger_to_insect < insect_to_tiger
+    dir = Path('D://GitHubD//size-comparisons//tmp')
+    baseline.save_adjacency_matrix(dir)
 
 
 def test_relation_update():

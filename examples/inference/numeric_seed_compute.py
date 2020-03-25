@@ -8,9 +8,9 @@ def main():
     input_parser = InputsParser()
     labels = input_parser.retrieve_labels()
     data = fill_dataframe(labels)
-    test_pairs = input_parser.retrieve_test_pairs()
-    test_pairs_tuples = list(test_pairs.itertuples(name='TestPair', index=False))
-    find_confidences_for_pairs_lazy(data, test_pairs_tuples)
+    baseline = BaselineNumericGaussians(data)
+    baseline.fill_adjacency_matrix()
+    baseline.save_adjacency_matrix(input_parser.data_dir)
 
 
 if __name__ == "__main__":
