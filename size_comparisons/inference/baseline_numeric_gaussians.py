@@ -26,8 +26,12 @@ class BaselineNumericGaussians(object):
                     sizes1 = self.data.iloc[i]['sizes']
                     sizes2 = self.data.iloc[j]['sizes']
                     tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
-                    self.adjancency_matrix_cache[i, j] = tvalue
-                    self.adjancency_matrix_cache[j, i] = -tvalue
+                    # Based on https://stackoverflow.com/a/46229127
+                    # TODO might be an error in assumptions by dividing p by 2 to get one-sided, since we have unequal variances
+                    one_sided_p = p/2
+                    one_sided_p_other_way = 1 - one_sided_p
+                    self.adjancency_matrix_cache[i, j] = one_sided_p
+                    self.adjancency_matrix_cache[j, i] = one_sided_p_other_way
 
     def retrieve_mu_std(self, name: str) -> (float, float):
         row = self.retrieve_row(name)
@@ -65,7 +69,7 @@ class BaselineNumericGaussians(object):
 
 def find_confidences_for_pairs_lazy(data: pd.DataFrame, test_pairs_tuples: list):
     baseline = BaselineNumericGaussians(data)
-    # baseline.fill_adjacency_matrix()
+    baseline.fill_adjacency_matrix()
     for pair in test_pairs_tuples:
         try:
             name1 = pair.object1
