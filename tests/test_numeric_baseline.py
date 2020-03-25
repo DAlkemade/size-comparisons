@@ -43,7 +43,6 @@ def test_relation_update():
     print_info(baseline)
     tiger_cat_after = baseline.shortest_path('tiger', 'cat')
     assert tiger_cat_after < tiger_cat_before
-    assert abs(tiger_cat_after - baseline.shortest_path('tiger', 'dog') <= min_p)
 
 
 def print_info(baseline):

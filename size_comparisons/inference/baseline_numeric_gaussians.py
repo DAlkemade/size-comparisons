@@ -76,25 +76,23 @@ class BaselineNumericGaussians(object):
 
         for i in tqdm.tqdm(index):
             for j in index[i:]:
-                if i != j:
-                    # TODO handle singlevalue and empty lists
-                    sizes1 = self.data.iloc[i]['sizes']
-                    sizes2 = self.data.iloc[j]['sizes']
-                    tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
-                    # Based on https://stackoverflow.com/a/46229127
-                    # TODO might be an error in assumptions by dividing p by 2 to get one-sided, since we have unequal variances
-                    one_sided_p = p / 2
-                    if tvalue > 0:
-                        p1 = one_sided_p
-                        p2 = 1 - one_sided_p
-                    else:
-                        p1 = 1- one_sided_p
-                        p2= one_sided_p
-                    self.matrix[i, j] = p1
-                    self.matrix[j, i] = p2
-                    print()
+                # TODO handle singlevalue and empty lists
+                sizes1 = self.data.iloc[i]['sizes']
+                sizes2 = self.data.iloc[j]['sizes']
+                tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
+                # Based on https://stackoverflow.com/a/46229127
+                # TODO might be an error in assumptions by dividing p by 2 to get one-sided, since we have unequal variances
+                one_sided_p = p / 2
+                if tvalue > 0:
+                    p1 = one_sided_p
+                    p2 = 1 - one_sided_p
                 else:
-                    self.matrix[i,j] = 1.
+                    p1 = 1- one_sided_p
+                    p2= one_sided_p
+                self.matrix[i, j] = p1
+                self.matrix[j, i] = p2
+
+
 
     def _shortest_path(self, index1: int, index2: int):
         if self.distance_matrix is None:
