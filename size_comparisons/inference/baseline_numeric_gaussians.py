@@ -52,6 +52,13 @@ class BaselineNumericGaussians(object):
         self.matrix = matrix
         self.distance_matrix = None
 
+    def update_ttest_value(self, name1, name2, value):
+        # TODO add docstring
+        index1 = self.retrieve_index_for_name(name1)
+        index2 = self.retrieve_index_for_name(name2)
+        self.matrix[index1, index2] = value
+        self.matrix[index2, index1] = 1 - value
+
     @property
     def data_size(self):
         return self.data.shape[0]
@@ -60,6 +67,7 @@ class BaselineNumericGaussians(object):
         if self.matrix is None:
             raise ValueError('Graph is empty')
         graph = csr_matrix(self.matrix)
+        # TODO zero weights break the dijkstra system, so think about that
         self.distance_matrix = dijkstra(csgraph=graph, directed=True, return_predecessors=False)
 
     def fill_adjacency_matrix(self):
@@ -93,10 +101,13 @@ class BaselineNumericGaussians(object):
             raise ValueError('Distance matrix is empty, please run update_distance_matrix')
         return self.distance_matrix[index1, index2]
 
+    def retrieve_index_for_name(self, name: str):
+        return self.data.index[self.data['name'] == name][0]
+
     def shortest_path(self, object1: str, object2: str):
         # We know only one value will be returned
-        index1 = self.data.index[self.data['name'] == object1][0]
-        index2 = self.data.index[self.data['name'] == object2][0]
+        index1 = self.retrieve_index_for_name(object1)
+        index2 = self.retrieve_index_for_name(object2)
         return self._shortest_path(index1, index2)
 
 
