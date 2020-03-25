@@ -4,6 +4,7 @@ import pickle
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper
 
@@ -58,4 +59,7 @@ class InputsParser(object):
         with open(self.data_dir / fname, 'r') as in_file:
             res = json.load(in_file)
         return res
+
+    def load_adjacency_matrix(self) -> np.array:
+        return np.load(self.data_dir / 'adjacency_matrix')
 
