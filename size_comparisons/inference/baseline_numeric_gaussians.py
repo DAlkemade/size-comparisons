@@ -34,17 +34,6 @@ class BaselineNumericGaussians(object):
         row = self.retrieve_row(name)
         return row['sizes'].values[0]
 
-    def larger_than_simple(self, object1: str, object2: str) -> float:
-        mu1, std1 = self.retrieve_mu_std(object1)
-        mu2, std2 = self.retrieve_mu_std(object2)
-        if math.isnan(mu1) or math.isnan(mu2):
-            raise RuntimeWarning("Nan value, unreliable results")
-
-        mu_combine = mu1 - mu2
-        std = np.sqrt(std1 ** 2 + std2 ** 2)
-        cdf0 = stats.norm(mu_combine, std).cdf(0.)
-        return 1 - cdf0
-
     def ttest(self, object1: str, object2: str):
         # TODO how to use the fact that we know sizes can't be negative
         # TODO think about using the ztest (maybe increase number of pages scraped), because having gaussian might be
