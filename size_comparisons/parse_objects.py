@@ -52,7 +52,7 @@ class InputsParser(object):
         return self.parse_json('frequencies.json')
 
     def retrieve_test_pairs(self) -> pd.DataFrame:
-        return pd.read_csv(self.data_dir / 'test_pairs.txt')
+        return pd.read_csv(self.data_dir / 'test_pairs.csv')
 
     def parse_json(self, fname: str) -> dict:
         with open(self.data_dir / fname, 'r') as in_file:

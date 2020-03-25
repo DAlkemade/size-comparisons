@@ -9,9 +9,16 @@ from scipy import stats
 # scipy.stats.ttest_ind
 
 class BaselineNumericGaussians(object):
+    # TODO add ttest results cache for prepopulation
 
     def __init__(self, data: pd.DataFrame):
+        """Set up parameters.
+
+        :param data: dataframe with index in the form of range(0, len(data.index))
+        """
         self.data = data
+        data_size = self.data.shape[0]
+        self.pvalue_cache = np.full((data_size, data_size), np.nan)
 
     def retrieve_mu_std(self, name: str) -> (float, float):
         row = self.retrieve_row(name)
@@ -48,12 +55,11 @@ class BaselineNumericGaussians(object):
         # https://blog.minitab.com/blog/adventures-in-statistics-2/understanding-t-tests-1-sample-2-sample-and-paired-t-tests
         # p value: assuming the null hypothesis (the population means are the same) is true, what is the probability
         # of seeing the data that we are seeing or more extreme
-        mean_larger = self.larger_than_simple(object1, object2) > .5
 
-        return p, mean_larger
+        return p, tvalue > 0
 
 
-def find_confidences_for_pairs(data: pd.DataFrame, test_pairs_tuples: list):
+def find_confidences_for_pairs_lazy(data: pd.DataFrame, test_pairs_tuples: list):
     baseline = BaselineNumericGaussians(data)
     for pair in test_pairs_tuples:
         try:
@@ -70,4 +76,3 @@ def find_confidences_for_pairs(data: pd.DataFrame, test_pairs_tuples: list):
         print(f'Mean of {name1} is {"" if mean_larger else "not "}bigger than {name2}, null hypothesis p_value is '
               f'{ttest} and the difference is thus '
               f'{"" if ttest <= 0.05 else "not"} significant')
-
