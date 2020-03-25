@@ -4,9 +4,6 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from size_comparisons.parse_objects import InputsParser
-from size_comparisons.scraping.analyze import fill_dataframe
-
 
 # scipy.stats.f_oneway
 # scipy.stats.ttest_ind
@@ -56,12 +53,7 @@ class BaselineNumericGaussians(object):
         return p, mean_larger
 
 
-def main():
-    input_parser = InputsParser()
-    labels = input_parser.retrieve_labels()
-    data = fill_dataframe(labels)
-    test_pairs = input_parser.retrieve_test_pairs()
-    test_pairs_tuples = list(test_pairs.itertuples(name='TestPair', index=False))
+def find_confidences_for_pairs(data: pd.DataFrame, test_pairs_tuples: list):
     baseline = BaselineNumericGaussians(data)
     for pair in test_pairs_tuples:
         try:
@@ -79,6 +71,3 @@ def main():
               f'{ttest} and the difference is thus '
               f'{"" if ttest <= 0.05 else "not"} significant')
 
-
-if __name__ == "__main__":
-    main()
