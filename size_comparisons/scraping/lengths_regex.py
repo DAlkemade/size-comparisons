@@ -96,6 +96,7 @@ def regex_google_results(label: str, htmls_lookup: dict, max_size=280000):
         if len(html) > max_size:
             html = html[:max_size]
         matcher = LengthsFinderRegex(html)
+        print(f'done')
         sizes += matcher.find_all_matches()
     return sizes
 
