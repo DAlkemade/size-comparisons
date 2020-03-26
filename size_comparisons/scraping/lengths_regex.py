@@ -92,6 +92,7 @@ def regex_google_results(label: str, htmls_lookup: dict):
     htmls = htmls_lookup[label]
     sizes = []
     for html in htmls:
+        print(f'Length: {len(html)}')
         matcher = LengthsFinderRegex(html)
         sizes += matcher.find_all_matches()
     return sizes
