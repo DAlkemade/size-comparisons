@@ -118,7 +118,7 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
     sizes_lookup = input_parser.retrieve_regex_scraper_sizes()
     results = []
-    value_errors = 0
+    envelope_errors = 0
 
     for i in tqdm.trange(len(labels)):
         # Get name and label
@@ -146,18 +146,20 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
             # Create detector
             outlier_detector = EllipticEnvelope(contamination=.1)
             sizes_array = np.reshape(sizes, (-1, 1))
-            try:
-                # Fit detector
-                outlier_detector.fit(sizes_array)
-                preds = outlier_detector.predict(sizes_array)
+            with np.errstate(all='raise'):
+                try:
+                    # Fit detector
+                    outlier_detector.fit(sizes_array)
+                    preds = outlier_detector.predict(sizes_array)
 
-                # Predict outliers
+                    # Predict outliers
 
 
-            except (ValueError, RuntimeWarning):
-                clf = LocalOutlierFactor(n_neighbors=min(5, len(sizes_array) - 1), contamination=0.1)
-                preds = clf.fit_predict(sizes_array)
-                value_errors += 1
+                except (ValueError, RuntimeWarning, FloatingPointError):
+                    # Backoff: use LocalOutlierFActor outlier removal
+                    clf = LocalOutlierFactor(n_neighbors=min(5, len(sizes_array) - 1), contamination=0.1)
+                    preds = clf.fit_predict(sizes_array)
+                    envelope_errors += 1
 
             valid = np.extract(preds == 1, sizes_array)
             sizes = list(valid)
@@ -182,8 +184,8 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
         entry = Entry(label, name, exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
         results.append(entry)
 
-    if value_errors > 0:
-        print(f"WARNING: {value_errors} value errors while removing outliers")
+    if envelope_errors > 0:
+        print(f"WARNING: {envelope_errors} value errors while removing outliers")
     data = pd.DataFrame(results)
     return data
 
