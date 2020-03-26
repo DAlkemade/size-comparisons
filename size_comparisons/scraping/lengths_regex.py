@@ -92,13 +92,10 @@ def regex_google_results(label: str, htmls_lookup: dict, max_size=None):
     htmls = htmls_lookup[label]
     sizes = []
     for html in htmls:
-        print(f'Length: {len(html)}')
         if max_size is not None and len(html) > max_size:
             html = html[:max_size]
         matcher = LengthsFinderRegex(html)
-        print(f'done')
         sizes += matcher.find_all_matches()
-        print('added to sizes')
     return sizes
 
 
