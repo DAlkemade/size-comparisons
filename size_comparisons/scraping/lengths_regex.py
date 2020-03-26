@@ -126,7 +126,6 @@ def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, html
         wiki_lengths = regex_wiki(label, lookups_wrapper)
         sizes += wiki_lengths
         sizes += regex_google_results(label, htmls_lookup)
-        sizes.sort()
         results[label] = sizes
 
     pickle.dump(results, open(os.path.join(save_fname), 'wb'))
