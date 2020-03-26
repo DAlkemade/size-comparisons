@@ -39,10 +39,6 @@ def main():
             continue
         break
 
-    # Immediately parse results due to saving error
-    lookups_wrapper = inputparser.retrieve_wikipedia_lookups()
-    fname_sizes = inputparser.data_dir / 'regex_sizes.p'
-    parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup, fname_sizes)
 
 
 if __name__ == "__main__":

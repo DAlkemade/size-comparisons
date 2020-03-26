@@ -31,16 +31,17 @@ class LengthsFinderRegex:
         self.number_pattern = r'[0-9]+\.?[0-9]*'
         self.text = text
         self.matches = list()
+        self.contexts = list()
         self.debug = debug
 
-    def find_all_matches(self):
+    def find_all_matches(self) -> (list, list):
         """
         Find all matches using all patterns in UNITS and return them.
         :return:
         """
         for power, synonym_list in UNITS.items():
             self._find_pattern(synonym_list, power)
-        return self.matches
+        return self.matches, self.contexts
 
     @staticmethod
     def _convert_list_elements_to_float(matches):
@@ -53,10 +54,12 @@ class LengthsFinderRegex:
         :return:
         """
         local_matches = list()
+        contexts = list()
         # [ ,.;:$]
         for syn in synonyms:
+            contexts += re.findall(r"(^.*?%s.*?$)" % rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text, re.MULTILINE)
             local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
-        return local_matches
+        return local_matches, contexts
 
     def _find_pattern(self, synonyms, power):
         """
@@ -64,42 +67,47 @@ class LengthsFinderRegex:
         :param synonyms:
         :param power:
         """
-        matches = self._match_synonyms(synonyms)
+        matches, contexts = self._match_synonyms(synonyms)
         matches_floats = self._convert_list_elements_to_float(matches)
         matches_floats = [el * 10 ** power for el in matches_floats]
         if self.debug:
             print(f"Power {power}: {matches_floats} {matches}")
 
         self.matches += matches_floats
+        self.contexts += contexts
 
 
 pp = pprint.PrettyPrinter()
 
 
-def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
+def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper) -> (list, list):
     """Retrieve sizes from a wiki page."""
     lookup = lookups_wrapper.lookup(label)
     matches = []  # TODO maybe make empty list
+    contexts = []
     if lookup.exists() and not is_disambiguation(lookup):
         matcher = LengthsFinderRegex(lookup.text)
-        matches = matcher.find_all_matches()
+        matches, contexts = matcher.find_all_matches()
 
-    return matches
+    return matches, contexts
 
 
-def regex_google_results(label: str, htmls_lookup: dict, max_size=None):
+def regex_google_results(label: str, htmls_lookup: dict, max_size=None) -> (list, list):
     """Retrieve sizes from a list of html pages."""
     htmls = htmls_lookup[label]
-    sizes = []
+    sizes = list()
+    contexts = list()
     for html in htmls:
         if max_size is not None and len(html) > max_size:
             html = html[:max_size]
         matcher = LengthsFinderRegex(html)
-        sizes += matcher.find_all_matches()
-    return sizes
+        sizes_tmp, contexts_tmp = matcher.find_all_matches()
+        sizes += sizes_tmp
+        contexts += contexts_tmp
+    return sizes, contexts
 
 
-def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, htmls_lookup: dict, save_fname: str):
+def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, htmls_lookup: dict, save_fname: str, fname_contexts:str):
     """Find all lengths for objects in labels using the htmls and wikipedia texts.
 
     :param labels: wordnet labels to find the lengths for
@@ -116,14 +124,20 @@ def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, html
     print(f'Median doc length: {np.median(lengths)}')
 
     results = {}
+    results_contexts = {}
 
     for i in tqdm.trange(len(labels)):
         label = labels[i]
-        sizes = []
-        wiki_lengths = regex_wiki(label, lookups_wrapper)
+        sizes = list()
+        contexts = list()
+        wiki_lengths, wiki_contexts = regex_wiki(label, lookups_wrapper)
+        contexts += wiki_contexts
         sizes += wiki_lengths
-        sizes += regex_google_results(label, htmls_lookup)
+        sizes_google, contexts_google = regex_google_results(label, htmls_lookup)
+        sizes += sizes_google
+        contexts += contexts_google
         results[label] = sizes
+        results_contexts[label] = contexts
 
-    pickle.dump(results, open(os.path.join(save_fname), 'wb'))
-    pp.pprint(results)
+    pickle.dump(results, open(save_fname, 'wb'))
+    pickle.dump(results_contexts, open(fname_contexts, 'wb'))

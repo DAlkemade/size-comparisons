@@ -11,7 +11,8 @@ def main():
 
     htmls_lookup = inputparser.retrieve_google_results_html()
     fname = inputparser.data_dir / 'regex_sizes.p'
-    parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup, fname)
+    fname_contexts = inputparser.data_dir / 'regex_contexts.p'
+    parse_documents_for_lengths(labels, lookups_wrapper, htmls_lookup, fname, fname_contexts)
 
 
 if __name__ == "__main__":

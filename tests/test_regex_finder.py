@@ -23,7 +23,7 @@ def test_meters_pattern():
     Test whether we find the meters pattern.
     """
     finder = LengthsFinderRegex('the tiger is 4 meters long, wait no, 3.5 meters, no actually 5.5m.')
-    matches = finder.find_all_matches()
+    matches, _ = finder.find_all_matches()
     assert len(matches) == 3
     assert matches[0] == 4.
     assert matches[1] == 3.5
@@ -36,7 +36,7 @@ def test_centimeters_pattern():
     """
     finder = LengthsFinderRegex(
         'the tiger is 400 centimeters long, wait no, 300.5 centimeter, no actually 5.50cm. the serial number is s500m.')
-    matches = finder.find_all_matches()
+    matches, _ = finder.find_all_matches()
     assert len(matches) == 3
     assert matches[0] == 4.
     assert matches[1] == 300.5 / 100
@@ -48,7 +48,7 @@ def test_kilometers_pattern():
     Test whether we find the km pattern.
     """
     finder = LengthsFinderRegex('It is 400km.')
-    matches = finder.find_all_matches()
+    matches, _ = finder.find_all_matches()
     assert len(matches) == 1
     assert matches[0] == 400000.
 
@@ -58,7 +58,7 @@ def test_no_pattern():
     Test whether if it skips a wrong pattern.
     """
     finder = LengthsFinderRegex('That is a lot of meters.')
-    matches = finder.find_all_matches()
+    matches, _ = finder.find_all_matches()
     assert len(matches) == 0
 
 
@@ -68,7 +68,7 @@ def test_tiger_wiki(wikipedia):
     """
     tiger_text = wikipedia.page('Tiger').text
     finder = LengthsFinderRegex(tiger_text, debug=False)
-    matches = finder.find_all_matches()
+    matches, _ = finder.find_all_matches()
     print(matches)
     plt.hist(matches)
     plt.show()
