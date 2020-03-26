@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 from sklearn.covariance import EllipticEnvelope
+from sklearn.neighbors import LocalOutlierFactor
 
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import is_disambiguation
@@ -117,6 +118,7 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
     sizes_lookup = input_parser.retrieve_regex_scraper_sizes()
     results = []
+    value_errors = 0
 
     for i in tqdm.trange(len(labels)):
         # Get name and label
@@ -143,26 +145,30 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
         if remove_outliers and len(sizes) > 2:
             # Create detector
             outlier_detector = EllipticEnvelope(contamination=.1)
+            sizes_array = np.reshape(sizes, (-1, 1))
             try:
                 # Fit detector
-                sizes_array = np.reshape(sizes, (-1, 1))
                 outlier_detector.fit(sizes_array)
                 preds = outlier_detector.predict(sizes_array)
-                valid = np.extract(preds == 1, sizes_array)
-                sizes = list(valid)
 
                 # Predict outliers
-                if debug:
-                    valid = np.sort(valid)
-                    invalid = np.extract(preds == -1, sizes_array)
-                    invalid = np.sort(invalid)
-                    print(f'valid: {valid}')
-                    print(f'invalid: {invalid}')
 
-            except ValueError:
-                # TODO readd print
-                # print("Something wrnog with data, e.g. too many zeros")
-                pass
+
+            except (ValueError, RuntimeWarning):
+                clf = LocalOutlierFactor(n_neighbors=min(5, len(sizes_array) - 1), contamination=0.1)
+                preds = clf.fit_predict(sizes_array)
+                value_errors += 1
+
+            valid = np.extract(preds == 1, sizes_array)
+            sizes = list(valid)
+            if name == 'cheese':
+                print(sizes)
+            if debug:
+                valid = np.sort(valid)
+                invalid = np.extract(preds == -1, sizes_array)
+                invalid = np.sort(invalid)
+                print(f'valid: {valid}')
+                print(f'invalid: {invalid}')
 
         n_data_points = len(sizes)
         mean, std = mean_and_std(sizes)
@@ -176,6 +182,9 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
         n = check_n(name)
         entry = Entry(label, name, exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
         results.append(entry)
+
+    if value_errors > 0:
+        print(f"WARNING: {value_errors} value errors while removing outliers")
     data = pd.DataFrame(results)
     return data
 
