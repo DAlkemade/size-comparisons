@@ -107,7 +107,7 @@ def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, html
     :param save_fname: path to save the result to
     """
     lengths = []
-    for key, value in htmls_lookup:
+    for key, value in htmls_lookup.items():
         for doc in value:
             lengths.append(len(doc))
 
