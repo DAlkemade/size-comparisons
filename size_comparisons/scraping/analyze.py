@@ -8,6 +8,7 @@ import tqdm
 from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
+from sklearn.covariance import EllipticEnvelope
 
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import is_disambiguation
@@ -78,7 +79,7 @@ def retrieve_synset(label: str):
 
 def analyze_results(labels: list):
     """Compiles scraped data and print and plot some key result."""
-    data = fill_dataframe(labels)
+    data = fill_dataframe(labels, remove_outliers=True, remove_zeroes=True)
     data.sort_values('count', inplace=True)
     print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
@@ -107,7 +108,7 @@ def print_relevant_columns(df: pd.DataFrame, label: str):
     print(f'{label}: \n{df[["name", "mean", "std", "n_data_points"]]}')
 
 
-def fill_dataframe(labels: list):
+def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug=False):
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
     input_parser = InputsParser()
@@ -133,6 +134,36 @@ def fill_dataframe(labels: list):
         disambiguation = is_disambiguation(lookup)
 
         sizes = sizes_lookup[label]
+        if remove_zeroes:
+            new_sizes = []
+            for size in sizes:
+                if size > 0.:
+                    new_sizes.append(size)
+            sizes = new_sizes
+        if remove_outliers and len(sizes) > 2:
+            # Create detector
+            outlier_detector = EllipticEnvelope(contamination=.1)
+            try:
+                # Fit detector
+                sizes_array = np.reshape(sizes, (-1, 1))
+                outlier_detector.fit(sizes_array)
+                preds = outlier_detector.predict(sizes_array)
+                valid = np.extract(preds == 1, sizes_array)
+                sizes = list(valid)
+
+                # Predict outliers
+                if debug:
+                    valid = np.sort(valid)
+                    invalid = np.extract(preds == -1, sizes_array)
+                    invalid = np.sort(invalid)
+                    print(f'valid: {valid}')
+                    print(f'invalid: {invalid}')
+
+            except ValueError:
+                # TODO readd print
+                # print("Something wrnog with data, e.g. too many zeros")
+                pass
+
         n_data_points = len(sizes)
         mean, std = mean_and_std(sizes)
         # plot_sizes_with_gaussian(sizes, name)
