@@ -161,8 +161,7 @@ def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug
 
             valid = np.extract(preds == 1, sizes_array)
             sizes = list(valid)
-            if name == 'cheese':
-                print(sizes)
+            
             if debug:
                 valid = np.sort(valid)
                 invalid = np.extract(preds == -1, sizes_array)
