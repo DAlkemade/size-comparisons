@@ -2,6 +2,7 @@ import os
 import pickle
 import pprint
 import re
+import numpy as np
 
 # The key is the power of 10 it is compared to meters
 import tqdm
@@ -104,6 +105,14 @@ def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, html
     :param htmls_lookup: dict with lists of htmls for all objects in labels
     :param save_fname: path to save the result to
     """
+    lengths = []
+    for key, value in htmls_lookup:
+        for doc in value:
+            lengths.append(len(doc))
+
+    print(f'Mean doc length: {np.mean(lengths)}')
+    print(f'Median doc length: {np.median(lengths)}')
+
     results = {}
 
     for i in tqdm.trange(len(labels)):
