@@ -87,12 +87,14 @@ def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper):
     return matches
 
 
-def regex_google_results(label: str, htmls_lookup: dict):
+def regex_google_results(label: str, htmls_lookup: dict, max_size=280000):
     """Retrieve sizes from a list of html pages."""
     htmls = htmls_lookup[label]
     sizes = []
     for html in htmls:
         print(f'Length: {len(html)}')
+        if len(html) > max_size:
+            html = html[:max_size]
         matcher = LengthsFinderRegex(html)
         sizes += matcher.find_all_matches()
     return sizes
