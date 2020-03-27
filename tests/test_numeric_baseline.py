@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pandas as pd
 from scipy.stats import norm
-
 from size_comparisons.inference.baseline_numeric_gaussians import BaselineNumericGaussians
 
 pp = pprint.PrettyPrinter()
@@ -27,7 +26,7 @@ def test_non_lazy_baseline_integration():
 
 
 def test_relation_update():
-    min_p = 0.0000000000000001
+    min_p = 0.0
     Entry = namedtuple('Entry', ['name', 'sizes'])
     data_list = list()
     data_list.append(Entry('tiger', norm.rvs(1.2, .1, size=30)))
@@ -46,6 +45,19 @@ def test_relation_update():
     print_info(baseline)
     tiger_cat_after = baseline.shortest_path('tiger', 'cat')
     assert tiger_cat_after < tiger_cat_before
+
+
+def test_zero_weight_edge():
+    Entry = namedtuple('Entry', ['name', 'sizes'])
+    data_list = list()
+    data_list.append(Entry('tiger', norm.rvs(10000.0, .1, size=500)))
+    data_list.append(Entry('insect', norm.rvs(1., .01, size=500)))
+    data = pd.DataFrame(data_list)
+    baseline = BaselineNumericGaussians(data)
+    baseline.fill_adjacency_matrix()
+    baseline.update_distance_matrix()
+    tiger_to_insect = baseline.shortest_path('tiger', 'insect')
+    assert tiger_to_insect == 0.
 
 
 def print_info(baseline):

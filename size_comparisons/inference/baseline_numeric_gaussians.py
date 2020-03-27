@@ -5,7 +5,8 @@ import pandas as pd
 import tqdm
 from scipy import stats
 from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import dijkstra
+from scipy.sparse.csgraph import shortest_path
+from scipy.sparse.csgraph._tools import csgraph_from_dense
 
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.analyze import fill_dataframe
@@ -71,9 +72,9 @@ class BaselineNumericGaussians(object):
     def update_distance_matrix(self):
         if self.matrix is None:
             raise ValueError('Graph is empty')
-        graph = csr_matrix(self.matrix)
+        graph = csgraph_from_dense(self.matrix, null_value=np.inf)
         # TODO zero weights break the dijkstra system, so think about that
-        self.distance_matrix = dijkstra(csgraph=graph, directed=True, return_predecessors=False)
+        self.distance_matrix = shortest_path(csgraph=graph, method='D', directed=True, return_predecessors=False)
 
     def fill_adjacency_matrix(self):
         print("Fill matrix")
@@ -96,7 +97,7 @@ class BaselineNumericGaussians(object):
                 p2 = 1 - one_sided_p
             else:
                 p1 = 1- one_sided_p
-                p2= one_sided_p
+                p2 = one_sided_p
             self.matrix[i, j] = p1
             self.matrix[j, i] = p2
 
