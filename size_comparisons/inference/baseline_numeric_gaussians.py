@@ -8,6 +8,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import dijkstra
 
 from size_comparisons.parse_objects import InputsParser
+from size_comparisons.scraping.analyze import fill_dataframe
 
 
 class BaselineNumericGaussiansLazy(object):
@@ -136,3 +137,13 @@ def find_confidences_for_pairs_lazy(data: pd.DataFrame, test_pairs_tuples: list)
         print(
             f'Mean of {name1} is {"" if t_statistic > 0 else "not "}bigger than {name2}, null hypothesis tstatistic is '
             f'{t_statistic}')
+
+
+def load_and_update_baseline() -> BaselineNumericGaussians:
+    input_parser = InputsParser()
+    labels = input_parser.retrieve_labels()
+    data = fill_dataframe(labels)
+    matrix = input_parser.load_adjacency_matrix()
+    baseline = BaselineNumericGaussians(data, matrix= matrix)
+    baseline.update_distance_matrix()
+    return baseline
