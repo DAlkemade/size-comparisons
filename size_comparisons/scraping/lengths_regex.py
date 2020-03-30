@@ -41,8 +41,8 @@ class LengthsFinderRegex:
         Find all matches using all patterns in UNITS and return them.
         :return:
         """
-        for power, synonym_list in UNITS.items():
-            self._find_pattern(synonym_list, power)
+        for factor, synonym_list in UNITS.items():
+            self._find_pattern(synonym_list, factor)
         return self.matches, self.contexts
 
     @staticmethod
@@ -64,17 +64,17 @@ class LengthsFinderRegex:
             local_matches += re.findall(pattern, self.text)
         return local_matches, contexts
 
-    def _find_pattern(self, synonyms, power):
+    def _find_pattern(self, synonyms, factor):
         """
         Find all matches for a certain order in the length scale and then convert to meters.
         :param synonyms:
-        :param power:
+        :param factor:
         """
         matches, contexts = self._match_synonyms(synonyms)
         matches_floats = self._convert_list_elements_to_float(matches)
-        matches_floats = [el * 10 ** power for el in matches_floats]
+        matches_floats = [el * factor for el in matches_floats]
         if self.debug:
-            print(f"Power {power}: {matches_floats} {matches}")
+            print(f"Power {factor}: {matches_floats} {matches}")
 
         self.matches += matches_floats
         self.contexts += contexts
