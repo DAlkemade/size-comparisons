@@ -7,7 +7,8 @@ from size_comparisons.scraping.analyze import fill_dataframe
 def main():
     input_parser = InputsParser()
     labels = input_parser.retrieve_labels()
-    data = fill_dataframe(labels)
+    names = input_parser.retrieve_names()
+    data = fill_dataframe(names, labels)
     test_pairs = input_parser.retrieve_test_pairs()
     test_pairs_tuples = list(test_pairs.itertuples(name='TestPair', index=False))
     find_confidences_for_pairs_lazy(data, test_pairs_tuples)

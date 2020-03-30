@@ -7,7 +7,8 @@ selected = ['tiger', 'insect', 'ocean', 'cat', 'dog']
 def main():
     input_parser = InputsParser()
     labels = input_parser.retrieve_labels()
-    data = fill_dataframe(labels)
+    names = input_parser.retrieve_names()
+    data = fill_dataframe(names, labels)
     # mask = data['name'].isin(selected)
     # data = data[mask]
     baseline = BaselineNumericGaussians(data)

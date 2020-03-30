@@ -96,9 +96,9 @@ def print_statistics(data: pd.DataFrame):
     print(f'Mean mean: {data["mean"].mean()}')
     print(f'Median mean: {data["mean"].median()}')
 
-def analyze_results(labels: list):
+def analyze_results(labels: list, names: list):
     """Compiles scraped data and print and plot some key result."""
-    data = fill_dataframe(labels, remove_outliers=True, remove_zeroes=True)
+    data = fill_dataframe(names, labels, remove_outliers=True, remove_zeroes=True)
     data.sort_values('mean', inplace=True)
     print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
@@ -118,11 +118,10 @@ def print_relevant_columns(df: pd.DataFrame, label: str):
     print(f'{label}: \n{df[["name", "mean", "std", "n_data_points", "label"]]}')
 
 
-def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug=False, datadir: str = None):
+def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True, debug=False, datadir: str = None):
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
     input_parser = InputsParser(data_dir=datadir)
-    names = input_parser.retrieve_names()
     ngram_count_lookup = input_parser.retrieve_frequencies()
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
     sizes_lookup = input_parser.retrieve_regex_scraper_sizes()
