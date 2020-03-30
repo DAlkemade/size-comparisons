@@ -48,7 +48,7 @@ class LengthsFinderRegex:
         Find all matches using all patterns in UNITS and return them.
         :return:
         """
-        for factor, synonym_list in UNITS.items():
+        for factor, synonym_list in UNITS_OLD.items():
             self._find_pattern(synonym_list, factor)
         return self.matches, self.contexts
 
@@ -69,8 +69,8 @@ class LengthsFinderRegex:
             pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}[ ,.;:)]'
             if self.save_context:
                 contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
-            # local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
-            local_matches += re.findall(pattern, self.text)
+            local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
+            # local_matches += re.findall(pattern, self.text)
         return local_matches, contexts
 
     def _find_pattern(self, synonyms, factor):
