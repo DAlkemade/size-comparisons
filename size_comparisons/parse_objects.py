@@ -61,5 +61,5 @@ class InputsParser(object):
         return res
 
     def load_adjacency_matrix(self) -> np.array:
-        return np.load(self.data_dir / 'adjacency_matrix')
+        return np.load(self.data_dir / 'adjacency_matrix.npy')
 

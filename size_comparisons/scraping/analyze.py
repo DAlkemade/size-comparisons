@@ -109,10 +109,10 @@ def print_relevant_columns(df: pd.DataFrame, label: str):
     print(f'{label}: \n{df[["name", "mean", "std", "n_data_points"]]}')
 
 
-def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug=False):
+def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug=False, datadir: str = None):
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
-    input_parser = InputsParser()
+    input_parser = InputsParser(data_dir=datadir)
     names = input_parser.retrieve_names()
     ngram_count_lookup = input_parser.retrieve_frequencies()
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
