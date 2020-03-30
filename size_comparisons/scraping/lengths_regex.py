@@ -29,7 +29,8 @@ class LengthsFinderRegex:
     The 'matches' list is in METERS!!
     """
 
-    def __init__(self, text: str, debug=False):
+    def __init__(self, text: str, debug=False, save_context=True):
+        self.save_context = save_context
         self.number_pattern = r'[0-9]+\.?[0-9]*'
         self.text = text
         self.matches = list()
@@ -60,7 +61,8 @@ class LengthsFinderRegex:
         # [ ,.;:$]
         for syn in synonyms:
             pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}[ ,.;:)]'
-            contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
+            if self.save_context:
+                contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
             local_matches += re.findall(pattern, self.text)
         return local_matches, contexts
 
