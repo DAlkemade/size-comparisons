@@ -29,7 +29,7 @@ class LengthsFinderRegex:
     The 'matches' list is in METERS!!
     """
 
-    def __init__(self, text: str, debug=False, save_context=False):
+    def __init__(self, text: str, debug=False, save_context=True):
         self.save_context = save_context
         self.number_pattern = r'[0-9]+\.?[0-9]*'
         self.text = text
