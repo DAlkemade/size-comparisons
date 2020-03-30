@@ -78,6 +78,8 @@ def retrieve_synset(label: str):
     return wn.synset_from_pos_and_offset(pos, offset)
 
 def print_statistics(data: pd.DataFrame):
+    total_data_points = np.sum(data['sizes'].str.len())
+    print(f'Total number of found data points: {total_data_points}')
     stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
     create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
 
