@@ -10,10 +10,12 @@ import tqdm
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
 
 UNITS = {
-    -3: ['millimeters', 'millimeter', 'mm'],
-    -2: ['centimeters', 'centimeter', 'cm'],
-    0: ['meters', 'meter', 'm'],
-    3: ['kilometers', 'km', 'kilometer']
+    .001: ['millimeters', 'millimeter', 'mm'],
+    .01: ['centimeters', 'centimeter', 'cm'],
+    .0254: ['inches', 'inch', 'in', '"'],
+    .3048: ['feet', 'foot', 'ft'],
+    1.: ['meters', 'meter', 'm'],
+    1000.: ['kilometers', 'km', 'kilometer']
 
 }
 
@@ -57,8 +59,9 @@ class LengthsFinderRegex:
         contexts = list()
         # [ ,.;:$]
         for syn in synonyms:
-            contexts += re.findall(r"(^.*?%s.*?$)" % rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text, re.MULTILINE)
-            local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
+            pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}[ ,.;:)]'
+            contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
+            local_matches += re.findall(pattern, self.text)
         return local_matches, contexts
 
     def _find_pattern(self, synonyms, power):
