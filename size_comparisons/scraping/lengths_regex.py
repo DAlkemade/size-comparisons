@@ -8,12 +8,6 @@ import numpy as np
 import tqdm
 
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
-UNITS_OLD = {
-    .001: ['millimeters', 'millimeter', 'mm'],
-    .01: ['centimeters', 'centimeter', 'cm'],
-    1.0: ['meters', 'meter', 'm'],
-    1000.: ['kilometers', 'km', 'kilometer']
-}
 
 UNITS = {
     .001: ['millimeters', 'millimeter', 'mm', 'mms'],
@@ -69,7 +63,6 @@ class LengthsFinderRegex:
             pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}[ ,.;:)]'
             if self.save_context:
                 contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
-            # local_matches += re.findall(rf'[ ]({self.number_pattern})[ ]?{syn}[ ,.;:]', self.text)
             local_matches += re.findall(pattern, self.text)
         return local_matches, contexts
 
