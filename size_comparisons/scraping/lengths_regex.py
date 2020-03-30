@@ -12,7 +12,7 @@ from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambigua
 UNITS = {
     .001: ['millimeters', 'millimeter', 'mm'],
     .01: ['centimeters', 'centimeter', 'cm'],
-    .0254: ['inches', 'inch', 'in', '"'],
+    .0254: ['inches', 'inch', 'in'], #" left out on purpose to maintain precision
     .3048: ['feet', 'foot', 'ft'],
     1.: ['meters', 'meter', 'm'],
     1000.: ['kilometers', 'km', 'kilometer']

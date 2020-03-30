@@ -73,3 +73,18 @@ def test_tiger_wiki(wikipedia):
     plt.hist(matches)
     plt.show()
     assert len(matches) > 0
+
+def test_typical_wikipedia_notation():
+    finder = LengthsFinderRegex('will be 2 feet (0.61 m) long')
+    matches, _ = finder.find_all_matches()
+    assert len(matches) == 2
+    assert matches[0] == .6096
+    assert matches[1] == .61
+
+def test_inches_notation():
+    """We are not parsing " on purpose, since it will give a lot of noise"""
+    finder = LengthsFinderRegex('will be 2" long')
+    matches, _ = finder.find_all_matches()
+    assert len(matches) == 0
+
+
