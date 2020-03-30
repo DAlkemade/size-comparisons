@@ -5,7 +5,7 @@ import pprint
 pp = pprint.PrettyPrinter()
 
 exploration = SynsetsExploration(InputsParser())
-exploration.compute_intersections()
+exploration.retrieve_reformat_lists()
 
 intersection_yolo_imagenet = intersection(exploration.yolo_synset_names, exploration.imagenet_synset_names)
 

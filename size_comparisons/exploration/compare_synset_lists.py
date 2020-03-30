@@ -1,6 +1,5 @@
 import re
 
-from examples.exploration.compare_synset_lists import exploration
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.analyze import retrieve_synset
 
@@ -17,9 +16,9 @@ class SynsetsExploration:
         self.vg_synset_names = None
         self.imagenet_synset_names = None
 
-    def compute_intersections(self):
-        yolo_synset_ids = exploration.yolo_synset_ids()
-        imagenet_detection_synset_ids = exploration.imagenet_detection()
+    def retrieve_reformat_lists(self):
+        yolo_synset_ids = self.yolo_synset_ids()
+        imagenet_detection_synset_ids = self.imagenet_detection()
 
 
         self.yolo_synset_names = [retrieve_synset(label)._name for label in yolo_synset_ids]

@@ -49,6 +49,9 @@ class InputsParser(object):
     def retrieve_regex_scraper_sizes(self) -> dict:
         return pickle.load(open(self.data_dir / 'regex_sizes.p', 'rb'))
 
+    def retrieve_regex_scraper_contexts(self) -> dict:
+        return pickle.load(open(self.data_dir / 'regex_contexts.p', 'rb'))
+
     def retrieve_frequencies(self) -> dict:
         return self.parse_json('frequencies.json')
 

@@ -77,15 +77,7 @@ def retrieve_synset(label: str):
     offset = int(label[1:])
     return wn.synset_from_pos_and_offset(pos, offset)
 
-
-def analyze_results(labels: list):
-    """Compiles scraped data and print and plot some key result."""
-    data = fill_dataframe(labels, remove_outliers=True, remove_zeroes=True)
-    data.sort_values('count', inplace=True)
-    print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
-    print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
-    create_hist(data['n'], 'n')
-
+def print_statistics(data: pd.DataFrame):
     stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
     create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
 
@@ -104,9 +96,26 @@ def analyze_results(labels: list):
     print(f'Mean mean: {data["mean"].mean()}')
     print(f'Median mean: {data["mean"].median()}')
 
+def analyze_results(labels: list):
+    """Compiles scraped data and print and plot some key result."""
+    data = fill_dataframe(labels, remove_outliers=True, remove_zeroes=True)
+    data.sort_values('mean', inplace=True)
+    print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
+    print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
+    create_hist(data['n'], 'n')
+
+    print("Statistics all data:")
+    print_statistics(data)
+
+    data['std_relative'] = data['std'] / data['mean']
+    data.sort_values('std_relative', inplace=True)
+    data_lowest_half_stds = data.head(math.floor(len(data.index) / 2))
+    print("Statistics half data with lowest stds:")
+    print_statistics(data_lowest_half_stds)
+
 
 def print_relevant_columns(df: pd.DataFrame, label: str):
-    print(f'{label}: \n{df[["name", "mean", "std", "n_data_points"]]}')
+    print(f'{label}: \n{df[["name", "mean", "std", "n_data_points", "label"]]}')
 
 
 def fill_dataframe(labels: list, remove_outliers=True, remove_zeroes=True, debug=False, datadir: str = None):
