@@ -14,8 +14,8 @@ UNITS = {
     .01: ['centimeters', 'centimeter', 'cm', 'cms'],
     .0254: ['inches', 'inch'], #" and in left out on purpose to maintain precision
     .3048: ['feet', 'foot', 'ft'],
-    1.: ['meters', 'meter', 'm', 'ms'],
-    1000.: ['kilometers', 'km', 'kilometer']
+    1.: ['meters', 'meter', 'm'], # leave out ms since that is milliseconds
+    1000.: ['kilometers', 'km', 'kilometer', 'kms']
 
 }
 
