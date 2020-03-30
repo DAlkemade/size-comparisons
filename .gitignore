@@ -133,3 +133,5 @@ data/frequencies.json
 *.p
 *.google-cookie
 tmp/
+data/adjacency_matrix.npy
+data/adjacency_matrix_full_copy.npy
