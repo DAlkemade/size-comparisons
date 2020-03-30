@@ -10,11 +10,11 @@ import tqdm
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
 
 UNITS = {
-    .001: ['millimeters', 'millimeter', 'mm'],
-    .01: ['centimeters', 'centimeter', 'cm'],
-    .0254: ['inches', 'inch', 'in'], #" left out on purpose to maintain precision
+    .001: ['millimeters', 'millimeter', 'mm', 'mms'],
+    .01: ['centimeters', 'centimeter', 'cm', 'cms'],
+    .0254: ['inches', 'inch'], #" and in left out on purpose to maintain precision
     .3048: ['feet', 'foot', 'ft'],
-    1.: ['meters', 'meter', 'm'],
+    1.: ['meters', 'meter', 'm', 'ms'],
     1000.: ['kilometers', 'km', 'kilometer']
 
 }
