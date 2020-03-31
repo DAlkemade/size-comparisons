@@ -22,7 +22,7 @@ def main():
         pp.pprint(term)
         pp.pprint(synset_names[i])
         if PRINT_HTML:
-            with open('htmls.txt', 'wb') as f:
+            with open('htmls.txt', 'w') as f:
                 f.writelines(htmls[term])
         pp.pprint(regex_sizes[term])
         # pp.pprint(regex_contexts[term])
