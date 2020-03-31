@@ -62,10 +62,10 @@ class LengthsFinderRegex:
         for syn in synonyms:
             # (?:$|[^a-zA-Z])
             punct = r'[.,;:)]'
-            pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}(?:$|{punct} |{punct}$| )'
+            pattern = rf'(?:^|[ (-])({self.number_pattern})[ ]?{syn}(?:$|{punct} |{punct}$| )'
             if self.save_context:
                 contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
-            local_matches += re.findall(pattern, self.text)
+            local_matches += re.findall(pattern, self.text, re.MULTILINE)
         return local_matches, contexts
 
     def _find_pattern(self, synonyms, factor):
