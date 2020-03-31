@@ -9,7 +9,7 @@ nltk.download('wordnet')
 
 # TODO: think about 3-grams (body of water)
 
-def main():
+def main(analyze_blc_intersection=False):
     """Compile dataframe with scraper data and plot some results."""
     inputparser = InputsParser()
     labels = inputparser.retrieve_labels()
@@ -18,21 +18,22 @@ def main():
 
     analyze_results(labels, names)
 
-    exploration = SynsetsExploration(InputsParser())
-    exploration.retrieve_reformat_lists()
+    if analyze_blc_intersection:
+        exploration = SynsetsExploration(InputsParser())
+        exploration.retrieve_reformat_lists()
 
-    yolo_blc = intersection(exploration.yolo_synset_names, exploration.blc_synset_names)
-    index_yolo_in_blc = [name in yolo_blc for name in exploration.yolo_synset_names]
-    selected_names = list()
-    yolo_blc_ids = list()
-    for i, label in enumerate(labels):
-        if index_yolo_in_blc[i]:
-            yolo_blc_ids.append(label)
-            selected_names.append(names[i])
-            if label == 'n04088797':
-                print(names[i])
+        yolo_blc = intersection(exploration.yolo_synset_names, exploration.blc_synset_names)
+        index_yolo_in_blc = [name in yolo_blc for name in exploration.yolo_synset_names]
+        selected_names = list()
+        yolo_blc_ids = list()
+        for i, label in enumerate(labels):
+            if index_yolo_in_blc[i]:
+                yolo_blc_ids.append(label)
+                selected_names.append(names[i])
+                if label == 'n04088797':
+                    print(names[i])
 
-    analyze_results(yolo_blc_ids, selected_names)
+        analyze_results(yolo_blc_ids, selected_names)
 
 
 

@@ -109,13 +109,15 @@ def analyze_results(labels: list, names: list):
 
     print("Statistics all data:")
     print_statistics(data)
+    data.to_csv('data_full.csv')
 
     data['std_relative'] = data['std'] / data['mean']
-    data.sort_values('std_relative', inplace=True)
+    data.sort_values('mean', inplace=True)
     data_selected = data[data['std_relative'] < .5]
     n_unique_sizes = [len(set(row['sizes'])) for index, row in data_selected.iterrows()]
     data_selected['n_sizes_unique'] = n_unique_sizes
     data_selected = data_selected[data_selected['n_sizes_unique'] > 5]
+    data_selected.to_csv('data_selected.csv')
 
 
     print("Statistics selected data")

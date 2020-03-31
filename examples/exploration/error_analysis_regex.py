@@ -6,7 +6,7 @@ import pprint
 from size_comparisons.scraping.analyze import retrieve_synset
 
 pp = pprint.PrettyPrinter()
-PRINT_HTML = True
+PRINT_HTML = False
 
 
 analyzed_terms = ['n11860555']

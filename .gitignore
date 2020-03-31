@@ -136,3 +136,6 @@ tmp/
 data/adjacency_matrix.npy
 data/adjacency_matrix_full_copy.npy
 data/adjacency_matrix_small_subset.npy
+examples/exploration/htmls.txt
+examples/scraping/data_full.csv
+examples/scraping/data_selected.csv
