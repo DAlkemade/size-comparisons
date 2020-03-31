@@ -60,7 +60,9 @@ class LengthsFinderRegex:
         contexts = list()
         # [ ,.;:$]
         for syn in synonyms:
-            pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}[ ,.;:)]'
+            # (?:$|[^a-zA-Z])
+            punct = r'[.,;:)]'
+            pattern = rf'[ (-]({self.number_pattern})[ ]?{syn}(?:$|{punct} |{punct}$| )'
             if self.save_context:
                 contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
             local_matches += re.findall(pattern, self.text)

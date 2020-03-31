@@ -87,4 +87,8 @@ def test_inches_notation():
     matches, _ = finder.find_all_matches()
     assert len(matches) == 0
 
+def test_id_code():
 
+    finder = LengthsFinderRegex("https://photos.inautia.com/logosEmpresas/1/2/7/0/logo-boats-mediterrani-36113110191253696857526849654557m.jpg")
+    matches, _ = finder.find_all_matches()
+    assert len(matches) == 0
