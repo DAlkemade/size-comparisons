@@ -135,3 +135,4 @@ data/frequencies.json
 tmp/
 data/adjacency_matrix.npy
 data/adjacency_matrix_full_copy.npy
+data/adjacency_matrix_small_subset.npy

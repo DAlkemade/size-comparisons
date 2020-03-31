@@ -1,0 +1,134 @@
+[nltk_data] Downloading package wordnet to
+[nltk_data]     C:\Users\Daan\AppData\Roaming\nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+  0%|          | 0/9418 [00:00<?, ?it/s]C:\Users\Daan\Anaconda3\lib\site-packages\sklearn\covariance\_robust_covariance.py:644: UserWarning: The covariance matrix associated to your dataset is not full rank
+  warnings.warn("The covariance matrix associated to your dataset "
+100%|██████████| 9418/9418 [00:28<00:00, 330.62it/s]
+WARNING: 317 value errors while removing outliers
+Fraction of objects with wiki page: 0.9237630070078573
+Fraction of disambiguation pages (of total): 0.15990656190273944
+Statistics all data:
+Total number of found data points: 322892
+largest:
+                    name          mean           std  n_data_points      label
+8739             starlet  3.900000e+07  1.031843e+08              8  n10649197
+2336               china  2.926148e+06  3.841950e+06             19  n03018209
+4124         interceptor  2.451634e+06  4.779074e+06             20  n03577672
+4689          expressway  1.996792e+06  2.590747e+06             13  n03306610
+4203             felucca  1.891613e+06  2.796256e+06             12  n03327133
+8929       New Zealander  1.654047e+06  1.847035e+06             18  n09724533
+7903  Clark's nutcracker  9.745517e+05  1.495400e+06             14  n01581984
+881            shoreline  9.224555e+05  7.299990e+05             11  n09433839
+8927          Polynesian  9.074037e+05  1.443636e+06             10  n09727826
+8993            Nigerian  8.618860e+05  3.250703e+05              9  n09724785
+smallest:
+                    name      mean       std  n_data_points      label
+5904           artemisia  0.000032  0.000034             23  n11928352
+2221      soldering iron  0.000500  0.000000              6  n04258859
+1502               tooth  0.000576  0.000406             40  n04453037
+2301              reamer  0.000610  0.000739              8  n04059516
+4239                pulp  0.000863  0.000165              6  n06596607
+2887            strainer  0.000877  0.001198             10  n04332243
+3260          micrometer  0.000960  0.002128             44  n03759661
+2868                chip  0.001080  0.000815             10  n03020034
+9384           bracteole  0.001172  0.000697             95  n13155095
+3454  integrated circuit  0.001297  0.001066             16  n03577090
+Mean std: 22186.296038383214
+Median std: 0.4658715478840345
+Mean mean: 14031.474685624657
+Median mean: 0.8507386976090013
+Statistics half data with lowest stds:
+Total number of found data points: 165195
+largest:
+                 name           mean            std  n_data_points      label
+881         shoreline  922455.454545  729998.966268             11  n09433839
+8993         Nigerian  861886.000000  325070.301696              9  n09724785
+502   California wine  633494.499288  419971.822517             16  n07896060
+5483       bitterroot  480886.678571  172510.125104             14  n11860555
+8997        Ethiopian  478011.845511  406884.701163             18  n09705124
+6786         yearling  429176.478235  286622.970120             17  n01888181
+8928         European  409648.613278  274576.519182             48  n09686536
+8988         Togolese  377117.172500  320366.666030             40  n09734535
+4691       autostrada  332362.000000  185870.735017              7  n02762508
+4715         catacomb  319043.725000    7451.163274              8  n02981024
+smallest:
+                    name      mean       std  n_data_points      label
+2221      soldering iron  0.000500  0.000000              6  n04258859
+1502               tooth  0.000576  0.000406             40  n04453037
+4239                pulp  0.000863  0.000165              6  n06596607
+2868                chip  0.001080  0.000815             10  n03020034
+9384           bracteole  0.001172  0.000697             95  n13155095
+3454  integrated circuit  0.001297  0.001066             16  n03577090
+3031             gearset  0.001555  0.000594             22  n03432061
+3950               flask  0.001745  0.000239             11  n03359566
+2608         guitar pick  0.001952  0.001504             35  n03467796
+2583                pick  0.002325  0.001698             10  n03929660
+Mean std: 2557.7267780360107
+Median std: 0.1621074683316253
+Mean mean: 6921.374014593081
+Median mean: 0.5683333333333334
+ride
+100%|██████████| 2036/2036 [00:05<00:00, 393.58it/s]
+WARNING: 69 value errors while removing outliers
+Fraction of objects with wiki page: 0.9607072691552063
+Fraction of disambiguation pages (of total): 0.20039292730844793
+Statistics all data:
+Total number of found data points: 66182
+largest:
+           name          mean           std  n_data_points      label
+423       china  2.926148e+06  3.841950e+06             19  n03018209
+580        ride  6.303563e+05  1.185547e+06             50  n04088797
+997        road  5.440627e+05  7.002647e+05             19  n04096066
+321   satellite  4.294076e+05  1.068850e+06             23  n04137444
+1396   yearling  4.291765e+05  2.866230e+05             17  n01888181
+1976     musher  2.804042e+05  3.572625e+05             90  n10339717
+1580     curlew  2.682170e+05  3.793154e+05              6  n02033561
+1371     salmon  2.634051e+05  5.585979e+05             11  n02534734
+1747     pigeon  2.444171e+05  4.152806e+05             61  n01811909
+1157     flower  2.118884e+05  1.825743e+05              7  n11669921
+smallest:
+                name      mean       std  n_data_points      label
+555             chip  0.001080  0.000815             10  n03020034
+1788            mite  0.001822  0.003732             21  n01779629
+88           filling  0.002433  0.001202             15  n07883031
+112     orange juice  0.002714  0.001654             18  n07924834
+91           dietary  0.002823  0.002024             49  n07561590
+1790     neuropteron  0.003000  0.000000             10  n02263378
+1107  sewing machine  0.003250  0.000946              6  n04179913
+1034     diving suit  0.003470  0.001219            183  n03216402
+347            crown  0.003500  0.001775              8  n03138669
+750             nail  0.003550  0.002764              6  n03804744
+Mean std: 10194.710843374209
+Median std: 0.4447985368414946
+Mean mean: 10259.322296809813
+Median mean: 0.7291551785714285
+Statistics half data with lowest stds:
+Total number of found data points: 32788
+largest:
+                name           mean            std  n_data_points      label
+1396        yearling  429176.478235  286622.970120             17  n01888181
+2022          flower  211888.378686  182574.276169              7  n11669335
+1157          flower  211888.378686  182574.276169              7  n11669921
+145      resort area  198061.811090  165397.511480             78  n08640739
+48             chili  155450.093548   98043.969468             31  n07721456
+1977       astronaut   69033.495377   41486.875351             22  n09818022
+227   house of cards   45865.050000   18506.950000              8  n03545756
+998             adit   32558.096429   27735.368249             14  n02680512
+1919         laborer   29503.833333   16533.985758              6  n10241300
+1953          priest   12277.460123    9084.355354             65  n10470779
+smallest:
+                name      mean       std  n_data_points      label
+555             chip  0.001080  0.000815             10  n03020034
+88           filling  0.002433  0.001202             15  n07883031
+112     orange juice  0.002714  0.001654             18  n07924834
+91           dietary  0.002823  0.002024             49  n07561590
+1790     neuropteron  0.003000  0.000000             10  n02263378
+1107  sewing machine  0.003250  0.000946              6  n04179913
+1034     diving suit  0.003470  0.001219            183  n03216402
+347            crown  0.003500  0.001775              8  n03138669
+750             nail  0.003550  0.002764              6  n03804744
+1675            rook  0.004164  0.002244             55  n01579410
+Mean std: 4745.590616478784
+Median std: 0.1476361394021482
+Mean mean: 10160.200451343939
+Median mean: 0.5048315789473684

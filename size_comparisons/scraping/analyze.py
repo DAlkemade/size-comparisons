@@ -80,6 +80,7 @@ def retrieve_synset(label: str):
 def print_statistics(data: pd.DataFrame):
     total_data_points = np.sum(data['sizes'].str.len())
     print(f'Total number of found data points: {total_data_points}')
+    print(f'Number of objects: {len(data.index)}')
     stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
     create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
 
@@ -111,9 +112,14 @@ def analyze_results(labels: list, names: list):
 
     data['std_relative'] = data['std'] / data['mean']
     data.sort_values('std_relative', inplace=True)
-    data_lowest_half_stds = data.head(math.floor(len(data.index) / 2))
-    print("Statistics half data with lowest stds:")
-    print_statistics(data_lowest_half_stds)
+    data_selected = data[data['std_relative'] < .5]
+    n_unique_sizes = [len(set(row['sizes'])) for index, row in data_selected.iterrows()]
+    data_selected['n_sizes_unique'] = n_unique_sizes
+    data_selected = data_selected[data_selected['n_sizes_unique'] > 5]
+
+
+    print("Statistics selected data")
+    print_statistics(data_selected)
 
 
 def print_relevant_columns(df: pd.DataFrame, label: str):

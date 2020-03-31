@@ -1,8 +1,9 @@
-from size_comparisons.inference.baseline_numeric_gaussians import load_and_update_baseline
+from size_comparisons.inference.baseline_numeric_gaussians import load_baseline
 
 
 def main():
-    load_and_update_baseline()
+    baseline = load_baseline()
+    baseline.update_distance_matrix()
 
 if __name__ == "__main__":
     main()
