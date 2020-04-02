@@ -66,3 +66,13 @@ class InputsParser(object):
     def load_adjacency_matrix(self) -> np.array:
         return np.load(self.data_dir / 'adjacency_matrix.npy')
 
+    def load_hand_crafted(self) -> pd.DataFrame:
+        data = pd.read_csv(self.data_dir / 'manually_selected.csv')
+        return data
+
+
+if __name__ == "__main__":
+    parser = InputsParser(Path('D:\GitHubD\size-comparisons\data'))
+    data = parser.load_hand_crafted()
+    data['length'] = pd.to_numeric(data['length'])
+    print(data['length'])

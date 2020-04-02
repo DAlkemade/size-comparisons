@@ -94,10 +94,9 @@ def print_statistics(data: pd.DataFrame):
     nsmallest = data_with_suff_high_n.nsmallest(10, ['mean'])
     print_relevant_columns(nsmallest, 'smallest')
 
-    print(f'Mean std: {data["std"].mean()}')
-    print(f'Median std: {data["std"].median()}')
-    print(f'Mean mean: {data["mean"].mean()}')
-    print(f'Median mean: {data["mean"].median()}')
+    print(f'std | mean: {data["std"].mean()} | median: {data["std"].median()}')
+    print(f'Mean | mean: {data["mean"].mean()} | median: {data["mean"].median()}')
+    print(f'Count | mean: {data["count"].mean()} | median: {data["count"].median()}')
 
 def analyze_results(labels: list, names: list):
     """Compiles scraped data and print and plot some key result."""
@@ -196,7 +195,7 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
         # Add ngram count
         count = None
         if name in ngram_count_lookup.keys():
-            count = ngram_count_lookup[name]
+            count = int(ngram_count_lookup[name])
 
         n = check_n(name)
         entry = Entry(label, name, exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
