@@ -224,6 +224,7 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
     data.to_pickle(potential_fname)
     return data
 
+
 def create_hist(values: list, title: str, max_value=None, debug=False, nr_bins=None) -> None:
     """Plot histogram for a column of a dataframe.
 
