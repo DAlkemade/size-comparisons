@@ -1,10 +1,11 @@
 from __future__ import division
 
+import logging
 from typing import List
 
 import lucene
-# noinspection PyUnresolvedReferences
 import tqdm
+# noinspection PyUnresolvedReferences
 from java.nio.file import Paths
 # noinspection PyUnresolvedReferences
 from org.apache.lucene.analysis.standard import StandardAnalyzer
@@ -19,6 +20,11 @@ from org.apache.lucene.store import FSDirectory
 
 
 def find_frequencies_wikipedia(terms: List[str], index_location: str):
+    """Find frequencies using a Lucene index of wikipedia."""
+    # TODO doesn't find any n>1 grams due to missing location index on contents!
+
+
+    logging.warning('Not working! Does not find any n>1 grams')
     # noinspection PyUnresolvedReferences
     lucene.initVM(initialheap='32m', maxheap='4G')
     file = Paths.get(index_location)
@@ -32,3 +38,4 @@ def find_frequencies_wikipedia(terms: List[str], index_location: str):
         freqs[term_str] = freq
 
     reader.close()
+    return freqs

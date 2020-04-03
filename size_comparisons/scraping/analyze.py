@@ -1,4 +1,5 @@
 import math
+import os
 from collections import namedtuple
 from math import ceil
 
@@ -8,14 +9,14 @@ import tqdm
 from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
+from size_comparisons.parse_objects import InputsParser
+from size_comparisons.scraping.wikipedia import is_disambiguation
 from sklearn.covariance import EllipticEnvelope
 from sklearn.neighbors import LocalOutlierFactor
 
-from size_comparisons.parse_objects import InputsParser
-from size_comparisons.scraping.wikipedia import is_disambiguation
-
 Entry = namedtuple('Entry',
-                   ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'synset', 'n', 'sizes', 'mean', 'std',
+                   ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'count_wiki', 'synset', 'n', 'sizes',
+                    'mean', 'std',
                     'n_data_points'])
 
 
@@ -77,6 +78,7 @@ def retrieve_synset(label: str):
     offset = int(label[1:])
     return wn.synset_from_pos_and_offset(pos, offset)
 
+
 def print_statistics(data: pd.DataFrame):
     total_data_points = np.sum(data['sizes'].str.len())
     print(f'Total number of found data points: {total_data_points}')
@@ -98,6 +100,7 @@ def print_statistics(data: pd.DataFrame):
     print(f'Mean | mean: {data["mean"].mean()} | median: {data["mean"].median()}')
     print(f'Count | mean: {data["count"].mean()} | median: {data["count"].median()}')
 
+
 def analyze_results(labels: list, names: list):
     """Compiles scraped data and print and plot some key result."""
     data = fill_dataframe(names, labels, remove_outliers=True, remove_zeroes=True)
@@ -105,6 +108,11 @@ def analyze_results(labels: list, names: list):
     print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
     print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
     create_hist(data['n'], 'n')
+
+    create_hist(data['count_wiki'], 'wikipedia counts', max_value=30000, nr_bins=200)
+    create_hist(data['count_wiki'], 'wikipedia counts', max_value=1000, nr_bins=200)
+    counts_zero = len(data[data['count_wiki'] == 0].values)
+    print(f'#objects with 0 hits on wikipedia: {counts_zero}')
 
     print("Statistics all data:")
     print_statistics(data)
@@ -118,7 +126,6 @@ def analyze_results(labels: list, names: list):
     data_selected = data_selected[data_selected['n_sizes_unique'] > 5]
     data_selected.to_csv('data_selected.csv')
 
-
     print("Statistics selected data")
     print_statistics(data_selected)
 
@@ -127,11 +134,17 @@ def print_relevant_columns(df: pd.DataFrame, label: str):
     print(f'{label}: \n{df[["name", "mean", "std", "n_data_points", "label"]]}')
 
 
-def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True, debug=False, datadir: str = None):
+def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True, debug=False,
+                   datadir: str = None):
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
     input_parser = InputsParser(data_dir=datadir)
+    potential_fname = input_parser.data_dir / "parsed_data.csv"
+    if os.path.exists(potential_fname):
+        print('LOADING CACHED DATAFRAME')
+        return pd.read_csv(potential_fname)
     ngram_count_lookup = input_parser.retrieve_frequencies()
+    counts_wikipedia = input_parser.retrieve_frequencies(wikipedia=True)
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
     sizes_lookup = input_parser.retrieve_regex_scraper_sizes()
     results = []
@@ -180,7 +193,7 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
 
             valid = np.extract(preds == 1, sizes_array)
             sizes = list(valid)
-            
+
             if debug:
                 valid = np.sort(valid)
                 invalid = np.extract(preds == -1, sizes_array)
@@ -197,24 +210,33 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
         if name in ngram_count_lookup.keys():
             count = int(ngram_count_lookup[name])
 
+        count_wiki = None
+        if name in counts_wikipedia.keys():
+            count_wiki = int(counts_wikipedia[name])
+
         n = check_n(name)
-        entry = Entry(label, name, exists, disambiguation, count, synset, n, sizes, mean, std, n_data_points)
+        entry = Entry(label, name, exists, disambiguation, count, count_wiki, synset, n, sizes, mean, std,
+                      n_data_points)
         results.append(entry)
 
     if envelope_errors > 0:
         print(f"WARNING: {envelope_errors} value errors while removing outliers")
     data = pd.DataFrame(results)
+    data.to_csv(potential_fname)
     return data
 
-
-def create_hist(values: list, title: str, max_value=None) -> None:
+def create_hist(values: list, title: str, max_value=None, debug=False, nr_bins=None) -> None:
     """Plot histogram for a column of a dataframe.
 
     If a max_value is given, all values larger than that value are binned together in the last bin.
     """
     if max_value is None:
         max_value = ceil(np.amax(values))
-    bins = range(0, max_value)
+    if nr_bins is None:
+        nr_bins = max_value
+    bins = np.linspace(0, max_value, nr_bins)
+    if debug:
+        print(f'create hist for {title}')
     plt.hist(np.clip(values, bins[0], bins[-1]), bins=bins)
     plt.title(title)
     plt.show()

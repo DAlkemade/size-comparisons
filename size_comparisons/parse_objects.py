@@ -52,8 +52,11 @@ class InputsParser(object):
     def retrieve_regex_scraper_contexts(self) -> dict:
         return pickle.load(open(self.data_dir / 'regex_contexts.p', 'rb'))
 
-    def retrieve_frequencies(self) -> dict:
-        return self.parse_json('frequencies.json')
+    def retrieve_frequencies(self, wikipedia=False) -> dict:
+        if wikipedia:
+            return self.parse_json('frequencies_wikipedia.json')
+        else:
+            return self.parse_json('frequencies.json')
 
     def retrieve_test_pairs(self) -> pd.DataFrame:
         return pd.read_csv(self.data_dir / 'test_pairs.csv')

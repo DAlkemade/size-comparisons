@@ -30,10 +30,8 @@ def main(analyze_blc_intersection=False):
             if index_yolo_in_blc[i]:
                 yolo_blc_ids.append(label)
                 selected_names.append(names[i])
-                if label == 'n04088797':
-                    print(names[i])
 
-        analyze_results(yolo_blc_ids, selected_names)
+        # analyze_results(yolo_blc_ids, selected_names)
 
 
 

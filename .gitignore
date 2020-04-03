@@ -139,3 +139,5 @@ data/adjacency_matrix_small_subset.npy
 examples/exploration/htmls.txt
 examples/scraping/data_full.csv
 examples/scraping/data_selected.csv
+data/frequencies_wikipedia.json
+data/parsed_data.csv
