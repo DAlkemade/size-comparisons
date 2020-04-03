@@ -87,7 +87,12 @@ class BaselineNumericGaussians(object):
         for i,j in tqdm.tqdm(element_indices):
             sizes1 = self.data.iloc[i]['sizes']
             sizes2 = self.data.iloc[j]['sizes']
-            tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
+            if min(len(sizes1), len(sizes2)) <= 1:
+                # We don't trust results with only 1 data points, as it will give a deceiving std of 0
+                tvalue = 0
+                p = .5
+            else:
+                tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
             # Based on https://stackoverflow.com/a/46229127
             # TODO might be an error in assumptions by dividing p by 2 to get one-sided, since we have unequal variances
             one_sided_p = p / 2
