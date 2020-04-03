@@ -124,6 +124,7 @@ def analyze_results(labels: list, names: list):
     n_unique_sizes = [len(set(row['sizes'])) for index, row in data_selected.iterrows()]
     data_selected['n_sizes_unique'] = n_unique_sizes
     data_selected = data_selected[data_selected['n_sizes_unique'] > 5]
+    # TODO filter for wikipedia count > 100
     data_selected.to_csv('data_selected.csv')
 
     print("Statistics selected data")

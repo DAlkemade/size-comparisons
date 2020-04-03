@@ -85,7 +85,6 @@ class BaselineNumericGaussians(object):
             for j in index[i:]:
                 element_indices.append((i,j))
         for i,j in tqdm.tqdm(element_indices):
-            # TODO handle singlevalue and empty lists
             sizes1 = self.data.iloc[i]['sizes']
             sizes2 = self.data.iloc[j]['sizes']
             tvalue, p = stats.ttest_ind(sizes1, sizes2, equal_var=False)
