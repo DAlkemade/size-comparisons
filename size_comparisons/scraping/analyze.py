@@ -15,7 +15,7 @@ from sklearn.covariance import EllipticEnvelope
 from sklearn.neighbors import LocalOutlierFactor
 
 Entry = namedtuple('Entry',
-                   ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'count_wiki', 'synset', 'n', 'sizes',
+                   ['label', 'name', 'wiki_exists', 'disambiguation', 'count', 'count_wiki', 'n', 'sizes',
                     'mean', 'std',
                     'n_data_points'])
 
@@ -139,10 +139,10 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
     input_parser = InputsParser(data_dir=datadir)
-    potential_fname = input_parser.data_dir / "parsed_data.csv"
+    potential_fname = input_parser.data_dir / "parsed_data.pkl"
     if os.path.exists(potential_fname):
         print('LOADING CACHED DATAFRAME')
-        return pd.read_csv(potential_fname)
+        return pd.read_pickle(potential_fname)
     ngram_count_lookup = input_parser.retrieve_frequencies()
     counts_wikipedia = input_parser.retrieve_frequencies(wikipedia=True)
     wiki_lookup_wrapper = input_parser.retrieve_wikipedia_lookups()
@@ -156,8 +156,7 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
         label = labels[i]
 
         # Retrieve synset
-        synset = retrieve_synset(label)
-        # synsets_all_for_string.append(wn.synsets(name.replace(' ', '_')))
+        # synset = retrieve_synset(label)
 
         # Wikipedia entry
         lookup = wiki_lookup_wrapper.lookup(label)
@@ -215,14 +214,14 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
             count_wiki = int(counts_wikipedia[name])
 
         n = check_n(name)
-        entry = Entry(label, name, exists, disambiguation, count, count_wiki, synset, n, sizes, mean, std,
+        entry = Entry(label, name, exists, disambiguation, count, count_wiki, n, sizes, mean, std,
                       n_data_points)
         results.append(entry)
 
     if envelope_errors > 0:
         print(f"WARNING: {envelope_errors} value errors while removing outliers")
     data = pd.DataFrame(results)
-    data.to_csv(potential_fname)
+    data.to_pickle(potential_fname)
     return data
 
 def create_hist(values: list, title: str, max_value=None, debug=False, nr_bins=None) -> None:
