@@ -1,9 +1,13 @@
-from size_comparisons.inference.baseline_numeric_gaussians import find_confidences_for_pairs_lazy, \
-    BaselineNumericGaussians
+import pickle
+
+from size_comparisons.inference.baseline_numeric_gaussians import BaselineNumericGaussians
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.compilation import fill_dataframe
 
-selected = ['tiger', 'insect', 'ocean', 'cat', 'dog', 'crown', 'neuropteron', 'diving suit', 'light-emitting diode', 'stone']
+selected = ['tiger', 'insect', 'ocean', 'cat', 'dog', 'crown', 'neuropteron', 'diving suit', 'light-emitting diode',
+            'stone']
+
+
 def main():
     input_parser = InputsParser()
     labels = input_parser.retrieve_labels()
@@ -13,7 +17,7 @@ def main():
     # data = data[mask]
     baseline = BaselineNumericGaussians(data)
     baseline.fill_adjacency_matrix()
-    baseline.save_adjacency_matrix(input_parser.data_dir)
+    pickle.dump(baseline, open(input_parser.data_dir / 'baseline.p', 'rb'))
 
 
 if __name__ == "__main__":

@@ -22,6 +22,7 @@ class BaselineNumericGaussians(object):
         except KeyError:
             raise ValueError("Missing column in dataframe")
         self.data = data_filtered
+        self.data.reset_index(inplace=True)
         self.matrix = matrix
         self.distance_matrix = None
 
@@ -96,9 +97,6 @@ class BaselineNumericGaussians(object):
         index1 = self.retrieve_index_for_name(object1)
         index2 = self.retrieve_index_for_name(object2)
         return self._shortest_path(index1, index2)
-
-    def save_adjacency_matrix(self, dir: Path):
-        np.save(str(dir / 'adjacency_matrix'), self.matrix)
 
 
 def load_and_update_baseline(data_dir=None) -> BaselineNumericGaussians:
