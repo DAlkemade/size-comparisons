@@ -8,7 +8,7 @@ def main():
     """Retrieve google search results for all object lengths."""
     inputparser = InputsParser()
     names = inputparser.retrieve_names()
-    queries = [f'{name} length' for name in names]
+    queries = [[f'{name} length'] for name in names]
 
     labels = inputparser.retrieve_labels()
     fname = 'google_urls.p'

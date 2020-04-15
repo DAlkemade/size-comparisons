@@ -6,7 +6,7 @@ from googlesearch import search # this is the package 'google'
 
 pp = pprint.PrettyPrinter()
 
-NUM_RESULTS = 10
+NUM_RESULTS = 7
 
 
 def retrieve_query(query: str) -> list:
@@ -18,10 +18,11 @@ def retrieve_query(query: str) -> list:
 def retrieve_google_results(results: dict, queries: list, keys: list):
     """Retrieve URLs from google for a list of queries and update these results INPLACE in results dict."""
     for i in tqdm.trange(len(queries)):
-        name = queries[i]
+        queries_list = queries[i]
         label = keys[i]
         if label not in results.keys():
-            results[label] = retrieve_query(name)
+            for query in queries_list:
+                results[label] = retrieve_query(query)
 
 
 def create_or_update_results(file_path: str, queries: list, keys: list):

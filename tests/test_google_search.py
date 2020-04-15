@@ -20,7 +20,7 @@ def test_loading_updating_saving():
         os.remove(file_path)
     except FileNotFoundError:
         pass
-    names = ['tiger size', 'helicopter size']
+    names = [['tiger size'], ['helicopter size']]
     labels = ['tiger', 'helicopter']
 
     create_or_update_results(file_path, names, labels)

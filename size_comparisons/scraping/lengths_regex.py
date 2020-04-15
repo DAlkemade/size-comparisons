@@ -10,12 +10,12 @@ import tqdm
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
 
 UNITS = {
-    .001: ['millimeters', 'millimeter', 'mm', 'mms'],
-    .01: ['centimeters', 'centimeter', 'cm', 'cms'],
+    .001: ['millimeters', 'millimeter', 'mm', 'mms', 'millimetre', 'millimetres'],
+    .01: ['centimeters', 'centimeter', 'cm', 'cms', 'centimetre', 'centimetres'],
     .0254: ['inches', 'inch'], #" and in left out on purpose to maintain precision
     .3048: ['feet', 'foot', 'ft'],
-    1.: ['meters', 'meter', 'm'], # leave out ms since that is milliseconds
-    1000.: ['kilometers', 'km', 'kilometer', 'kms'],
+    1.: ['meters', 'meter', 'm', 'metre', 'metres'], # leave out ms since that is milliseconds
+    1000.: ['kilometers', 'km', 'kilometer', 'kms', 'kilometres', 'kilometres'],
     1609.3: ['miles', 'mile', 'mi']
 }
 
@@ -31,7 +31,7 @@ class LengthsFinderRegex:
 
     def __init__(self, text: str, debug=False, save_context=False):
         self.save_context = save_context
-        self.number_pattern = r'[0-9]+\.?[0-9]*'
+        self.number_pattern = r'[0-9][0-9,]*\.?[0-9]*'
         self.text = text
         self.matches = list()
         self.contexts = list()
@@ -62,7 +62,7 @@ class LengthsFinderRegex:
         for syn in synonyms:
             # (?:$|[^a-zA-Z])
             punct = r'[.,;:)]'
-            pattern = rf'(?:^|[ (-])({self.number_pattern})(?:[ ]|&#160;)?{syn}(?:$|{punct} |{punct}$| )'
+            pattern = rf'(?:^|[ \(-])({self.number_pattern})(?:[ ]|&#160;)?{syn}(?:$|{punct}+ |{punct}+$| )'
             if self.save_context:
                 contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
             local_matches += re.findall(pattern, self.text, re.MULTILINE)
@@ -75,6 +75,7 @@ class LengthsFinderRegex:
         :param factor:
         """
         matches, contexts = self._match_synonyms(synonyms)
+        matches = [match.replace(',', '') for match in matches]
         matches_floats = self._convert_list_elements_to_float(matches)
         matches_floats = [el * factor for el in matches_floats]
         if self.debug:
