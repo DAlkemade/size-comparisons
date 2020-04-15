@@ -41,3 +41,4 @@ def create_or_update_results(file_path: str, queries: list, keys: list):
         print("Something went wrong, saving intermediate result")
 
     pickle.dump(results, open(file_path, 'wb'))
+    return results

@@ -24,6 +24,7 @@ def test_meters_pattern():
     """
     finder = LengthsFinderRegex('the tiger is 4 meters long, wait no, 3.5 meters, no actually 5.5m.')
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     assert len(matches) == 3
     assert matches[0] == 4.
     assert matches[1] == 3.5
@@ -37,6 +38,7 @@ def test_centimeters_pattern():
     finder = LengthsFinderRegex(
         'the tiger is 400 centimeters long, wait no, 300.5 centimeter, no actually 5.50cm. the serial number is s500m.')
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     assert len(matches) == 3
     assert matches[0] == 4.
     assert matches[1] == 300.5 / 100
@@ -49,6 +51,7 @@ def test_kilometers_pattern():
     """
     finder = LengthsFinderRegex('It is 400km.')
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     assert len(matches) == 1
     assert matches[0] == 400000.
 
@@ -69,6 +72,7 @@ def test_tiger_wiki(wikipedia):
     tiger_text = wikipedia.page('Tiger').text
     finder = LengthsFinderRegex(tiger_text, debug=False)
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     print(matches)
     plt.hist(matches)
     plt.show()
@@ -77,6 +81,7 @@ def test_tiger_wiki(wikipedia):
 def test_typical_wikipedia_notation():
     finder = LengthsFinderRegex('will be 2 feet (0.61 m) long')
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     assert len(matches) == 2
     assert matches[0] == .6096
     assert matches[1] == .61
@@ -97,10 +102,18 @@ def test_newline():
 
     finder = LengthsFinderRegex("test 3.5m.\ntest 4.5m.")
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     assert len(matches) == 2
 
 def test_newlines():
 
     finder = LengthsFinderRegex("\n4.5m.\n")
     matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
+    assert len(matches) == 1
+
+def test_no_break_space():
+    finder = LengthsFinderRegex("4.5&#160;meter")
+    matches, _ = finder.find_all_matches()
+    strings, matches = zip(*matches)
     assert len(matches) == 1

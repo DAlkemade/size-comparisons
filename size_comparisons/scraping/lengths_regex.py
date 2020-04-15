@@ -62,7 +62,7 @@ class LengthsFinderRegex:
         for syn in synonyms:
             # (?:$|[^a-zA-Z])
             punct = r'[.,;:)]'
-            pattern = rf'(?:^|[ (-])({self.number_pattern})[ ]?{syn}(?:$|{punct} |{punct}$| )'
+            pattern = rf'(?:^|[ (-])({self.number_pattern})(?:[ ]|&#160;)?{syn}(?:$|{punct} |{punct}$| )'
             if self.save_context:
                 contexts += re.findall(r"(^.*?%s.*?$)" % pattern, self.text, re.MULTILINE)
             local_matches += re.findall(pattern, self.text, re.MULTILINE)
@@ -80,7 +80,7 @@ class LengthsFinderRegex:
         if self.debug:
             print(f"Power {factor}: {matches_floats} {matches}")
 
-        self.matches += matches_floats
+        self.matches += zip(matches, matches_floats)
         self.contexts += contexts
 
 
@@ -95,6 +95,7 @@ def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper) -> (list, list):
     if lookup.exists() and not is_disambiguation(lookup):
         matcher = LengthsFinderRegex(lookup.text)
         matches, contexts = matcher.find_all_matches()
+        _, matches = zip(*matches)
 
     return matches, contexts
 
@@ -109,6 +110,7 @@ def regex_google_results(label: str, htmls_lookup: dict, max_size=None) -> (list
             html = html[:max_size]
         matcher = LengthsFinderRegex(html)
         sizes_tmp, contexts_tmp = matcher.find_all_matches()
+        _, sizes_tmp = zip(*sizes_tmp)
         sizes += sizes_tmp
         contexts += contexts_tmp
     return sizes, contexts

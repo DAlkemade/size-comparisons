@@ -1,8 +1,10 @@
 import asyncio
+import unicodedata
 from collections import namedtuple
 
 import aiohttp
 import tqdm
+from bs4 import BeautifulSoup
 
 CONCURRENT_TASKS = 50
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
@@ -26,7 +28,7 @@ async def request(url_obj: ObjectURL, sem) -> (str, ObjectURL, int):
     """Request a url and return response."""
     async with sem, aiohttp.ClientSession() as session:
         try:
-            async with session.get(url_obj.url) as resp:
+            async with session.get(url_obj.url, timeout=10) as resp:
                 # TODO only reads html, not pdfs
                 return await resp.text(), url_obj, resp.status
         except UnicodeDecodeError as e:
@@ -56,6 +58,16 @@ async def main(results: dict, labels: list, urls_lookup: dict):
     # results_list = await asyncio.gather(*tasks)
     error_count = 0
     for html, url_obj, status in results_list:
+        try:
+            soup = BeautifulSoup(html, features="lxml")
+        except TypeError:
+            error_count += 1
+            continue
+        tags_to_remove = ['script', 'style']
+        for tag in soup.find_all(tags_to_remove):
+            tag.extract()
+        html = soup.get_text('\n')
+        html = unicodedata.normalize("NFKD", html)
         if url_obj.label not in results.keys():
             results[url_obj.label] = []
         if status == 200:
