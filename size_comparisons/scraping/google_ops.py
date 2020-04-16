@@ -21,8 +21,9 @@ def retrieve_google_results(results: dict, queries: list, keys: list):
         queries_list = queries[i]
         label = keys[i]
         if label not in results.keys():
+            results[label] = []
             for query in queries_list:
-                results[label] = retrieve_query(query)
+                results[label] = results[label] + retrieve_query(query)
 
 
 def create_or_update_results(file_path: str, queries: list, keys: list):
