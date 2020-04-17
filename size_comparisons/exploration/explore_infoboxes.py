@@ -85,7 +85,6 @@ df = df.dropna()
 
 df['any'] = (df['height']) | (df['size']) | (df['length'])
 groups = df.groupby(['category']).agg(['mean', 'size'])
-print(groups)
 groups.to_csv(inputparser.data_dir / 'infoboxes.csv')
 
 print(df.groupby(['category']).size())
