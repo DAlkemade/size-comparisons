@@ -42,8 +42,8 @@ inputparser = InputsParser()
 names = inputparser.retrieve_names()
 labels = inputparser.retrieve_labels()
 records = [Record(name, labels[i]) for i, name in enumerate(names)]
-random.seed(42)
-records = random.sample(records, 30)
+random.seed(41)
+records = random.sample(records, 1000)
 del names
 del labels
 
@@ -63,9 +63,12 @@ for record in records:
 
 ngram_count_lookup = inputparser.retrieve_frequencies()
 for record in records:
-    count = int(ngram_count_lookup[record.name])
-    record.count = count
-
+    try:
+        count = int(ngram_count_lookup[record.name])
+        record.count = count
+    except KeyError:
+        record.count = None
+        continue
 
 data_dict = dict()
 data_dict['names'] = [record.name for record in records]
@@ -76,6 +79,10 @@ data_dict['category'] = [record.category for record in records]
 data_dict['count'] = [record.count for record in records]
 
 df = pd.DataFrame(data=data_dict)
+fname = inputparser.data_dir / 'infoboxes_data.pkl'
+df.to_pickle(fname)
+df = df.dropna()
+
 df['any'] = (df['height']) | (df['size']) | (df['length'])
 groups = df.groupby(['category']).agg(['mean', 'size'])
 print(groups)
@@ -85,13 +92,12 @@ print(df.groupby(['category']).size())
 
 print(f'total means: {df.mean()}')
 
+
 x = df['count'].values
 anys = df['any'].values
-print(x)
-print(anys)
 
 
-bin_means, bin_edges, binnumber = stats.binned_statistic(x, anys, 'sum', bins=10)
+bin_means, bin_edges, binnumber = stats.binned_statistic(x, anys, 'mean', bins=10)
 plt.figure()
 plt.plot(x, anys, 'b.', label='raw data')
 plt.hlines(bin_means, bin_edges[:-1], bin_edges[1:], colors='g', lw=5,
