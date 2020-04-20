@@ -4,13 +4,14 @@ from collections import namedtuple
 
 import aiohttp
 import tqdm
+from typing import Dict
 from bs4 import BeautifulSoup
 
-CONCURRENT_TASKS = 50
+CONCURRENT_TASKS = 40
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
 
-def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop):
+def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop) -> Dict[str, list]:
     """Create file with html from urls."""
 
     results = dict()
