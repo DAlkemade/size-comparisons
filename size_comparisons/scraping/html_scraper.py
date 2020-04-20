@@ -41,12 +41,11 @@ async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int)
             return e, url_obj, -1
         except aiohttp.ClientError as e:
             print(f'Client error: {e}')
+            return e, url_obj, -1
         except Exception as e:
             print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
             logging.error(traceback.format_exc())
             return e, url_obj, -1
-        except:
-            print(f"Don't know what went wrong")
 
 
 async def main(results: dict, labels: list, urls_lookup: dict):
