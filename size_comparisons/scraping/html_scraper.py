@@ -1,4 +1,6 @@
 import asyncio
+import logging
+import traceback
 import unicodedata
 from collections import namedtuple
 import ssl
@@ -41,6 +43,7 @@ async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int)
             print(f'Client error: {e}')
         except Exception as e:
             print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
+            logging.error(traceback.format_exc())
             return e, url_obj, -1
         except:
             print(f"Don't know what went wrong")
