@@ -7,7 +7,7 @@ import tqdm
 from typing import Dict
 from bs4 import BeautifulSoup
 
-CONCURRENT_TASKS = 40
+CONCURRENT_TASKS = 50
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
 
