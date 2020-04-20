@@ -7,7 +7,7 @@ import tqdm
 from typing import Dict
 from bs4 import BeautifulSoup
 
-CONCURRENT_TASKS = 50
+CONCURRENT_TASKS = 20
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
 
 
@@ -35,6 +35,8 @@ async def request(url_obj: ObjectURL, sem) -> (str, ObjectURL, int):
         except UnicodeDecodeError as e:
             # is not HTML and thus we do not support it.
             return e, url_obj, -1
+        except aiohttp.ClientError as e:
+            print(f'Client error: {e}')
         except Exception as e:
             print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
             return e, url_obj, -1
