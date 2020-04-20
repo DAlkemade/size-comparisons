@@ -42,6 +42,9 @@ async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int)
         except aiohttp.ClientError as e:
             print(f'Client error: {e}')
             return e, url_obj, -1
+        except asyncio.TimeoutError as e:
+            print(f'Timeouterror for url: {url_obj.url}')
+            return e, url_obj, -1
         except Exception as e:
             print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
             logging.error(traceback.format_exc())
