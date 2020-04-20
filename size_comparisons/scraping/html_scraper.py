@@ -1,6 +1,8 @@
 import asyncio
 import unicodedata
 from collections import namedtuple
+import ssl
+import certifi
 
 import aiohttp
 import tqdm
@@ -25,11 +27,11 @@ def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop) -> Dict[str
     return results
 
 
-async def request(url_obj: ObjectURL, sem) -> (str, ObjectURL, int):
+async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int):
     """Request a url and return response."""
     async with sem, aiohttp.ClientSession() as session:
         try:
-            async with session.get(url_obj.url, timeout=10) as resp:
+            async with session.get(url_obj.url, timeout=10, ssl=ssl_context) as resp:
                 # TODO only reads html, not pdfs
                 return await resp.text(), url_obj, resp.status
         except UnicodeDecodeError as e:
@@ -55,7 +57,8 @@ async def main(results: dict, labels: list, urls_lookup: dict):
                 urls_list.append(url_obj)
 
     sem = asyncio.Semaphore(CONCURRENT_TASKS)
-    tasks = [request(url_obj, sem) for url_obj in urls_list]
+    sslcontext = ssl.create_default_context(cafile=certifi.where())
+    tasks = [request(url_obj, sem, sslcontext) for url_obj in urls_list]
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
     # results_list = await asyncio.gather(*tasks)
