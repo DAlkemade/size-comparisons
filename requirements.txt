@@ -7,3 +7,4 @@ wikipedia-api
 google
 pytest-asyncio
 aiohttp
+pandas
