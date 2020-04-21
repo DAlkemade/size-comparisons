@@ -8,3 +8,4 @@ google
 pytest-asyncio
 aiohttp
 pandas
+sklearn
