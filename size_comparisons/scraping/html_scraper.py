@@ -77,7 +77,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
         tags_to_remove = ['script', 'style']
         for tag in soup.find_all(tags_to_remove):
             tag.extract()
-        html = soup.get_text('\n')
+        html = soup.get_text()
         html = unicodedata.normalize("NFKD", html)
         if url_obj.label not in results.keys():
             results[url_obj.label] = []
