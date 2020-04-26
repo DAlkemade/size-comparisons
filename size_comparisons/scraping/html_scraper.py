@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 
 CONCURRENT_TASKS = 10
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
+TIMEOUT = 20
 
 
 def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop) -> Dict[str, list]:
@@ -33,7 +34,7 @@ async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int)
     """Request a url and return response."""
     async with sem, aiohttp.ClientSession() as session:
         try:
-            async with session.get(url_obj.url, timeout=10, ssl=ssl_context) as resp:
+            async with session.get(url_obj.url, timeout=TIMEOUT, ssl=ssl_context) as resp:
                 # TODO only reads html, not pdfs
                 return await resp.text(), url_obj, resp.status
         except UnicodeDecodeError as e:
