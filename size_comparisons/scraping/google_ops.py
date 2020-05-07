@@ -1,5 +1,6 @@
 import pickle
 import pprint
+import logging
 
 import tqdm
 from googlesearch import search # this is the package 'google'
@@ -8,6 +9,7 @@ pp = pprint.PrettyPrinter()
 
 NUM_RESULTS = 7
 
+logger = logging.getLogger(__name__)
 
 def retrieve_query(query: str) -> list:
     """Retrieve URLs from google with certain parameters."""
@@ -39,8 +41,7 @@ def create_or_update_results(file_path: str, queries: list, keys: list):
     try:
         retrieve_google_results(results, queries, keys)
     except Exception as e:  # TODO specify error (403 http)
-        print(e)
-        print("Something went wrong, saving intermediate result")
+        logger.exception("Something went wrong, saving intermediate result")
 
     pickle.dump(results, open(file_path, 'wb'))
     return results

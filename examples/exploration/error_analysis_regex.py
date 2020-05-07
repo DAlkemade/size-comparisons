@@ -5,6 +5,15 @@ import pprint
 
 from size_comparisons.scraping.analyze import retrieve_synset
 
+import logging
+from datetime import datetime
+from logging_setup_dla.logging import set_up_root_logger
+import os
+
+set_up_root_logger(f'COMPARE_{datetime.now().strftime("%d%m%Y%H%M%S")}', os.getcwd())
+
+logger = logging.getLogger(__name__)
+
 pp = pprint.PrettyPrinter()
 PRINT_HTML = False
 

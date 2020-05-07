@@ -3,6 +3,14 @@ import pickle
 from size_comparisons.inference.baseline_numeric_gaussians import BaselineNumericGaussians
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.compilation import fill_dataframe
+import logging
+from datetime import datetime
+from logging_setup_dla.logging import set_up_root_logger
+import os
+
+set_up_root_logger(f'COMPARE_{datetime.now().strftime("%d%m%Y%H%M%S")}', os.getcwd())
+
+logger = logging.getLogger(__name__)
 
 selected = ['tiger', 'insect', 'ocean', 'cat', 'dog', 'crown', 'neuropteron', 'diving suit', 'light-emitting diode',
             'stone']
