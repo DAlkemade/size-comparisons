@@ -1,7 +1,4 @@
-
 from size_comparisons.parse_objects import InputsParser
-
-import pprint
 
 from size_comparisons.scraping.analyze import retrieve_synset
 
@@ -14,7 +11,6 @@ set_up_root_logger(f'ERRORANALYSIS_{datetime.now().strftime("%d%m%Y%H%M%S")}', o
 
 logger = logging.getLogger(__name__)
 
-pp = pprint.PrettyPrinter()
 PRINT_HTML = False
 
 
@@ -28,16 +24,19 @@ def main():
     regex_sizes = input_parser.retrieve_regex_scraper_sizes()
     regex_contexts = input_parser.retrieve_regex_scraper_contexts()
     for i, term in enumerate(analyzed_terms):
-        pp.pprint(term)
-        pp.pprint(synset_names[i])
+        logger.info(term)
+        logger.info(synset_names[i])
         if PRINT_HTML:
             with open('htmls.txt', 'w') as f:
                 f.writelines(htmls[term])
         else:
-            pp.pprint(regex_contexts[term])
-        pp.pprint(regex_sizes[term])
-        # pp.pprint(regex_contexts[term])
+            logger.info(regex_contexts[term])
+        logger.info(regex_sizes[term])
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        logger.exception("Unhandled exception")
+        raise

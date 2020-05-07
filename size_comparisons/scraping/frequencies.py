@@ -3,6 +3,9 @@ import json
 import os
 
 import tqdm
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FrequencyRetriever:
@@ -52,7 +55,7 @@ class FrequencyRetriever:
 
     def _scan_bigrams(self):
         bigram_files = self._find_bigram_files()
-        print("Scanning bigrams")
+        logger.info("Scanning bigrams")
         for i in tqdm.trange(len(bigram_files)):
             file = bigram_files[i]
             self._scan_file_for_ngrams(os.path.join('2gms', file))
@@ -67,7 +70,7 @@ def retrieve_frequencies(names: list, save_fname: str):
         if name in freqs.keys():
             count += 1
     frac_found = count / len(names)
-    print(f'Found the frequency for fraction {frac_found}')
+    logger.info(f'Found the frequency for fraction {frac_found}')
     # Save json
     with open(save_fname, 'w') as wf:
         json.dump(freqs, wf)

@@ -10,7 +10,9 @@ from size_comparisons.scraping.analyze import retrieve_synset
 from scipy import stats
 import numpy as np
 import matplotlib.pyplot as plt
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Record:
     def __init__(self, name, label):
@@ -87,9 +89,9 @@ df['any'] = (df['height']) | (df['size']) | (df['length'])
 groups = df.groupby(['category']).agg(['mean', 'size'])
 groups.to_csv(inputparser.data_dir / 'infoboxes.csv')
 
-print(df.groupby(['category']).size())
+logger.info(df.groupby(['category']).size())
 
-print(f'total means: {df.mean()}')
+logger.info(f'total means: {df.mean()}')
 
 
 x = df['count'].values

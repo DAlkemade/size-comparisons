@@ -29,19 +29,19 @@ def main():
     labels = inputparser.retrieve_labels()
     fname = 'google_results_html.p'
     file_path = inputparser.data_dir / fname
-    print(f'Will save result at {file_path}')
+    logger.info(f'Will save result at {file_path}')
     urls = inputparser.retrieve_google_urls()
     loop = asyncio.get_event_loop()
     htmls_lookup = html_scraper.create_or_update_urls_html(labels, urls, loop)
     for i in range(2):
         try:
-            print("Try saving the results")
+            logger.info("Try saving the results")
             with open(file_path, 'wb') as f:
                 pickle.dump(htmls_lookup, f, pickle.HIGHEST_PROTOCOL)
-            print("Saved")
+            logger.info("Saved")
         except PermissionError:
             wait = 300.
-            print(f"Received permissionerror, wait {wait} seconds before retry")
+            logger.info(f"Received permissionerror, wait {wait} seconds before retry")
             time.sleep(wait)
             continue
         break
@@ -49,4 +49,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        logger.exception("Unhandled exception")
+        raise
+

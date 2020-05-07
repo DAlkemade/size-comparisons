@@ -45,4 +45,9 @@ def main(analyze_blc_intersection=False):
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        logger.exception("Unhandled exception")
+        raise
+

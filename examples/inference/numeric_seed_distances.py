@@ -14,4 +14,9 @@ def main():
     load_and_update_baseline()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        logger.exception("Unhandled exception")
+        raise
+

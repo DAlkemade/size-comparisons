@@ -18,13 +18,17 @@ from org.apache.lucene.search import IndexSearcher, PhraseQuery
 # noinspection PyUnresolvedReferences
 from org.apache.lucene.store import FSDirectory
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def find_frequencies_wikipedia(terms: List[str], index_location: str):
     """Find frequencies using a Lucene index of wikipedia."""
     # TODO doesn't find any n>1 grams due to missing location index on contents!
 
 
-    logging.warning('Not working! Does not find any n>1 grams')
+    logger.warning('Not working! Does not find any n>1 grams')
     # noinspection PyUnresolvedReferences
     lucene.initVM(initialheap='32m', maxheap='4G')
     file = Paths.get(index_location)

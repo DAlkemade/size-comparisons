@@ -8,6 +8,9 @@ from scipy.sparse.csgraph import shortest_path
 from scipy.sparse.csgraph._tools import csgraph_from_dense
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.compilation import fill_dataframe
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BaselineNumericGaussians(object):
@@ -53,7 +56,7 @@ class BaselineNumericGaussians(object):
 
     def fill_adjacency_matrix(self):
         """Compute ttest values between all objects."""
-        print("Fill matrix")
+        logger.info("Fill matrix")
         self.matrix = np.full((self.data_size, self.data_size), np.nan)
         index = self.data.index
         element_indices = list()

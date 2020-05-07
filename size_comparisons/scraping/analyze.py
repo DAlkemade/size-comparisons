@@ -6,6 +6,9 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 from size_comparisons.scraping.compilation import fill_dataframe, mean_and_std
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def plot_sizes_with_gaussian(sizes: list, title: str):
@@ -32,11 +35,11 @@ def print_some_info_on_synset(wiki, synset_string: str) -> None:
     :param synset_string: Exact synset string
     """
     apple = wn.synset(synset_string)
-    print(apple.definition())
-    print(apple.hypernyms())
-    print(apple.lexname())
-    apple_lookup = wiki.page('apple')
-    print(apple_lookup.langlinks)
+    logger.info(apple.definition())
+    logger.info(apple.hypernyms())
+    logger.info(apple.lexname())
+    logger.info = wiki.page('apple')
+    logger.info(apple.langlinks)
 
 
 def retrieve_synset(label: str):
@@ -53,8 +56,8 @@ def retrieve_synset(label: str):
 def print_statistics(data: pd.DataFrame):
     """Plot and print interesting features of the objects dataframe."""
     total_data_points = np.sum(data['sizes'].str.len())
-    print(f'Total number of found data points: {total_data_points}')
-    print(f'Number of objects: {len(data.index)}')
+    logger.info(f'Total number of found data points: {total_data_points}')
+    logger.info(f'Number of objects: {len(data.index)}')
     stds_for_at_least_one_datapoint = data[data['n_data_points'] > 0]['std']
     create_hist(stds_for_at_least_one_datapoint, 'std for n_data_points > 0', max_value=100)
 
@@ -68,26 +71,26 @@ def print_statistics(data: pd.DataFrame):
     nsmallest = data_with_suff_high_n.nsmallest(10, ['mean'])
     print_relevant_columns(nsmallest, 'smallest')
 
-    print(f'std | mean: {data["std"].mean()} | median: {data["std"].median()}')
-    print(f'Mean | mean: {data["mean"].mean()} | median: {data["mean"].median()}')
-    print(f'Count | mean: {data["count"].mean()} | median: {data["count"].median()}')
+    logger.info(f'std | mean: {data["std"].mean()} | median: {data["std"].median()}')
+    logger.info(f'Mean | mean: {data["mean"].mean()} | median: {data["mean"].median()}')
+    logger.info(f'Count | mean: {data["count"].mean()} | median: {data["count"].median()}')
 
 
 def analyze_results(labels: list, names: list):
     """Compiles scraped data and print and plot some key result."""
     data = fill_dataframe(names, labels, remove_outliers=True, remove_zeroes=True)
     data.sort_values('mean', inplace=True)
-    print(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
-    print(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
+    logger.info(f'Fraction of objects with wiki page: {data["wiki_exists"].mean()}')
+    logger.info(f'Fraction of disambiguation pages (of total): {data["disambiguation"].mean()}')
     create_hist(data['n'], 'n')
 
     create_hist(data['count_wiki'], 'wikipedia counts', max_value=30000, nr_bins=200)
     create_hist(data['count_wiki'], 'wikipedia counts', max_value=1000, nr_bins=200)
     create_hist(data['count'], 'web counts', max_value=500000, nr_bins=200)
     counts_zero = len(data[data['count_wiki'] == 0].values)
-    print(f'#objects with 0 hits on wikipedia: {counts_zero}')
+    logger.info(f'#objects with 0 hits on wikipedia: {counts_zero}')
 
-    print("Statistics all data:")
+    logger.info("Statistics all data:")
     print_statistics(data)
     data.to_csv('data_full.csv')
 
@@ -101,13 +104,13 @@ def analyze_results(labels: list, names: list):
     data_selected = data_selected[data_selected['count'] > 100000]
     data_selected.to_csv('data_selected.csv')
 
-    print("Statistics selected data")
+    logger.info("Statistics selected data")
     print_statistics(data_selected)
 
 
 def print_relevant_columns(df: pd.DataFrame, label: str):
     """Print some relevant columns of the dataframe."""
-    print(f'{label}: \n{df[["name", "mean", "std", "n_data_points", "label"]]}')
+    logger.info(f'{label}: \n{df[["name", "mean", "std", "n_data_points", "label"]]}')
 
 
 def create_hist(values: list, title: str, max_value=None, debug=False, nr_bins=None) -> None:
@@ -121,7 +124,7 @@ def create_hist(values: list, title: str, max_value=None, debug=False, nr_bins=N
         nr_bins = max_value
     bins = np.linspace(0, max_value, nr_bins)
     if debug:
-        print(f'create hist for {title}')
+        logger.info(f'create hist for {title}')
     plt.hist(np.clip(values, bins[0], bins[-1]), bins=bins)
     plt.title(title)
     plt.show()

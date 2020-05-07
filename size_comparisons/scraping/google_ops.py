@@ -4,8 +4,10 @@ import logging
 
 import tqdm
 from googlesearch import search # this is the package 'google'
+import logging
 
-pp = pprint.PrettyPrinter()
+logger = logging.getLogger(__name__)
+
 
 NUM_RESULTS = 7
 
@@ -35,7 +37,7 @@ def create_or_update_results(file_path: str, queries: list, keys: list):
         file = open(file_path, 'rb')
         results = pickle.load(file)
     except (EOFError, FileNotFoundError):
-        print("No previous results, creating new object")
+        logger.info("No previous results, creating new object")
         results = dict()
 
     try:

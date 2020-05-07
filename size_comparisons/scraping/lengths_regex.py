@@ -6,6 +6,9 @@ import numpy as np
 
 # The key is the power of 10 it is compared to meters
 import tqdm
+import logging
+
+logger = logging.getLogger(__name__)
 
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
 
@@ -78,14 +81,13 @@ class LengthsFinderRegex:
         matches = [match.replace(',', '') for match in matches]
         matches_floats = self._convert_list_elements_to_float(matches)
         matches_floats = [el * factor for el in matches_floats]
-        if self.debug:
-            print(f"Power {factor}: {matches_floats} {matches}")
+
+        logger.debug(f"Power {factor}: {matches_floats} {matches}")
 
         self.matches += zip(matches, matches_floats)
         self.contexts += contexts
 
 
-pp = pprint.PrettyPrinter()
 
 
 def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper) -> (list, list):
@@ -130,8 +132,8 @@ def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, html
         for doc in value:
             lengths.append(len(doc))
 
-    print(f'Mean doc length: {np.mean(lengths)}')
-    print(f'Median doc length: {np.median(lengths)}')
+    logger.info(f'Mean doc length: {np.mean(lengths)}')
+    logger.info(f'Median doc length: {np.median(lengths)}')
 
     results = {}
     results_contexts = {}

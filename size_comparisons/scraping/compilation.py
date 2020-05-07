@@ -10,6 +10,9 @@ from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import is_disambiguation
 from sklearn.covariance import EllipticEnvelope
 from sklearn.neighbors import LocalOutlierFactor
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True, debug=False,
@@ -19,7 +22,7 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
     input_parser = InputsParser(data_dir=datadir)
     potential_fname = input_parser.data_dir / "parsed_data.pkl"
     if os.path.exists(potential_fname):
-        print('LOADING CACHED DATAFRAME')
+        logger.info('LOADING CACHED DATAFRAME')
         return pd.read_pickle(potential_fname)
     ngram_count_lookup = input_parser.retrieve_frequencies()
     counts_wikipedia = input_parser.retrieve_frequencies(wikipedia=True)
@@ -75,8 +78,8 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
                 valid = np.sort(valid)
                 invalid = np.extract(preds == -1, sizes_array)
                 invalid = np.sort(invalid)
-                print(f'valid: {valid}')
-                print(f'invalid: {invalid}')
+                logger.info(f'valid: {valid}')
+                logger.info(f'invalid: {invalid}')
 
         n_data_points = len(sizes)
         mean, std = mean_and_std(sizes)
@@ -97,7 +100,7 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
         results.append(entry)
 
     if envelope_errors > 0:
-        print(f"WARNING: {envelope_errors} value errors while removing outliers")
+        logger.info(f"WARNING: {envelope_errors} value errors while removing outliers")
     data = pd.DataFrame(results)
     data.to_pickle(potential_fname)
     return data

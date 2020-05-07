@@ -1,5 +1,8 @@
 import tqdm
 import wikipediaapi
+import logging
+
+logger = logging.getLogger(__name__)
 
 DOWNLOAD_ATTRIBUTES = ['extracts', 'info', 'categories']
 

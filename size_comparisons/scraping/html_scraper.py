@@ -10,6 +10,9 @@ import aiohttp
 import tqdm
 from typing import Dict
 from bs4 import BeautifulSoup
+import logging
+
+logger = logging.getLogger(__name__)
 
 CONCURRENT_TASKS = 10
 ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order'])
@@ -21,11 +24,7 @@ def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop) -> Dict[str
 
     results = dict()
 
-    # try:
     gather_htmls(results, keys, urls, asyncio_loop)
-    # except Exception as e:  # TODO specify error (403 http)
-    #     print(e)
-    #     print("Something went wrong, saving intermediate result")
 
     return results
 
@@ -41,14 +40,13 @@ async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int)
             # is not HTML and thus we do not support it.
             return e, url_obj, -1
         except aiohttp.ClientError as e:
-            print(f'Client error: {e}')
+            logger.warning(f'Client error: {e}')
             return e, url_obj, -1
         except asyncio.TimeoutError as e:
-            print(f'Timeouterror for url: {url_obj.url}')
+            logger.warning(f'Timeouterror for url: {url_obj.url}')
             return e, url_obj, -1
         except Exception as e:
-            print(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
-            logging.error(traceback.format_exc())
+            logger.exception(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
             return e, url_obj, -1
 
 
@@ -87,7 +85,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
         else:
             error_count += 1
 
-    print('errors:', error_count)
+    logger.info('errors:', error_count)
 
     # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
 

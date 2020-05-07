@@ -7,6 +7,9 @@ import pandas as pd
 import numpy as np
 
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def parse_entry(line):
@@ -78,4 +81,4 @@ if __name__ == "__main__":
     parser = InputsParser(Path('D:\GitHubD\size-comparisons\data'))
     data = parser.load_hand_crafted()
     data['length'] = pd.to_numeric(data['length'])
-    print(data['length'])
+    logger.info(data['length'])
