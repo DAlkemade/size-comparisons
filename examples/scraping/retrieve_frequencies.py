@@ -29,11 +29,12 @@ def main():
     counts = list()
     for name in names:
         try:
-            count = counts_dict[name]
+            count = int(counts_dict[name])
         except KeyError:
             continue
         counts.append(count)
 
+    logger.info(f'Counts: {counts}')
     logger.info(f'Median: {np.median(counts)}')
     logger.info(f'Mean: {np.mean(counts)}')
 
