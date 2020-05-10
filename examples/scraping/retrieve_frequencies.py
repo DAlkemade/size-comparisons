@@ -24,11 +24,12 @@ def main():
     inputparser = InputsParser()
     names = [line.strip() for line in fileinput.input(objects_fname)]
     fname = inputparser.data_dir / 'frequencies.json'
-    counts = retrieve_frequencies(names, fname, inputparser.data_dir / 'frequencies')
+    counts_dict = retrieve_frequencies(names, fname, inputparser.data_dir / 'frequencies')
 
+    counts = list()
     for name in names:
         try:
-            count = counts[name]
+            count = counts_dict[name]
         except KeyError:
             continue
         counts.append(count)
