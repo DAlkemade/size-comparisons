@@ -20,6 +20,7 @@ def main():
 
 
     vg_synset_ids = exploration.vg_synset()
+    vg_synset_ids = list(set(vg_synset_ids))
     with open('VisualGenome_REFORMAT.txt', 'w') as f:
         for item in vg_synset_ids:
             f.write("%s\n" % item.split('.')[0].replace('_', " "))
