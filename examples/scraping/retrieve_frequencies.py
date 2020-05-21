@@ -35,6 +35,7 @@ def main():
         counts.append(count)
 
     logger.info(f'Counts: {counts}')
+    logger.info(f'Number of counts: {len(counts)}')
     logger.info(f'Median: {np.median(counts)}')
     logger.info(f'Mean: {np.mean(counts)}')
 

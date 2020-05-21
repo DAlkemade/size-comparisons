@@ -1,0 +1,3 @@
+path:
+  objects: "D:/GitHubD/BREDS/data_numeric/VG_YOLO_intersection_dev_annotated.csv"
+  htmls_cache: "D:/GitHubD/BREDS/htmls_VG_YOLO.pkl"

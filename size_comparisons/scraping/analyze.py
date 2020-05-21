@@ -107,6 +107,7 @@ def analyze_results(labels: list, names: list):
     print_statistics(data_selected)
 
 
+
 def print_relevant_columns(df: pd.DataFrame, label: str):
     """Print some relevant columns of the dataframe."""
     logger.info(f'{label}: \n{df[["name", "mean", "std", "n_data_points", "label"]]}')

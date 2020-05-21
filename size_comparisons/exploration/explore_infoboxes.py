@@ -1,3 +1,4 @@
+import fileinput
 import random
 import time
 
@@ -11,6 +12,8 @@ from scipy import stats
 import numpy as np
 import matplotlib.pyplot as plt
 import logging
+
+SAMPLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -42,10 +45,12 @@ def generate_query(query_raw: str):
 # objects = data['object']
 inputparser = InputsParser()
 names = inputparser.retrieve_names()
+# names = [line.strip() for line in fileinput.input('D:\GitHubD\size-comparisons\examples\exploration\VisualGenome_REFORMAT.txt')]
 labels = inputparser.retrieve_labels()
 records = [Record(name, labels[i]) for i, name in enumerate(names)]
 random.seed(41)
-records = random.sample(records, 1000)
+if SAMPLE:
+    records = random.sample(records, 1000)
 del names
 del labels
 
@@ -55,13 +60,19 @@ def search_infoboxes(record: Record) -> None:
     record.height = check_contains_height_length(generate_query(f'{record.name} height'))
     record.length = check_contains_height_length(generate_query(f'{record.name} length'))
 
+for record in records:
+    synset = retrieve_synset(record.label)
+    record.category = synset.lexname()
+
+lexnames = [record.category for record in records]
+pd.Series(lexnames).value_counts().plot(kind='bar')
+plt.xticks(rotation=90)
+plt.show()
 
 for record in tqdm.tqdm(records):
     search_infoboxes(record)
 
-for record in records:
-    synset = retrieve_synset(record.label)
-    record.category = synset.lexname()
+
 
 ngram_count_lookup = inputparser.retrieve_frequencies()
 for record in records:

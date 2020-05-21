@@ -105,21 +105,27 @@ def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper) -> (list, list):
 
 def regex_google_results(label: str, htmls_lookup: dict, max_size=None) -> (list, list):
     """Retrieve sizes from a list of html pages."""
-    htmls = htmls_lookup[label]
     sizes = list()
     contexts = list()
+    try:
+        htmls = htmls_lookup[label]
+    except KeyError:
+        logger.warning(f'{label} not in htmls')
+        return sizes, contexts
+
     for html in htmls:
         if max_size is not None and len(html) > max_size:
             html = html[:max_size]
         matcher = LengthsFinderRegex(html)
         sizes_tmp, contexts_tmp = matcher.find_all_matches()
-        _, sizes_tmp = zip(*sizes_tmp)
-        sizes += sizes_tmp
-        contexts += contexts_tmp
+        if len(sizes_tmp) > 0:
+            _, sizes_tmp = zip(*sizes_tmp)
+            sizes += sizes_tmp
+            contexts += contexts_tmp
     return sizes, contexts
 
 
-def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, htmls_lookup: dict, save_fname: str, fname_contexts:str):
+def parse_documents_for_lengths(labels, htmls_lookup: dict, save_fname: str, fname_contexts:str, lookups_wrapper: WikiLookupWrapper = None):
     """Find all lengths for objects in labels using the htmls and wikipedia texts.
 
     :param labels: wordnet labels to find the lengths for
@@ -142,9 +148,10 @@ def parse_documents_for_lengths(labels, lookups_wrapper: WikiLookupWrapper, html
         label = labels[i]
         sizes = list()
         contexts = list()
-        wiki_lengths, wiki_contexts = regex_wiki(label, lookups_wrapper)
-        contexts += wiki_contexts
-        sizes += wiki_lengths
+        if lookups_wrapper is not None:
+            wiki_lengths, wiki_contexts = regex_wiki(label, lookups_wrapper)
+            contexts += wiki_contexts
+            sizes += wiki_lengths
         sizes_google, contexts_google = regex_google_results(label, htmls_lookup)
         sizes += sizes_google
         contexts += contexts_google

@@ -85,7 +85,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
         else:
             error_count += 1
 
-    logger.info('errors:', error_count)
+    logger.info(f'errors: {error_count}')
 
     # TODO could also create the list like [None] * NUM_RESULTS and enter at correct index here to preserve order
 

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True, debug=False,
-                   datadir: str = None):
+                   datadir: str = None, use_wikipedia=False):
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
     input_parser = InputsParser(data_dir=datadir)
