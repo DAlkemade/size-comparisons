@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True, debug=False,
+def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroes=True,
                    datadir: str = None, use_wikipedia=False):
     """Compile a dataframe of scraped data for further analysis."""
     # IMPORT DATA
@@ -46,40 +46,8 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
         disambiguation = is_disambiguation(lookup)
 
         sizes = sizes_lookup[label]
-        if remove_zeroes:
-            new_sizes = []
-            for size in sizes:
-                if size > 0.:
-                    new_sizes.append(size)
-            sizes = new_sizes
-        if remove_outliers and len(sizes) > 2:
-            # Create detector
-            outlier_detector = EllipticEnvelope(contamination=.1)
-            sizes_array = np.reshape(sizes, (-1, 1))
-            with np.errstate(all='raise'):
-                try:
-                    # Fit detector
-                    outlier_detector.fit(sizes_array)
-                    preds = outlier_detector.predict(sizes_array)
-
-                    # Predict outliers
-
-
-                except (ValueError, RuntimeWarning, FloatingPointError):
-                    # Backoff: use LocalOutlierFActor outlier removal
-                    clf = LocalOutlierFactor(n_neighbors=min(5, len(sizes_array) - 1), contamination=0.1)
-                    preds = clf.fit_predict(sizes_array)
-                    envelope_errors += 1
-
-            valid = np.extract(preds == 1, sizes_array)
-            sizes = list(valid)
-
-            if debug:
-                valid = np.sort(valid)
-                invalid = np.extract(preds == -1, sizes_array)
-                invalid = np.sort(invalid)
-                logger.info(f'valid: {valid}')
-                logger.info(f'invalid: {invalid}')
+        e, sizes = clean_sizes(remove_outliers, remove_zeroes, sizes)
+        envelope_errors += e
 
         n_data_points = len(sizes)
         mean, std = mean_and_std(sizes)
@@ -104,6 +72,45 @@ def fill_dataframe(names: list, labels: list, remove_outliers=True, remove_zeroe
     data = pd.DataFrame(results)
     data.to_pickle(potential_fname)
     return data
+
+
+def clean_sizes(remove_outliers, remove_zeroes, sizes):
+    envelope_errors = 0
+    if remove_zeroes:
+        new_sizes = []
+        for size in sizes:
+            if size > 0.:
+                new_sizes.append(size)
+        sizes = new_sizes
+    if remove_outliers and len(sizes) > 2:
+        # Create detector
+        outlier_detector = EllipticEnvelope(contamination=.1)
+        sizes_array = np.reshape(sizes, (-1, 1))
+        with np.errstate(all='raise'):
+            try:
+                # Fit detector
+                outlier_detector.fit(sizes_array)
+                preds = outlier_detector.predict(sizes_array)
+
+                # Predict outliers
+
+
+            except (ValueError, RuntimeWarning, FloatingPointError):
+                # Backoff: use LocalOutlierFActor outlier removal
+                clf = LocalOutlierFactor(n_neighbors=min(5, len(sizes_array) - 1), contamination=0.1)
+                preds = clf.fit_predict(sizes_array)
+                envelope_errors += 1
+
+        valid = np.extract(preds == 1, sizes_array)
+
+        valid = np.sort(valid)
+        invalid = np.extract(preds == -1, sizes_array)
+        invalid = np.sort(invalid)
+        logger.debug(f'valid: {valid}')
+        logger.debug(f'invalid: {invalid}')
+
+        sizes = list(valid)
+    return envelope_errors, sizes
 
 
 Entry = namedtuple('Entry',

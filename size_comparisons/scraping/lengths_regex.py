@@ -82,8 +82,6 @@ class LengthsFinderRegex:
         matches_floats = self._convert_list_elements_to_float(matches)
         matches_floats = [el * factor for el in matches_floats]
 
-        logger.debug(f"Power {factor}: {matches_floats} {matches}")
-
         self.matches += zip(matches, matches_floats)
         self.contexts += contexts
 
@@ -160,3 +158,5 @@ def parse_documents_for_lengths(labels, htmls_lookup: dict, save_fname: str, fna
 
     pickle.dump(results, open(save_fname, 'wb'))
     pickle.dump(results_contexts, open(fname_contexts, 'wb'))
+    return results
+
