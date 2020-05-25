@@ -11,6 +11,8 @@ import tqdm
 from typing import Dict
 from bs4 import BeautifulSoup
 import logging
+import os
+import pickle
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +21,20 @@ ObjectURL = namedtuple('ObjectURL', ['url', 'index', 'label', 'position_in_order
 TIMEOUT = 20
 
 
-def create_or_update_urls_html(keys: list, urls: dict, asyncio_loop) -> Dict[str, list]:
+def create_or_update_urls_html(htmls_fname: str, keys: list, urls: dict, asyncio_loop) -> Dict[str, list]:
     """Create file with html from urls."""
-
-    results = dict()
+    
+    if os.path.exists(htmls_fname):
+        logger.info("Loading htmls from disk")
+        with open(htmls_fname, "rb") as f_html:
+            results = pickle.load(f_html)
+    else:
+        results = dict()
 
     gather_htmls(results, keys, urls, asyncio_loop)
+    
+    with open(htmls_fname, 'wb') as f:
+        pickle.dump(results, f, pickle.HIGHEST_PROTOCOL)
 
     return results
 
@@ -59,10 +69,11 @@ async def main(results: dict, labels: list, urls_lookup: dict):
             for i, url in enumerate(urls_for_object):
                 url_obj = ObjectURL(url, i, label, label_position)
                 urls_list.append(url_obj)
-
+    
     sem = asyncio.Semaphore(CONCURRENT_TASKS)
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     tasks = [request(url_obj, sem, sslcontext) for url_obj in urls_list]
+    logger.info(f'Retrieving {len(tasks)} htmls that are not in cache')
 
     results_list = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
     # results_list = await asyncio.gather(*tasks)
