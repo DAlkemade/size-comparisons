@@ -50,7 +50,7 @@ labels = inputparser.retrieve_labels()
 records = [Record(name, labels[i]) for i, name in enumerate(names)]
 random.seed(41)
 if SAMPLE:
-    records = random.sample(records, 1000)
+    records = random.sample(records, 50)
 del names
 del labels
 
@@ -115,4 +115,7 @@ plt.plot(x, anys, 'b.', label='raw data')
 plt.hlines(bin_means, bin_edges[:-1], bin_edges[1:], colors='g', lw=5,
            label='binned statistic of data')
 plt.legend()
+plt.xlabel('count in Web 1T 5-gram corpus')
+plt.xlabel('fraction of objects with a Google infobox')
+plt.savefig('infoboxes.png')
 plt.show()
