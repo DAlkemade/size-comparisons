@@ -80,7 +80,7 @@ else:
         search_infoboxes(record)
 
     with open(fname_records, 'wb') as f:
-        pickle.dump(f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(records, f, pickle.HIGHEST_PROTOCOL)
 
 
 
