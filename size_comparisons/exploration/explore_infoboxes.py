@@ -79,6 +79,9 @@ else:
     for record in tqdm.tqdm(records):
         search_infoboxes(record)
 
+    with open(fname_records, 'wb') as f:
+        pickle.dump(f, pickle.HIGHEST_PROTOCOL)
+
 
 
 ngram_count_lookup = inputparser.retrieve_frequencies()
