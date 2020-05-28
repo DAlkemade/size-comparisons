@@ -1,4 +1,6 @@
 import fileinput
+import os
+import pickle
 import random
 import time
 
@@ -40,6 +42,11 @@ def check_contains_height_length(url):
 def generate_query(query_raw: str):
     return f'https://google.com/search?q={query_raw.replace(" ", "+")}'
 
+def search_infoboxes(record: Record) -> None:
+    record.size = check_contains_height_length(generate_query(f'{record.name} size'))
+    record.height = check_contains_height_length(generate_query(f'{record.name} height'))
+    record.length = check_contains_height_length(generate_query(f'{record.name} length'))
+
 
 # data = pd.read_csv('D:\GitHubD\size-comparisons\data\manually_selected.csv')
 # objects = data['object']
@@ -47,30 +54,30 @@ inputparser = InputsParser()
 names = inputparser.retrieve_names()
 # names = [line.strip() for line in fileinput.input('D:\GitHubD\size-comparisons\examples\exploration\VisualGenome_REFORMAT.txt')]
 labels = inputparser.retrieve_labels()
-records = [Record(name, labels[i]) for i, name in enumerate(names)]
-random.seed(41)
-if SAMPLE:
-    records = random.sample(records, 50)
-del names
-del labels
+fname_records = 'records.pkl'
+if os.path.exists(fname_records):
+    with open(fname_records, 'rb') as f:
+        records = pickle.load(f)
+else:
+    records = [Record(name, labels[i]) for i, name in enumerate(names)]
+    random.seed(41)
+    if SAMPLE:
+        records = random.sample(records, 50)
+    del names
+    del labels
 
 
-def search_infoboxes(record: Record) -> None:
-    record.size = check_contains_height_length(generate_query(f'{record.name} size'))
-    record.height = check_contains_height_length(generate_query(f'{record.name} height'))
-    record.length = check_contains_height_length(generate_query(f'{record.name} length'))
+    for record in records:
+        synset = retrieve_synset(record.label)
+        record.category = synset.lexname()
 
-for record in records:
-    synset = retrieve_synset(record.label)
-    record.category = synset.lexname()
+    lexnames = [record.category for record in records]
+    pd.Series(lexnames).value_counts().plot(kind='bar')
+    plt.xticks(rotation=90)
+    plt.show()
 
-lexnames = [record.category for record in records]
-pd.Series(lexnames).value_counts().plot(kind='bar')
-plt.xticks(rotation=90)
-plt.show()
-
-for record in tqdm.tqdm(records):
-    search_infoboxes(record)
+    for record in tqdm.tqdm(records):
+        search_infoboxes(record)
 
 
 
