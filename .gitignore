@@ -145,3 +145,4 @@ data/parsed_data.pkl
 data/adjacency_matrix_full.npy
 data/infoboxes.csv
 data/infoboxes_data.pkl
+size_comparisons/exploration/records.pkl
