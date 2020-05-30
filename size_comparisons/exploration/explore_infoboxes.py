@@ -6,6 +6,9 @@ from requests import get
 
 logger = logging.getLogger(__name__)
 
+HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0'
+    }
 class Record:
     def __init__(self, name, label):
         self.label = label
@@ -19,7 +22,7 @@ class Record:
 
 def check_contains_height_length(url):
     time.sleep(2)
-    raw = get(url).text
+    raw = get(url, allow_redirects=True, headers=HEADERS).text
     soup = BeautifulSoup(raw, 'html.parser')
     spans = soup.find_all('span')
     span_contents = [span.get_text() for span in spans]
