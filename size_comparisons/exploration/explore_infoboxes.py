@@ -30,7 +30,7 @@ def check_contains_height_length(url):
 
 
 def generate_query(query_raw: str):
-    return f'https://google.com/search?q={query_raw.replace(" ", "+")}'
+    return f'https://google.com/search?q={query_raw.replace(" ", "+")}&hl=en'
 
 
 def search_infoboxes(record: Record) -> None:
