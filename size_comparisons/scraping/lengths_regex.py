@@ -123,7 +123,7 @@ def regex_google_results(label: str, htmls_lookup: dict, max_size=None) -> (list
     return sizes, contexts
 
 
-def parse_documents_for_lengths(labels, htmls_lookup: dict, save_fname: str, fname_contexts:str, lookups_wrapper: WikiLookupWrapper = None):
+def parse_documents_for_lengths(labels, htmls_lookup: dict, lookups_wrapper: WikiLookupWrapper = None):
     """Find all lengths for objects in labels using the htmls and wikipedia texts.
 
     :param labels: wordnet labels to find the lengths for
@@ -156,7 +156,5 @@ def parse_documents_for_lengths(labels, htmls_lookup: dict, save_fname: str, fna
         results[label] = sizes
         results_contexts[label] = contexts
 
-    pickle.dump(results, open(save_fname, 'wb'))
-    pickle.dump(results_contexts, open(fname_contexts, 'wb'))
-    return results
+    return results, results_contexts
 

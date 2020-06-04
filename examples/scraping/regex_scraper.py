@@ -40,7 +40,9 @@ def main():
 
     fname = inputparser.data_dir / 'regex_sizes.p'
     fname_contexts = inputparser.data_dir / 'regex_contexts.p'
-    sizes_lookup = parse_documents_for_lengths(objects, htmls_lookup, fname, fname_contexts, lookups_wrapper=lookups_wrapper)
+    sizes_lookup, results_contexts = parse_documents_for_lengths(objects, htmls_lookup, lookups_wrapper=lookups_wrapper)
+    pickle.dump(sizes_lookup, open(fname, 'wb'))
+    pickle.dump(results_contexts, open(fname_contexts, 'wb'))
     logger.info(sizes_lookup)
 
     point_predictions = dict()
