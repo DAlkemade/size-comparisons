@@ -1,5 +1,4 @@
 # TODO: think about whether I should filter double wikipedia entries. Maybe ignore wikipedia altogether
-import json
 import pickle
 
 import yaml
@@ -7,14 +6,12 @@ from box import Box
 from pandas import DataFrame
 
 from size_comparisons.parse_objects import InputsParser
-from size_comparisons.scraping.compilation import clean_sizes, mean_and_std
-from size_comparisons.scraping.lengths_regex import parse_documents_for_lengths
+from size_comparisons.scraping.lengths_regex import parse_documents_for_lengths, predict_size_regex
 import logging
 from datetime import datetime
 from logging_setup_dla.logging import set_up_root_logger
 import os
 import pandas as pd
-import numpy as np
 from learning_sizes_evaluation.evaluate import precision_recall, range_distance
 
 set_up_root_logger(f'REGEX_{datetime.now().strftime("%d%m%Y%H%M%S")}', os.getcwd())
@@ -47,17 +44,7 @@ def main():
 
     point_predictions = dict()
     for o in objects:
-        try:
-            sizes = sizes_lookup[o]
-        except KeyError:
-            point_predictions[o] = None
-            continue
-        if len(sizes) == 0:
-            point_predictions[o] = None
-            continue
-        if len(sizes) > 2:
-            _, sizes = clean_sizes(True, True, sizes)
-        mean, std = mean_and_std(sizes)
+        mean = predict_size_regex(o, sizes_lookup)
         point_predictions[o] = mean
 
     logger.info(point_predictions)
@@ -66,7 +53,6 @@ def main():
 
     precision_recall(input, point_predictions)
     range_distance(input, point_predictions)
-
 
 
 if __name__ == "__main__":

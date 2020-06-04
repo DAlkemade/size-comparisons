@@ -8,6 +8,8 @@ import numpy as np
 import tqdm
 import logging
 
+from size_comparisons.scraping.compilation import clean_sizes, mean_and_std
+
 logger = logging.getLogger(__name__)
 
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambiguation
@@ -158,3 +160,15 @@ def parse_documents_for_lengths(labels, htmls_lookup: dict, lookups_wrapper: Wik
 
     return results, results_contexts
 
+
+def predict_size_regex(o: str, sizes_lookup: dict):
+    try:
+        sizes = sizes_lookup[o]
+    except KeyError:
+        return None
+    if len(sizes) == 0:
+        return None
+    if len(sizes) > 2:
+        _, sizes = clean_sizes(True, True, sizes)
+    mean, std = mean_and_std(sizes)
+    return mean
