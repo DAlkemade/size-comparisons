@@ -107,4 +107,5 @@ def gather_htmls(results: dict, keys: list, urls_lookup: dict, asyncio_loop):
         asyncio_loop.run_until_complete(main(results, keys, urls_lookup))
         asyncio_loop.run_until_complete(asyncio_loop.shutdown_asyncgens())
     finally:
+        logger.info("Close loop")
         asyncio_loop.close()
