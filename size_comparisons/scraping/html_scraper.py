@@ -28,7 +28,9 @@ def create_or_update_urls_html(htmls_fname: str, keys: list, urls: dict, asyncio
         logger.info("Loading htmls from disk")
         with open(htmls_fname, "rb") as f_html:
             results = pickle.load(f_html)
+        logger.info('Loaded htmls')
     else:
+        logger.info('No htmls cache')
         results = dict()
 
     gather_htmls(results, keys, urls, asyncio_loop)
