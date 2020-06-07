@@ -74,10 +74,6 @@ def main():
 
     plot_results(df, inputparser)
 
-    x = df['category'].values
-    anys = df['any'].values
-    bin_means, bin_edges, binnumber = stats.binned_statistic(x, anys, 'mean')
-
 
 def plot_results(df, inputparser):
     groups = df.groupby(['category']).agg(['mean', 'size'])
