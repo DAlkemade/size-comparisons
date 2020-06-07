@@ -22,7 +22,10 @@ class Record:
 
 def check_contains_height_length(url):
     time.sleep(2)
-    raw = get(url, allow_redirects=True, headers=HEADERS).text
+    request = get(url, allow_redirects=True, headers=HEADERS)
+    if request.status_code != 200:
+        raise Exception(f'URL {url} gave code {request.status_code}')
+    raw = request.text
     soup = BeautifulSoup(raw, 'html.parser')
     spans = soup.find_all('span')
     span_contents = [span.get_text() for span in spans]
