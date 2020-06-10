@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import tqdm
 from logging_setup_dla.logging import set_up_root_logger
+from matplotlib import colors, cm
 from scipy import stats
 from size_comparisons.exploration.explore_infoboxes import Record, search_infoboxes
 from size_comparisons.parse_objects import InputsParser
@@ -87,11 +88,26 @@ def plot_results(df, inputparser):
 
     x = df['count'].values
     anys = df['any'].values
-    bin_means, bin_edges, binnumber = stats.binned_statistic(x, anys, 'mean', bins=np.logspace(0,10,20))
+    bins = np.logspace(0,10,20)
+    bin_means, bin_edges, binnumber = stats.binned_statistic(x, anys, 'mean', bins=bins)
+    bin_counts, _, _ = stats.binned_statistic(x, anys, 'count', bins=bins)
     fig, ax = plt.subplots()
-    plt.plot(x, anys, 'b.', label='raw data')
-    plt.hlines(bin_means, bin_edges[:-1], bin_edges[1:], colors='g', lw=5,
+    minc = min(bin_counts)
+    maxc = max(bin_counts)
+    norm = colors.Normalize(vmin=minc, vmax=maxc)
+    bin_counts_normalized = [norm(c) for c in bin_counts]
+    viridis = cm.get_cmap('viridis', 20)
+
+
+    mins = bin_edges[:-1]
+    maxs = bin_edges[1:]
+    mask = ~np.isnan(bin_means)
+    plt.hlines(np.extract(mask, bin_means), np.extract(mask, mins), np.extract(mask, maxs),
+               colors=viridis(np.extract(mask, bin_counts_normalized)), lw=5,
                label='binned statistic of data')
+    sm = plt.cm.ScalarMappable(cmap=viridis, norm=norm)
+    colorbar = plt.colorbar(sm)
+    colorbar.set_label('bin count')
     plt.legend()
     plt.xlabel('count in Web 1T 5-gram corpus')
     plt.ylabel('fraction of objects with a Google infobox')
