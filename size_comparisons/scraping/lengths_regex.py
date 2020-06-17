@@ -1,13 +1,9 @@
-import os
-import pickle
-import pprint
+import logging
 import re
-import numpy as np
 
+import numpy as np
 # The key is the power of 10 it is compared to meters
 import tqdm
-import logging
-
 from size_comparisons.scraping.compilation import clean_sizes, mean_and_std
 
 logger = logging.getLogger(__name__)
@@ -17,9 +13,9 @@ from size_comparisons.scraping.wikipedia import WikiLookupWrapper, is_disambigua
 UNITS = {
     .001: ['millimeters', 'millimeter', 'mm', 'mms', 'millimetre', 'millimetres'],
     .01: ['centimeters', 'centimeter', 'cm', 'cms', 'centimetre', 'centimetres'],
-    .0254: ['inches', 'inch'], #" and in left out on purpose to maintain precision
+    .0254: ['inches', 'inch'],  # " and in left out on purpose to maintain precision
     .3048: ['feet', 'foot', 'ft'],
-    1.: ['meters', 'meter', 'm', 'metre', 'metres'], # leave out ms since that is milliseconds
+    1.: ['meters', 'meter', 'm', 'metre', 'metres'],  # leave out ms since that is milliseconds
     1000.: ['kilometers', 'km', 'kilometer', 'kms', 'kilometres', 'kilometres'],
     1609.3: ['miles', 'mile', 'mi']
 }
@@ -86,8 +82,6 @@ class LengthsFinderRegex:
 
         self.matches += zip(matches, matches_floats)
         self.contexts += contexts
-
-
 
 
 def regex_wiki(label: str, lookups_wrapper: WikiLookupWrapper) -> (list, list):

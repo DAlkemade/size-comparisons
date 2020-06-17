@@ -20,12 +20,10 @@ class SynsetsExploration:
         yolo_synset_ids = self.yolo_synset_ids()
         imagenet_detection_synset_ids = self.imagenet_detection()
 
-
         self.yolo_synset_names = [retrieve_synset(label)._name for label in yolo_synset_ids]
         self.imagenet_synset_names = [retrieve_synset(label)._name for label in imagenet_detection_synset_ids]
         self.blc_synset_names = self.blcs()
         self.vg_synset_names = self.vg_synset()
-
 
     def imagenet_detection(self):
         with open(self._inputparser.data_dir / 'imagenet.bbox.obtain_synset_wordlist',

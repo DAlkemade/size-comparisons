@@ -1,6 +1,7 @@
+import logging
+
 import tqdm
 import wikipediaapi
-import logging
 
 logger = logging.getLogger(__name__)
 

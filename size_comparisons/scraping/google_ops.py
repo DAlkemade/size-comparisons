@@ -1,17 +1,15 @@
-import pickle
-import pprint
 import logging
+import pickle
 
 import tqdm
-from googlesearch import search # this is the package 'google'
-import logging
+from googlesearch import search  # this is the package 'google'
 
 logger = logging.getLogger(__name__)
-
 
 NUM_RESULTS = 7
 
 logger = logging.getLogger(__name__)
+
 
 def retrieve_query(query: str) -> list:
     """Retrieve URLs from google with certain parameters."""

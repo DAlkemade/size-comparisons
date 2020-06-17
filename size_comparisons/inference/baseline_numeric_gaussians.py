@@ -1,4 +1,4 @@
-from pathlib import Path
+import logging
 
 import numpy as np
 import pandas as pd
@@ -8,7 +8,6 @@ from scipy.sparse.csgraph import shortest_path
 from scipy.sparse.csgraph._tools import csgraph_from_dense
 from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.compilation import fill_dataframe
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ class BaselineNumericGaussians(object):
         self.matrix = matrix
         self.distance_matrix = None
 
-    def update_ttest_value(self, name1: str, name2 : str, value: float):
+    def update_ttest_value(self, name1: str, name2: str, value: float):
         """Update the edges between two objects.
 
         As the two directed edges sum to 1, update the pvalues both ways.

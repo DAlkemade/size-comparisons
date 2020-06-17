@@ -1,18 +1,16 @@
 import asyncio
 import logging
-import traceback
-import unicodedata
-from collections import namedtuple
-import ssl
-import certifi
-
-import aiohttp
-import tqdm
-from typing import Dict
-from bs4 import BeautifulSoup
-import logging
 import os
 import pickle
+import ssl
+import unicodedata
+from collections import namedtuple
+from typing import Dict
+
+import aiohttp
+import certifi
+import tqdm
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +21,7 @@ TIMEOUT = 20
 
 def create_or_update_urls_html(htmls_fname: str, keys: list, urls: dict, asyncio_loop) -> Dict[str, list]:
     """Create file with html from urls."""
-    
+
     if os.path.exists(htmls_fname):
         logger.info("Loading htmls from disk")
         with open(htmls_fname, "rb") as f_html:
@@ -34,7 +32,7 @@ def create_or_update_urls_html(htmls_fname: str, keys: list, urls: dict, asyncio
         results = dict()
 
     gather_htmls(results, keys, urls, asyncio_loop)
-    
+
     with open(htmls_fname, 'wb') as f:
         pickle.dump(results, f, pickle.HIGHEST_PROTOCOL)
 
@@ -58,7 +56,8 @@ async def request(url_obj: ObjectURL, sem, ssl_context) -> (str, ObjectURL, int)
             logger.warning(f'Timeouterror for url: {url_obj.url}')
             return e, url_obj, -1
         except Exception as e:
-            logger.exception(f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
+            logger.exception(
+                f"{url_obj.url} Something unknown went wrong, skipping this one, please check exception: {e}")
             return e, url_obj, -1
 
 
@@ -71,7 +70,7 @@ async def main(results: dict, labels: list, urls_lookup: dict):
             for i, url in enumerate(urls_for_object):
                 url_obj = ObjectURL(url, i, label, label_position)
                 urls_list.append(url_obj)
-    
+
     sem = asyncio.Semaphore(CONCURRENT_TASKS)
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     tasks = [request(url_obj, sem, sslcontext) for url_obj in urls_list]

@@ -1,3 +1,4 @@
+import logging
 from math import ceil
 
 import numpy as np
@@ -6,7 +7,6 @@ from matplotlib import pyplot as plt
 from nltk.corpus import wordnet as wn
 from scipy.stats import norm
 from size_comparisons.scraping.compilation import fill_dataframe, mean_and_std
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +105,6 @@ def analyze_results(labels: list, names: list):
 
     logger.info("Statistics selected data")
     print_statistics(data_selected)
-
 
 
 def print_relevant_columns(df: pd.DataFrame, label: str):

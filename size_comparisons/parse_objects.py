@@ -1,13 +1,12 @@
 import json
+import logging
 import os
 import pickle
 from pathlib import Path
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 from size_comparisons.scraping.wikipedia import WikiLookupWrapper
-import logging
 
 logger = logging.getLogger(__name__)
 

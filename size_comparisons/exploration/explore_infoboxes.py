@@ -7,8 +7,10 @@ from requests import get
 logger = logging.getLogger(__name__)
 
 HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0'
-    }
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0'
+}
+
+
 class Record:
     def __init__(self, name, label):
         self.label = label

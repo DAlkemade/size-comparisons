@@ -1,3 +1,4 @@
+import logging
 import math
 import os
 from collections import namedtuple
@@ -10,7 +11,6 @@ from size_comparisons.parse_objects import InputsParser
 from size_comparisons.scraping.wikipedia import is_disambiguation
 from sklearn.covariance import EllipticEnvelope
 from sklearn.neighbors import LocalOutlierFactor
-import logging
 
 logger = logging.getLogger(__name__)
 
